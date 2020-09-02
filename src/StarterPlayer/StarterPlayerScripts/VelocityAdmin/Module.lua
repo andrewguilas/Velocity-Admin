@@ -2,10 +2,13 @@
 
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local Core = require(game.ReplicatedStorage.Core)
 local Settings = require(script.Parent.Settings)
-local Core = require(script.Parent.Core)
-local p = game.Players.LocalPlayer
 
+local Velocity = require(game.ReplicatedStorage.Velocity)
+local Commands = Velocity.Commands
+
+local p = game.Players.LocalPlayer
 local CommandBar = p.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
 local AutoComplete = CommandBar.AutoComplete
@@ -106,26 +109,64 @@ function Module.GetFields(Text)
     local LastArg = Args[#Args]
     local PossibleFields = {}
 
-    for Title, Description in pairs(Settings.CommandBar.AutoComplete.Words) do
-        for Char = #LastArg, 1, -1 do
-            local Found
-            for _,Info in pairs(PossibleFields) do
-                if Info.Title == Title then
-                    Found = true
-                    break
+    if #Args == 1 then
+        for Title, Info in pairs(Commands) do
+            for Char = #LastArg, 1, -1 do
+                local Found
+                for _,Info in pairs(PossibleFields) do
+                    if Info.Title == Title then
+                        Found = true
+                        break
+                    end
                 end
-            end
 
-            if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
-                table.insert(PossibleFields, {
-                    ["Title"] = Title,
-                    ["Description"] = Description
-                })
+                if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
+                    table.insert(PossibleFields, {
+                        ["Title"] = Title,
+                        ["Description"] = Info.Description
+                    })
+                end
+                break
             end
-            break
         end
-    end
+    elseif #Args > 1 then
+        local Command = Commands[Args[1]]
+        if Command then
+            local Argument = Command.Arguments[#Args-1]
+            if Argument then
+                local Choices
 
+                if typeof(Argument.Choices) == "table" then
+                    Choices = Argument.Choices
+                elseif typeof(Argument.Choices) == "function" then
+                    Choices = Argument.Choices()
+                end
+
+                if Choices then
+                    for _,Title in pairs(Choices) do
+                        for Char = #LastArg, 1, -1 do
+                            local Found
+                            for _,Info in pairs(PossibleFields) do
+                                if Info.Title == Title then
+                                    Found = true
+                                    break
+                                end
+                            end
+            
+                            if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
+                                table.insert(PossibleFields, {
+                                    ["Title"] = Title,
+                                    ["Description"] = ""
+                                })
+                            end
+                            break
+                        end
+                    end 
+                end
+
+            end
+        end       
+    end
     return PossibleFields
 end
 
