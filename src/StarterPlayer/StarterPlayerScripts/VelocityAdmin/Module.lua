@@ -21,14 +21,6 @@ local Module = {
 
 -- // Functions \\ --
 
-    -- Helper
-
-function Module.DisconnectCon(Con)
-    if Module.Cons[Con] then
-        Module.Cons[Con]:Disconnect()
-    end
-end
-
     -- Auto Complete
 
 function Module.RunAutoComplete(SelectedField)
@@ -124,30 +116,35 @@ function Module.CreateFields(PossibleFields)
     end
 end
 
+function CheckDifference(Title, Description, LastArg, Table)
+    -- Check if already in table
+    local Found
+    for _,Info in pairs(Table) do
+        if Info.Title == Title then
+            Found = true
+            break
+        end
+    end
+
+    -- Check differences in chars
+    for Char = #LastArg, 1, -1 do
+        if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
+            table.insert(Table, {
+                ["Title"] = Title,
+                ["Description"] = Description
+            })        
+        end
+        break
+    end
+end
+
 function Module.GetFields(Text)
     local Args = string.split(Text, Settings.CommandBar.AutoComplete.ArgSplit)
-    local LastArg = Args[#Args]
     local PossibleFields = {}
 
     if #Args == 1 then
         for Title, Info in pairs(Commands) do
-            for Char = #LastArg, 1, -1 do
-                local Found
-                for _,Info in pairs(PossibleFields) do
-                    if Info.Title == Title then
-                        Found = true
-                        break
-                    end
-                end
-
-                if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
-                    table.insert(PossibleFields, {
-                        ["Title"] = Title,
-                        ["Description"] = Info.Description
-                    })
-                end
-                break
-            end
+            CheckDifference(Title, Info.Description, Args[#Args], PossibleFields)
         end
     elseif #Args > 1 then
         local Command = Commands[Args[1]]
@@ -155,7 +152,6 @@ function Module.GetFields(Text)
             local Argument = Command.Arguments[#Args-1]
             if Argument then
                 local Choices
-
                 if typeof(Argument.Choices) == "table" then
                     Choices = Argument.Choices
                 elseif typeof(Argument.Choices) == "function" then
@@ -164,29 +160,13 @@ function Module.GetFields(Text)
 
                 if Choices then
                     for _,Title in pairs(Choices) do
-                        for Char = #LastArg, 1, -1 do
-                            local Found
-                            for _,Info in pairs(PossibleFields) do
-                                if Info.Title == Title then
-                                    Found = true
-                                    break
-                                end
-                            end
-            
-                            if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
-                                table.insert(PossibleFields, {
-                                    ["Title"] = Title,
-                                    ["Description"] = ""
-                                })
-                            end
-                            break
-                        end
-                    end 
+                        CheckDifference(Title, "", Args[#Args], PossibleFields)
+                    end
                 end
-
             end
         end       
     end
+
     return PossibleFields
 end
 
@@ -208,6 +188,46 @@ end
 
     -- Input
 
+Module.InputFunctions = {
+
+    [Settings.CommandBar.OpenKey] = function()
+        CommandBar.Visible = not CommandBar.Visible
+        Module.DisconnectCon("CloseUI")
+        if CommandBar.Visible then
+            TextBox:CaptureFocus()
+            RunService.RenderStepped:Wait()
+            TextBox.Text = ""
+            Module.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
+        end
+    end,
+
+    [Settings.CommandBar.AutoComplete.UpKey] = function()
+        Module.HandleAutoComplete(-1)
+    end,
+    
+    [Settings.CommandBar.AutoComplete.DownKey] = function()
+        Module.HandleAutoComplete(1)
+    end,
+        
+    [Settings.CommandBar.ExitKey] = function()
+        Module.CloseUI() 
+    end,
+
+    [Settings.CommandBar.AutoComplete.UseKey1] = function()
+        Module.Returned() 
+    end,
+
+    [Settings.CommandBar.AutoComplete.UseKey2] = function()
+        Module.Returned() 
+    end
+}
+
+function Module.CloseUI()
+    CommandBar.Visible = false
+    TextBox:ReleaseFocus()
+    Module.DisconnectCon("CloseUI")
+end
+
 function Module.Returned()
     local SelectedField
     for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
@@ -223,45 +243,6 @@ function Module.Returned()
     end   
 end
 
-function Module.CloseUI()
-    CommandBar.Visible = false
-    TextBox:ReleaseFocus()
-    Module.DisconnectCon("CloseUI")
-end
-
-Module.InputFunctions = {
-    [Settings.CommandBar.AutoComplete.UpKey] = function()
-        Module.HandleAutoComplete(-1)
-    end,
-    
-    [Settings.CommandBar.AutoComplete.DownKey] = function()
-        Module.HandleAutoComplete(1)
-    end,
-    
-    [Settings.CommandBar.AutoComplete.UseKey1] = function()
-        Module.Returned()
-    end,
-    
-    [Settings.CommandBar.AutoComplete.UseKey2] = function()
-        Module.Returned()
-    end,
-    
-    [Settings.CommandBar.OpenKey] = function()
-        CommandBar.Visible = not CommandBar.Visible
-        Module.DisconnectCon("CloseUI")
-        if CommandBar.Visible then
-            TextBox:CaptureFocus()
-            RunService.RenderStepped:Wait()
-            TextBox.Text = ""
-            Module.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
-        end
-    end,
-    
-    [Settings.CommandBar.ExitKey] = function()
-        Module.CloseUI()
-    end,
-}
-
 function Module.RunUI(Input)
     local PossibleFunction = Module.InputFunctions[Input.KeyCode]
     if PossibleFunction then
@@ -270,6 +251,12 @@ function Module.RunUI(Input)
 end
 
     -- Main
+
+function Module.DisconnectCon(Con)
+    if Module.Cons[Con] then
+        Module.Cons[Con]:Disconnect()
+    end
+end
 
 function Module.Init()
     CommandBar.Position = Settings.CommandBar.DefaultPos
