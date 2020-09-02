@@ -1,26 +1,20 @@
 local Settings = {
     CommandBar = {
-        Startup = {
-            Key = Enum.KeyCode.BackSlash,
-            Exit = Enum.KeyCode.Escape,
-            HiddenPos = UDim2.new(0.3, 10, -1, 10),
-            ShownPos = UDim2.new(0.3, 10, 0, 10),
-        },
-        Text = {
-            Size = UDim2.new(0, 40, 0, 20),
-            MaxSize = 500,
-        },
+        OpenKey = Enum.KeyCode.BackSlash,
+        ExitKey = Enum.KeyCode.Escape,
+        DefaultPos = UDim2.new(0.3, 10, 0, 10),
+        DefaultSize = UDim2.new(0, 40, 0, 20),
         AutoComplete = {
-            Key1 = Enum.KeyCode.Tab,
-            Key2 = Enum.KeyCode.Return,
             UpKey = Enum.KeyCode.Up,
             DownKey = Enum.KeyCode.Down,
-            SelectedColor = Color3.fromRGB(100, 100, 100),
-            NonSelectedColor = Color3.fromRGB(0, 0, 0),
-            ShowPos = UDim2.new(0.3, 10, 0, 32),
-            FieldSize = UDim2.new(20, 0, 0, 20),
-            FieldSpacing = 80,
+            UseKey1 = Enum.KeyCode.Tab,
+            UseKey2 = Enum.KeyCode.Return,            
             ArgSplit = " ",
+            SelectedColor = Color3.fromRGB(100, 100, 100),
+            UnselectedColor = Color3.fromRGB(0, 0, 0),
+            MaxDescriptionSize = 500,
+            FieldSize = UDim2.new(20, 0, 0, 20),
+            FieldSpacing = 100,
             Words = {
                 ["Jet"] = "was good, then bad, then tried to be good, but was actually bad the ENTIRE TIME, and then he became bad  because he was brain washed, but then he realized that he was brain washed so he became good, but then he was controlled again from the previous brain washing experience and became bad, but when he died, he becam,e good.",
                 ["Potato"] = "Makes french fries!",
@@ -33,9 +27,8 @@ local Settings = {
                 ["pizza"] = "some italian food idk never heard of it",
                 ["crazy man"] = "some aero guy"
             }
-        },
-    },
-
+        }
+    }
 }
 
 return Settings
