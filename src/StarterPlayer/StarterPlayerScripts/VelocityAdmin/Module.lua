@@ -11,16 +11,9 @@ local TextBox = CommandBar.TextBox
 local AutoComplete = CommandBar.AutoComplete
 
 local Module = {
-    InputFunctions = {
-        Settings.CommandBar.AutoComplete.UpKey;
-        Settings.CommandBar.AutoComplete.DownKey;
-        Settings.CommandBar.AutoComplete.UseKey1;
-        Settings.CommandBar.AutoComplete.UseKey2;
-        Settings.CommandBar.OpenKey;
-    },
+    InputFunctions = {},
     Cons = {},
 }
-
 
 -- // Functions \\ --
 
@@ -41,7 +34,7 @@ function Module.RunAutoComplete(SelectedField)
 
     TextBox.CursorPosition = 1
     RunService.RenderStepped:Wait()
-    TextBox.Text = table.concat(Args, Settings.CommandBar.AutoComplete.ArgSplit) .. " "
+    TextBox.Text = table.concat(Args, Settings.CommandBar.AutoComplete.ArgSplit) .. Settings.CommandBar.AutoComplete.ArgSplit
     TextBox.CursorPosition = #TextBox.Text + 1
 end
 
@@ -66,13 +59,55 @@ function Module.HandleAutoComplete(Step)
     end
 end
 
+function Module.CreateFields(PossibleFields)
+    local BiggestSize = 0
+    for i, Field in pairs(PossibleFields) do
+        local NewField = AutoComplete.ListLayout.Template:Clone()
+        NewField.Title.Text = Field.Title
+        NewField.Description.Text = Field.Description
+        NewField.Name, NewField.LayoutOrder = i, i
+
+        if i == 1 then
+            NewField.IsSelected.Value = true
+            NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+        end
+
+        NewField.Parent = AutoComplete
+        NewField.Title.Size = UDim2.new(0, NewField.Title.TextBounds.X, 1, 0)
+
+        local X = NewField.Description.TextBounds.X
+        local FinalY = Core.Round(X/Settings.CommandBar.AutoComplete.MaxDescriptionSize) + 1            
+        if FinalY > 1 then
+            NewField.Description.Size = UDim2.new(0, X/FinalY, 1, 0)
+            NewField.Description.TextWrapped = true
+            NewField.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxDescriptionSize, FinalY, 0)
+        else
+            NewField.Description.Size = UDim2.new(0, X, 1, 0)
+            NewField.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxDescriptionSize, 1, 0)
+        end
+
+        local GoalX = NewField.Description.Size.X.Offset + NewField.Title.Size.X.Offset + Settings.CommandBar.AutoComplete.FieldSpacing
+        if GoalX > BiggestSize then
+            BiggestSize = GoalX
+        end
+
+        NewField.MouseButton1Click:Connect(function()
+            Module.RunAutoComplete(NewField)
+        end)
+    end
+
+    for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
+        Field.Size = UDim2.new(0, BiggestSize, Field.Size.Y.Scale, 0)
+    end
+end
+
 function Module.GetFields(Text)
     local Args = string.split(Text, Settings.CommandBar.AutoComplete.ArgSplit)
     local LastArg = Args[#Args]
     local PossibleFields = {}
 
     for Title, Description in pairs(Settings.CommandBar.AutoComplete.Words) do
-        for CharNum = #LastArg, 1, -1 do
+        for Char = #LastArg, 1, -1 do
             local Found
             for _,Info in pairs(PossibleFields) do
                 if Info.Title == Title then
@@ -81,7 +116,7 @@ function Module.GetFields(Text)
                 end
             end
 
-            if string.sub(string.lower(LastArg), 1, CharNum) == string.sub(string.lower(Title), 1, CharNum) and not Found then
+            if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
                 table.insert(PossibleFields, {
                     ["Title"] = Title,
                     ["Description"] = Description
@@ -102,46 +137,8 @@ function Module.CheckAutoComplete()
     end
 
     local PossibleFields = Module.GetFields(TextBox.Text)
-    local BiggestSize = 0
     if PossibleFields then
-        for i, Field in pairs(PossibleFields) do
-            local NewField = AutoComplete.ListLayout.Template:Clone()
-            NewField.Title.Text = Field.Title
-            NewField.Description.Text = Field.Description
-            NewField.Name, NewField.LayoutOrder = i, i
-
-            if i == 1 then
-                NewField.IsSelected.Value = true
-                NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-            end
-
-            NewField.Parent = AutoComplete
-            NewField.Title.Size = UDim2.new(0, NewField.Title.TextBounds.X, 1, 0)
-
-            local X = NewField.Description.TextBounds.X
-            local FinalY = Core.Round(X/Settings.CommandBar.AutoComplete.MaxDescriptionSize) + 1            
-            if FinalY > 1 then
-                NewField.Description.Size = UDim2.new(0, X/FinalY, 1, 0)
-                NewField.Description.TextWrapped = true
-                NewField.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxDescriptionSize, FinalY, 0)
-            else
-                NewField.Description.Size = UDim2.new(0, X, 1, 0)
-                NewField.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxDescriptionSize, 1, 0)
-            end
-
-            local GoalX = NewField.Description.Size.X.Offset + NewField.Title.Size.X.Offset + Settings.CommandBar.AutoComplete.FieldSpacing
-            if GoalX > BiggestSize then
-                BiggestSize = GoalX
-            end
-
-            NewField.MouseButton1Click:Connect(function()
-                Module.RunAutoComplete(NewField)
-            end)
-        end
-
-        for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
-            Field.Size = UDim2.new(0, BiggestSize, Field.Size.Y.Scale, 0)
-        end
+        Module.CreateFields(PossibleFields)
     end
     
     AutoComplete.Size = Settings.CommandBar.AutoComplete.FieldSize + UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, 0)
@@ -170,36 +167,38 @@ function Module.CloseUI()
     Module.DisconnectCon("CloseUI")
 end
 
-Module.InputFunctions[Settings.CommandBar.AutoComplete.UpKey] = function()
-    Module.HandleAutoComplete(-1)
-end
-
-Module.InputFunctions[Settings.CommandBar.AutoComplete.DownKey] = function()
-    Module.HandleAutoComplete(1)
-end
-
-Module.InputFunctions[Settings.CommandBar.AutoComplete.UseKey1] = function()
-    Module.Returned()
-end
-
-Module.InputFunctions[Settings.CommandBar.AutoComplete.UseKey2] = function()
-    Module.Returned()
-end
-
-Module.InputFunctions[Settings.CommandBar.OpenKey] = function()
-    CommandBar.Visible = not CommandBar.Visible
-    Module.DisconnectCon("CloseUI")
-    if CommandBar.Visible then
-        TextBox:CaptureFocus()
-        RunService.RenderStepped:Wait()
-        TextBox.Text = ""
-        Module.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
-    end
-end
-
-Module.InputFunctions[Settings.CommandBar.ExitKey] = function()
-    Module.CloseUI()
-end
+Module.InputFunctions = {
+    [Settings.CommandBar.AutoComplete.UpKey] = function()
+        Module.HandleAutoComplete(-1)
+    end,
+    
+    [Settings.CommandBar.AutoComplete.DownKey] = function()
+        Module.HandleAutoComplete(1)
+    end,
+    
+    [Settings.CommandBar.AutoComplete.UseKey1] = function()
+        Module.Returned()
+    end,
+    
+    [Settings.CommandBar.AutoComplete.UseKey2] = function()
+        Module.Returned()
+    end,
+    
+    [Settings.CommandBar.OpenKey] = function()
+        CommandBar.Visible = not CommandBar.Visible
+        Module.DisconnectCon("CloseUI")
+        if CommandBar.Visible then
+            TextBox:CaptureFocus()
+            RunService.RenderStepped:Wait()
+            TextBox.Text = ""
+            Module.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
+        end
+    end,
+    
+    [Settings.CommandBar.ExitKey] = function()
+        Module.CloseUI()
+    end,
+}
 
 function Module.RunUI(Input)
     local PossibleFunction = Module.InputFunctions[Input.KeyCode]
