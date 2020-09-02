@@ -2,8 +2,12 @@ local Settings = {
     CommandBar = {
         OpenKey = Enum.KeyCode.BackSlash,
         ExitKey = Enum.KeyCode.Escape,
-        DefaultPos = UDim2.new(0.3, 10, 0, 10),
+        DefaultPos = UDim2.new(0.3, 10, 0, 50),
         DefaultSize = UDim2.new(0, 40, 0, 20),
+        Hint = {
+            Spacing = 20,
+            DefaultSize = UDim2.new(0, 10, 0, 30)
+        },
         AutoComplete = {
             UpKey = Enum.KeyCode.Up,
             DownKey = Enum.KeyCode.Down,

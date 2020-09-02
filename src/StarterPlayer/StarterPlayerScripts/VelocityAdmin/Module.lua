@@ -11,6 +11,7 @@ local Commands = Velocity.Commands
 local p = game.Players.LocalPlayer
 local CommandBar = p.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
+local Hint = CommandBar.Hint
 local AutoComplete = CommandBar.AutoComplete
 
 local Module = {
@@ -60,6 +61,25 @@ function Module.HandleAutoComplete(Step)
             NewSelectedField.IsSelected.Value = true
         end
     end
+end
+
+function Module.UpdateHint()
+    local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)
+    for Name, Info in pairs(Commands) do
+        if string.lower(Name) == string.lower(Args[1]) then
+            local ArgumentInfo = Info.Arguments[#Args-1]
+            if ArgumentInfo then
+                Hint.Title.Text = ArgumentInfo.Title
+                Hint.Description.Text = ArgumentInfo.Description
+                Hint.Visible = true
+                Hint.Title.Size = UDim2.new(0, Hint.Title.TextBounds.X + Settings.CommandBar.Hint.Spacing, 1, 0)
+                Hint.Description.Size = UDim2.new(0, Hint.Description.TextBounds.X + Settings.CommandBar.Hint.Spacing, 1, 0)
+                Hint.Size = UDim2.new(0, Hint.Title.Size.X.Offset + Hint.Description.Size.X.Offset, 0, Settings.CommandBar.Hint.DefaultSize.Y.Offset)                
+                return
+            end
+        end
+    end
+    Hint.Visible = false
 end
 
 function Module.CreateFields(PossibleFields)
@@ -180,6 +200,7 @@ function Module.CheckAutoComplete()
     local PossibleFields = Module.GetFields(TextBox.Text)
     if PossibleFields then
         Module.CreateFields(PossibleFields)
+        Module.UpdateHint()
     end
     
     AutoComplete.Size = Settings.CommandBar.AutoComplete.FieldSize + UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, 0)
