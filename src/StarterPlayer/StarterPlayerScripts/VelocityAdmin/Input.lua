@@ -17,10 +17,7 @@ Module.InputFunctions = {
         CommandBar.Visible = not CommandBar.Visible
         Handler.DisconnectCon("CloseUI")
         if CommandBar.Visible then
-            TextBox:CaptureFocus()
-            RunService.RenderStepped:Wait()
-            TextBox.Text = ""
-            Handler.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
+            Module.ClearText()
         end
     end,
 
@@ -44,6 +41,13 @@ Module.InputFunctions = {
         Module.Returned() 
     end
 }
+
+function Module.ClearText()
+    TextBox:CaptureFocus()
+    RunService.RenderStepped:Wait()
+    TextBox.Text = ""
+    Handler.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
+end
 
 function Module.CloseUI()
     CommandBar.Visible = false

@@ -22,11 +22,9 @@ local Velocity = {
 			},
             ["Run"] = function(Player, Reason)
 
-                print(Player, Reason)
-
                 -- Check if necessary arguments are there
                 if not Player then
-                    return "Player Argument Missing"
+                    return  false, "Player Argument Missing"
                 end
 
                 -- Run Command
@@ -34,13 +32,13 @@ local Velocity = {
 				if p then
                     if Reason then
                         p:Kick(Reason)
-                        return Player .. " was kicked for " .. Reason
+                        return true, Player .. " was kicked for " .. Reason
                     else
                         p:Kick()
-                        return Player .. " was kicked."
+                        return true, Player .. " was kicked."
                     end                    
                 else
-                    return Player .. " is not found in the player list."
+                    return false, Player .. " is not found in the player list."
                 end
 
 			end
@@ -69,9 +67,9 @@ local Velocity = {
 
                 -- Check if necessary arguments are there
                 if not Player then
-                    return "Player Argument Missing"
+                    return false, "Player Argument Missing"
                 elseif not Speed then
-                    return "Speed Argument Missing"
+                    return false, "Speed Argument Missing"
                 end
 
                 -- Run Command
@@ -81,12 +79,12 @@ local Velocity = {
                     if Char then
                         local Hum = Char:WaitForChild("Humanoid")
                         Hum.WalkSpeed = Speed
-                        return Player .. "'s speed was changed to " .. Speed
+                        return true, Player .. "'s speed was changed to " .. Speed
                     else
-                        return Player .. "'s character does not exist."
+                        return false, Player .. "'s character does not exist."
                     end
                 else
-                    return Player .. " is not found in the player list."
+                    return false, Player .. " is not found in the player list."
                 end
 
             end
@@ -110,7 +108,7 @@ local Velocity = {
                 
                 -- Check if necessary arguments are there
                 if not Player then
-                    return "Player Argument Missing"
+                    return false, "Player Argument Missing"
                 end
 
                 -- Run Command
@@ -120,12 +118,12 @@ local Velocity = {
                     if Char then
                         local Hum = Char:WaitForChild("Humanoid")
                         Hum.Health = 0
-                        return Player .. " was killed."
+                        return true, Player .. " was killed."
                     else
-                        return Player .. "'s character does not exist."
+                        return false, Player .. "'s character does not exist."
                     end
                 else
-                    return Player .. " is not found in the player list."
+                    return false, Player .. " is not found in the player list."
                 end
 
             end

@@ -8,6 +8,7 @@ local Debris = game:GetService("Debris")
 local Core = require(game.ReplicatedStorage.Core)
 local Handler = require(script.Parent.Handler)
 local Settings = require(script.Parent.Settings)
+local InputModule = require(script.Parent.Input)
 
 local Remotes = game.ReplicatedStorage.Remotes
 local Velocity = require(game.ReplicatedStorage.Velocity)
@@ -22,29 +23,33 @@ local Hint = Info.Hint
 
 -- // Functions \\ --
 
-function Module.UpdateResponse(Status)
+function Module.UpdateResponse(Success, Status)
     local NewResponse = Info.ListLayout.Response:Clone()
     NewResponse.Label.Text = Status
     NewResponse.Parent = Info
+    NewResponse.Size = Settings.CommandBar.Response.DefaultSize + UDim2.new(0, NewResponse.Label.TextBounds.X, 0, 0)
 
     local MaxDur = Settings.CommandBar.Response.SecondsPerLetter * #Status
     if MaxDur > Settings.CommandBar.Response.MaxDuration then
         MaxDur = Settings.CommandBar.Response.MaxDuration
     end
+
+    if Success then
+        InputModule.ClearText()
+        NewResponse.Label.TextColor3 = Settings.CommandBar.Response.SuccessColor
+    else
+        NewResponse.Label.TextColor3 = Settings.CommandBar.Response.ErrorColor   
+    end     
+
     Debris:AddItem(NewResponse, MaxDur)
 end
 
 function Module.CheckArguments()
-
     Handler.Data.Arguments = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)
     table.remove(Handler.Data.Arguments, 1)
-    print(#Handler.Data.CommandInfo.Arguments, #Handler.Data.Arguments)
 
-    if Handler.Data.Command and Handler.Data.CommandInfo and #Handler.Data.CommandInfo.Arguments == #Handler.Data.Arguments then
-        local Status = Remotes.FireCommand:InvokeServer(Handler.Data)
-        if Status then
-            Module.UpdateResponse(Status)
-        end
+    if Handler.Data.Command and Handler.Data.CommandInfo then
+        Module.UpdateResponse(Remotes.FireCommand:InvokeServer(Handler.Data))     
     end
 end
 
@@ -104,7 +109,7 @@ function Module.CreateFields(PossibleFields)
         local NewField = AutoComplete.ListLayout.Template:Clone() do
             NewField.Title.Text = Field.Title
             NewField.Description.Text = Field.Description
-            NewField.LayoutOrder = i
+            NewField.Name, NewField.LayoutOrder = i, i
         end
         
         if i == 1 then
@@ -171,6 +176,7 @@ end
 function Module.GetFields(Text)
     local Args = string.split(Text, Settings.CommandBar.AutoComplete.ArgSplit)
     local PossibleFields = {}
+    Text = string.lower(Text)
 
     if #Args == 1 then
         local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " 
@@ -180,11 +186,9 @@ function Module.GetFields(Text)
     elseif #Args > 1 then
         local Command = Commands[Args[1]]
         if Command then
-
             Handler.Data.Command = Args[1]
             Handler.Data.CommandInfo = Command
             Handler.Data.Arguments = {}
-            print("New Command: " .. Handler.Data.Command)
 
             local Argument = Command.Arguments[#Args-1]
             if Argument then
