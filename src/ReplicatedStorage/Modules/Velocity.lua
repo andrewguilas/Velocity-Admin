@@ -18,6 +18,7 @@ local Velocity = {
                     ["Title"] = "reason",
                     ["Description"] = "Why you want to kick the player.",
                     ["Choices"] = true,
+                    ["NoWordLimit"] = true,
                 }
 			},
             ["Run"] = function(Player, Reason)

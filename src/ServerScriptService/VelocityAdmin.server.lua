@@ -1,5 +1,5 @@
 local Remotes = game.ReplicatedStorage.Remotes
-local Commands = require(game.ReplicatedStorage.Velocity).Commands
+local Commands = require(game.ReplicatedStorage.Modules.Velocity).Commands
 
 Remotes.FireCommand.OnServerInvoke = function(p, Data)
     local SelectedCommand = Commands[Data.Command]
