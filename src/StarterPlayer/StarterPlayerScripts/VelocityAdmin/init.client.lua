@@ -1,1 +1,1 @@
-require(script.Module).Init()
+require(script.Handler).Init()

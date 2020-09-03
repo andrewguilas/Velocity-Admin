@@ -1,27 +1,21 @@
 -- // Variables \\ --
 
-local UserInputService = game:GetService("UserInputService")
+local Module = {}
+
 local RunService = game:GetService("RunService")
+
 local Core = require(game.ReplicatedStorage.Core)
 local Settings = require(script.Parent.Settings)
 
 local Velocity = require(game.ReplicatedStorage.Velocity)
 local Commands = Velocity.Commands
 
-local p = game.Players.LocalPlayer
-local CommandBar = p.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
+local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
-local Hint = CommandBar.Hint
 local AutoComplete = CommandBar.AutoComplete
-
-local Module = {
-    InputFunctions = {},
-    Cons = {},
-}
+local Hint = CommandBar.Hint
 
 -- // Functions \\ --
-
-    -- Auto Complete
 
 function Module.RunAutoComplete(SelectedField)
     local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)
@@ -47,8 +41,7 @@ function Module.HandleAutoComplete(Step)
         local NewSelectedField = AutoComplete:FindFirstChild(OldSelectedField.Name + Step)
         if NewSelectedField then
             OldSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
-            OldSelectedField.IsSelected.Value = false
-        
+            OldSelectedField.IsSelected.Value = false       
             NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
             NewSelectedField.IsSelected.Value = true
         end
@@ -77,11 +70,12 @@ end
 function Module.CreateFields(PossibleFields)
     local BiggestSize = 0
     for i, Field in pairs(PossibleFields) do
-        local NewField = AutoComplete.ListLayout.Template:Clone()
-        NewField.Title.Text = Field.Title
-        NewField.Description.Text = Field.Description
-        NewField.Name, NewField.LayoutOrder = i, i
-
+        local NewField = AutoComplete.ListLayout.Template:Clone() do
+            NewField.Title.Text = Field.Title
+            NewField.Description.Text = Field.Description
+            NewField.Name, NewField.LayoutOrder = i, i
+        end
+        
         if i == 1 then
             NewField.IsSelected.Value = true
             NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
@@ -116,7 +110,7 @@ function Module.CreateFields(PossibleFields)
     end
 end
 
-function CheckDifference(Title, Description, LastArg, Table)
+function Module.CheckDifference(Title, Description, LastArg, Table)
     -- Check if already in table
     local Found
     for _,Info in pairs(Table) do
@@ -144,23 +138,23 @@ function Module.GetFields(Text)
 
     if #Args == 1 then
         for Title, Info in pairs(Commands) do
-            CheckDifference(Title, Info.Description, Args[#Args], PossibleFields)
+            Module.CheckDifference(Title, Info.Description, Args[#Args], PossibleFields)
         end
     elseif #Args > 1 then
         local Command = Commands[Args[1]]
         if Command then
             local Argument = Command.Arguments[#Args-1]
             if Argument then
-                local Choices
-                if typeof(Argument.Choices) == "table" then
-                    Choices = Argument.Choices
-                elseif typeof(Argument.Choices) == "function" then
+                local Choices                    
+                if typeof(Argument.Choices) == "function" then
                     Choices = Argument.Choices()
+                elseif typeof(Argument.Choices) == "table" then
+                    Choices = Argument.Choices
                 end
 
                 if Choices then
                     for _,Title in pairs(Choices) do
-                        CheckDifference(Title, "", Args[#Args], PossibleFields)
+                        Module.CheckDifference(Title, "", Args[#Args], PossibleFields)
                     end
                 end
             end
@@ -184,86 +178,6 @@ function Module.CheckAutoComplete()
     end
     
     AutoComplete.Size = Settings.CommandBar.AutoComplete.FieldSize + UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, 0)
-end
-
-    -- Input
-
-Module.InputFunctions = {
-
-    [Settings.CommandBar.OpenKey] = function()
-        CommandBar.Visible = not CommandBar.Visible
-        Module.DisconnectCon("CloseUI")
-        if CommandBar.Visible then
-            TextBox:CaptureFocus()
-            RunService.RenderStepped:Wait()
-            TextBox.Text = ""
-            Module.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
-        end
-    end,
-
-    [Settings.CommandBar.AutoComplete.UpKey] = function()
-        Module.HandleAutoComplete(-1)
-    end,
-    
-    [Settings.CommandBar.AutoComplete.DownKey] = function()
-        Module.HandleAutoComplete(1)
-    end,
-        
-    [Settings.CommandBar.ExitKey] = function()
-        Module.CloseUI() 
-    end,
-
-    [Settings.CommandBar.AutoComplete.UseKey1] = function()
-        Module.Returned() 
-    end,
-
-    [Settings.CommandBar.AutoComplete.UseKey2] = function()
-        Module.Returned() 
-    end
-}
-
-function Module.CloseUI()
-    CommandBar.Visible = false
-    TextBox:ReleaseFocus()
-    Module.DisconnectCon("CloseUI")
-end
-
-function Module.Returned()
-    local SelectedField
-    for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
-        if Field.IsSelected.Value then
-            SelectedField = Field
-        end
-    end
-
-    if SelectedField then
-        Module.RunAutoComplete(SelectedField)
-    else
-        Module.CloseUI()
-    end   
-end
-
-function Module.RunUI(Input)
-    local PossibleFunction = Module.InputFunctions[Input.KeyCode]
-    if PossibleFunction then
-        PossibleFunction()
-    end
-end
-
-    -- Main
-
-function Module.DisconnectCon(Con)
-    if Module.Cons[Con] then
-        Module.Cons[Con]:Disconnect()
-    end
-end
-
-function Module.Init()
-    CommandBar.Position = Settings.CommandBar.DefaultPos
-    CommandBar.Visible = false
-
-    UserInputService.InputBegan:Connect(Module.RunUI)
-    TextBox:GetPropertyChangedSignal("Text"):Connect(Module.CheckAutoComplete)
 end
 
 return Module

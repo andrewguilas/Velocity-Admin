@@ -49,7 +49,27 @@ local Velocity = {
             ["Run"] = function(Player, Speed)
                 
             end
-        }
+        },
+        Kill = {
+            ["Startup"] = "kill",
+            ["Description"] = "Kills a player.",
+            ["Arguments"] = {
+                [1] = {
+                    ["Title"] = "Player",
+                    ["Description"] = "The player you want to kill.",
+                    ["Choices"] = function()
+                        local Players = {}
+                        for _,p in pairs(game.Players:GetPlayers()) do
+                            table.insert(Players, p.Name)
+                        end
+                        return Players
+                    end
+                },
+            },
+            ["Run"] = function(Player, Speed)
+                
+            end
+        },
 	},
 }
 
