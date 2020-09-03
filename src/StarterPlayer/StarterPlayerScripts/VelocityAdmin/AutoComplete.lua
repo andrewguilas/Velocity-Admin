@@ -8,7 +8,6 @@ local Debris = game:GetService("Debris")
 local Core = require(game.ReplicatedStorage.Core)
 local Handler = require(script.Parent.Handler)
 local Settings = require(script.Parent.Settings)
-local InputModule = require(script.Parent.Input)
 
 local Remotes = game.ReplicatedStorage.Remotes
 local Velocity = require(game.ReplicatedStorage.Velocity)
@@ -35,6 +34,7 @@ function Module.UpdateResponse(Success, Status)
     end
 
     if Success then
+        local InputModule = require(script.Parent.Input)
         InputModule.ClearText()
         NewResponse.Label.TextColor3 = Settings.CommandBar.Response.SuccessColor
     else
@@ -49,7 +49,10 @@ function Module.CheckArguments()
     table.remove(Handler.Data.Arguments, 1)
 
     if Handler.Data.Command and Handler.Data.CommandInfo then
-        Module.UpdateResponse(Remotes.FireCommand:InvokeServer(Handler.Data))     
+        local Success, Status = Remotes.FireCommand:InvokeServer(Handler.Data)
+        if Status then
+            Module.UpdateResponse(Success, Status)     
+        end
     end
 end
 

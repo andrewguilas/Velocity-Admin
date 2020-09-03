@@ -24,7 +24,7 @@ local Velocity = {
 
                 -- Check if necessary arguments are there
                 if not Player then
-                    return  false, "Player Argument Missing"
+                    return false, "Player Argument Missing"
                 end
 
                 -- Run Command
