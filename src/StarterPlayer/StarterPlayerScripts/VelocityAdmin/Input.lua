@@ -17,19 +17,16 @@ Module.InputFunctions = {
         CommandBar.Visible = not CommandBar.Visible
         Handler.DisconnectCon("CloseUI")
         if CommandBar.Visible then
-            TextBox:CaptureFocus()
-            RunService.RenderStepped:Wait()
-            TextBox.Text = ""
-            Handler.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
+            Module.ClearText()
         end
     end,
 
     [Settings.CommandBar.AutoComplete.UpKey] = function()
-        AutoCompleteModule.HandleAutoComplete(-1)
+        AutoCompleteModule.HandleSelectedField(-1)
     end,
     
     [Settings.CommandBar.AutoComplete.DownKey] = function()
-        AutoCompleteModule.HandleAutoComplete(1)
+        AutoCompleteModule.HandleSelectedField(1)
     end,
         
     [Settings.CommandBar.ExitKey] = function()
@@ -44,6 +41,13 @@ Module.InputFunctions = {
         Module.Returned() 
     end
 }
+
+function Module.ClearText()
+    TextBox:CaptureFocus()
+    RunService.RenderStepped:Wait()
+    TextBox.Text = ""
+    Handler.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
+end
 
 function Module.CloseUI()
     CommandBar.Visible = false
@@ -62,7 +66,9 @@ function Module.Returned()
     if SelectedField then
         AutoCompleteModule.RunAutoComplete(SelectedField)
     else
-        Module.CloseUI()
+        if AutoCompleteModule.CheckArguments() then
+            Module.CloseUI()
+        end
     end   
 end
 

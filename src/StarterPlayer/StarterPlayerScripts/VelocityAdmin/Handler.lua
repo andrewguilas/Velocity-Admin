@@ -1,6 +1,11 @@
 -- // Variables \\ --
 
 local Module = {
+    Data = {
+        Command = nil,
+        CommandInfo = {},
+        Arguments = {}
+    },
     Cons = {},
 }
 

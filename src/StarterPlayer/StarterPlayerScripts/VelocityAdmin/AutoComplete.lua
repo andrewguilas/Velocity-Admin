@@ -3,18 +3,58 @@
 local Module = {}
 
 local RunService = game:GetService("RunService")
+local Debris = game:GetService("Debris")
+
 local Core = require(game.ReplicatedStorage.Core)
+local Handler = require(script.Parent.Handler)
 local Settings = require(script.Parent.Settings)
 
+local Remotes = game.ReplicatedStorage.Remotes
 local Velocity = require(game.ReplicatedStorage.Velocity)
 local Commands = Velocity.Commands
 
 local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
 local AutoComplete = CommandBar.AutoComplete
-local Hint = CommandBar.Hint
+
+local Info = CommandBar.Info
+local Hint = Info.Hint
 
 -- // Functions \\ --
+
+function Module.UpdateResponse(Success, Status)
+    local NewResponse = Info.ListLayout.Response:Clone()
+    NewResponse.Label.Text = Status
+    NewResponse.Parent = Info
+    NewResponse.Size = Settings.CommandBar.Response.DefaultSize + UDim2.new(0, NewResponse.Label.TextBounds.X, 0, 0)
+
+    local MaxDur = Settings.CommandBar.Response.SecondsPerLetter * #Status
+    if MaxDur > Settings.CommandBar.Response.MaxDuration then
+        MaxDur = Settings.CommandBar.Response.MaxDuration
+    end
+
+    if Success then
+        local InputModule = require(script.Parent.Input)
+        InputModule.ClearText()
+        NewResponse.Label.TextColor3 = Settings.CommandBar.Response.SuccessColor
+    else
+        NewResponse.Label.TextColor3 = Settings.CommandBar.Response.ErrorColor   
+    end     
+
+    Debris:AddItem(NewResponse, MaxDur)
+end
+
+function Module.CheckArguments()
+    Handler.Data.Arguments = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)
+    table.remove(Handler.Data.Arguments, 1)
+
+    if Handler.Data.Command and Handler.Data.CommandInfo then
+        local Success, Status = Remotes.FireCommand:InvokeServer(Handler.Data)
+        if Status then
+            Module.UpdateResponse(Success, Status)     
+        end
+    end
+end
 
 function Module.RunAutoComplete(SelectedField)
     local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)
@@ -27,7 +67,7 @@ function Module.RunAutoComplete(SelectedField)
     TextBox.CursorPosition = #TextBox.Text + 1
 end
 
-function Module.HandleAutoComplete(Step)
+function Module.HandleSelectedField(Step)
     local OldSelectedField
     for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
         if Field.IsSelected.Value then
@@ -72,7 +112,7 @@ function Module.CreateFields(PossibleFields)
         local NewField = AutoComplete.ListLayout.Template:Clone() do
             NewField.Title.Text = Field.Title
             NewField.Description.Text = Field.Description
-            NewField.LayoutOrder = i
+            NewField.Name, NewField.LayoutOrder = i, i
         end
         
         if i == 1 then
@@ -127,6 +167,7 @@ function Module.CheckDifference(Title, Description, LastArg, Table, GetAll)
         break
     end
 
+    -- Inserts in table
     if GetAll then
         table.insert(Table, {
             ["Title"] = Title,
@@ -138,6 +179,7 @@ end
 function Module.GetFields(Text)
     local Args = string.split(Text, Settings.CommandBar.AutoComplete.ArgSplit)
     local PossibleFields = {}
+    Text = string.lower(Text)
 
     if #Args == 1 then
         local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " 
@@ -147,6 +189,10 @@ function Module.GetFields(Text)
     elseif #Args > 1 then
         local Command = Commands[Args[1]]
         if Command then
+            Handler.Data.Command = Args[1]
+            Handler.Data.CommandInfo = Command
+            Handler.Data.Arguments = {}
+
             local Argument = Command.Arguments[#Args-1]
             if Argument then
                 local Choices           
