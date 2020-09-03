@@ -24,19 +24,11 @@ Module.InputFunctions = {
     end,
 
     [Settings.CommandBar.AutoComplete.UpKey] = function()
-<<<<<<< Updated upstream
-        AutoCompleteModule.HandleAutoComplete(-1)
-    end,
-    
-    [Settings.CommandBar.AutoComplete.DownKey] = function()
-        AutoCompleteModule.HandleAutoComplete(1)
-=======
         AutoCompleteModule.UpdateSelectedField(-1)
     end,
     
     [Settings.CommandBar.AutoComplete.DownKey] = function()
         AutoCompleteModule.UpdateSelectedField(1)
->>>>>>> Stashed changes
     end,
         
     [Settings.CommandBar.ExitKey] = function()
@@ -67,17 +59,9 @@ function Module.Returned()
         end
     end
 
-<<<<<<< Updated upstream
-    if SelectedField then
-        AutoCompleteModule.RunAutoComplete(SelectedField)
-    else
-        Module.CloseUI()
-    end   
-=======
     if AutoCompleteModule.ExecuteCommand() then
         Module.CloseUI()
     end
->>>>>>> Stashed changes
 end
 
 function Module.RunUI(Input)

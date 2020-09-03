@@ -1,15 +1,12 @@
 -- // Variables \\ --
 
 local Module = {
-<<<<<<< Updated upstream
-=======
     Data = {
         Command = nil,
         CommandInfo = {},
         Argument = nil,
         Arguments = {}
     },
->>>>>>> Stashed changes
     Cons = {},
 }
 
