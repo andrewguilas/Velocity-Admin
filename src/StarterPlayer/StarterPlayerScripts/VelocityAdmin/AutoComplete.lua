@@ -26,13 +26,12 @@ function Module.ExecuteCommand()
 
     if Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments].NoWordLimit then
         local LastArg = table.concat(Handler.Data.Arguments, Settings.CommandBar.AutoComplete.ArgSplit, #Handler.Data.CommandInfo.Arguments + 1)      
-        for i = #Handler.Data.Arguments, #Handler.Data.Arguments-1 do
-            table.remove(Handler.Data.Arguments, i)
+        for i = #Handler.Data.CommandInfo.Arguments + 1, #Handler.Data.Arguments do
+            table.remove(Handler.Data.Arguments, #Handler.Data.CommandInfo.Arguments + 1)
         end
         table.insert(Handler.Data.Arguments, LastArg)
     end
-
-    print(Handler.Data.Arguments)
+    
     table.remove(Handler.Data.Arguments, 1)
 
     if Handler.Data.Command and Handler.Data.CommandInfo then
