@@ -19,6 +19,10 @@ local Settings = {
             MaxDescriptionSize = 500,
             FieldSize = UDim2.new(20, 0, 0, 20),
             FieldSpacing = 100,
+        },
+        Response = {
+            SecondsPerLetter = 0.1,
+            MaxDuration = 10,
         }
     }
 }

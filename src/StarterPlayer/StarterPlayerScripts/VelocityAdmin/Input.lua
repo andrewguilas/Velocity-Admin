@@ -25,11 +25,11 @@ Module.InputFunctions = {
     end,
 
     [Settings.CommandBar.AutoComplete.UpKey] = function()
-        AutoCompleteModule.HandleAutoComplete(-1)
+        AutoCompleteModule.HandleSelectedField(-1)
     end,
     
     [Settings.CommandBar.AutoComplete.DownKey] = function()
-        AutoCompleteModule.HandleAutoComplete(1)
+        AutoCompleteModule.HandleSelectedField(1)
     end,
         
     [Settings.CommandBar.ExitKey] = function()
@@ -62,7 +62,9 @@ function Module.Returned()
     if SelectedField then
         AutoCompleteModule.RunAutoComplete(SelectedField)
     else
-        Module.CloseUI()
+        if AutoCompleteModule.CheckArguments() then
+            Module.CloseUI()
+        end
     end   
 end
 

@@ -4,7 +4,7 @@ local Velocity = {
             ["Description"] = "Kicks a player from the game.",
             ["Arguments"] = {
                 [1] = {
-                    ["Title"] = "Player",
+                    ["Title"] = "player",
                     ["Description"] = "The player you want to kick.",
                     ["Choices"] = function()
                         local Players = {}
@@ -15,20 +15,41 @@ local Velocity = {
                     end
                 },
                 [2] = {
-                    ["Title"] = "Reason",
+                    ["Title"] = "reason",
                     ["Description"] = "Why you want to kick the player.",
                     ["Choices"] = true,
                 }
 			},
-			["Run"] = function(Player, Reason)
-				
+            ["Run"] = function(Player, Reason)
+
+                print(Player, Reason)
+
+                -- Check if necessary arguments are there
+                if not Player then
+                    return "Player Argument Missing"
+                end
+
+                -- Run Command
+				local p = game.Players:FindFirstChild(Player)
+				if p then
+                    if Reason then
+                        p:Kick(Reason)
+                        return Player .. " was kicked for " .. Reason
+                    else
+                        p:Kick()
+                        return Player .. " was kicked."
+                    end                    
+                else
+                    return Player .. " is not found in the player list."
+                end
+
 			end
         },
         speed = {
             ["Description"] = "Changes a player's walk speed.",
             ["Arguments"] = {
                 [1] = {
-                    ["Title"] = "Player",
+                    ["Title"] = "player",
                     ["Description"] = "The player you want to kick.",
                     ["Choices"] = function()
                         local Players = {}
@@ -39,20 +60,42 @@ local Velocity = {
                     end
                 },
                 [2] = {
-                    ["Title"] = "WalkSpeed",
+                    ["Title"] = "walkpeed",
                     ["Description"] = "The speed you want to set the player's walkspeed to.",
                     ["Choices"] = true,
                 }
             },
             ["Run"] = function(Player, Speed)
-                
+
+                -- Check if necessary arguments are there
+                if not Player then
+                    return "Player Argument Missing"
+                elseif not Speed then
+                    return "Speed Argument Missing"
+                end
+
+                -- Run Command
+                local p = game.Players:FindFirstChild(Player)
+                if p then
+                    local Char = p.Character
+                    if Char then
+                        local Hum = Char:WaitForChild("Humanoid")
+                        Hum.WalkSpeed = Speed
+                        return Player .. "'s speed was changed to " .. Speed
+                    else
+                        return Player .. "'s character does not exist."
+                    end
+                else
+                    return Player .. " is not found in the player list."
+                end
+
             end
         },
         kill = {
             ["Description"] = "Kills a player.",
             ["Arguments"] = {
                 [1] = {
-                    ["Title"] = "Player",
+                    ["Title"] = "player",
                     ["Description"] = "The player you want to kill.",
                     ["Choices"] = function()
                         local Players = {}
@@ -63,8 +106,28 @@ local Velocity = {
                     end
                 },
             },
-            ["Run"] = function(Player, Speed)
+            ["Run"] = function(Player)
                 
+                -- Check if necessary arguments are there
+                if not Player then
+                    return "Player Argument Missing"
+                end
+
+                -- Run Command
+                local p = game.Players:FindFirstChild(Player)
+                if p then
+                    local Char = p.Character
+                    if Char then
+                        local Hum = Char:WaitForChild("Humanoid")
+                        Hum.Health = 0
+                        return Player .. " was killed."
+                    else
+                        return Player .. "'s character does not exist."
+                    end
+                else
+                    return Player .. " is not found in the player list."
+                end
+
             end
         },
 	},
