@@ -1,6 +1,15 @@
 -- // Variables \\ --
 
 local Module = {
+<<<<<<< Updated upstream
+=======
+    Data = {
+        Command = nil,
+        CommandInfo = {},
+        Argument = nil,
+        Arguments = {}
+    },
+>>>>>>> Stashed changes
     Cons = {},
 }
 
@@ -23,7 +32,7 @@ function Module.Init()
     CommandBar.Visible = false
 
     UserInputService.InputBegan:Connect(InputModule.RunUI)
-    CommandBar.TextBox:GetPropertyChangedSignal("Text"):Connect(AutoCompleteModule.CheckAutoComplete)
+    CommandBar.TextBox:GetPropertyChangedSignal("Text"):Connect(AutoCompleteModule.TextChanged)
 end
 
 return Module

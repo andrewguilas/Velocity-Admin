@@ -3,11 +3,14 @@
 local Module = {}
 
 local RunService = game:GetService("RunService")
-local Core = require(game.ReplicatedStorage.Core)
+local Debris = game:GetService("Debris")
+
+local Core = require(game.ReplicatedStorage.Modules.Core)
+local Handler = require(script.Parent.Handler)
 local Settings = require(script.Parent.Settings)
 
-local Velocity = require(game.ReplicatedStorage.Velocity)
-local Commands = Velocity.Commands
+local Remotes = game.ReplicatedStorage.Remotes
+local Commands = require(game.ReplicatedStorage.Velocity).Commands
 
 local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
@@ -16,8 +19,20 @@ local Hint = CommandBar.Hint
 
 -- // Functions \\ --
 
-function Module.RunAutoComplete(SelectedField)
-    local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)
+function Module.ExecuteCommand()
+    Handler.Data.Arguments = TextBox.Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
+    table.remove(Handler.Data.Arguments, 1)
+
+    if Handler.Data.Command and Handler.Data.CommandInfo then
+        local Success, Status = Remotes.FireCommand:InvokeServer(Handler.Data)
+        if Status then
+            Module.UpdateResponse(Success, Status)     
+        end
+    end
+end
+
+function Module.ExecuteAutoComplete(SelectedField)
+    local Args = TextBox.Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
     table.remove(Args, #Args)
     table.insert(Args, SelectedField.Title.Text)
 
@@ -27,22 +42,38 @@ function Module.RunAutoComplete(SelectedField)
     TextBox.CursorPosition = #TextBox.Text + 1
 end
 
-function Module.HandleAutoComplete(Step)
-    local OldSelectedField
-    for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
-        if Field.IsSelected.Value then
-            OldSelectedField = Field
-            break
-        end
+function Module.UpdateResponse(Success, Status)
+    local NewResponse = Info.ListLayout.Response:Clone()
+    NewResponse.Label.Text = Status
+    NewResponse.Parent = Info
+    NewResponse.Size = Settings.CommandBar.Response.DefaultSize + UDim2.new(0, NewResponse.Label.TextBounds.X, 0, 0)
+
+    local MaxDur = Settings.CommandBar.Response.SecondsPerLetter * #Status
+    if MaxDur > Settings.CommandBar.Response.MaxDuration then
+        MaxDur = Settings.CommandBar.Response.MaxDuration
     end
 
-    if OldSelectedField then
-        local NewSelectedField = AutoComplete:FindFirstChild(OldSelectedField.Name + Step)
-        if NewSelectedField then
-            OldSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
-            OldSelectedField.IsSelected.Value = false       
-            NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-            NewSelectedField.IsSelected.Value = true
+    if Success then
+        local InputModule = require(script.Parent.Input)
+        InputModule.ClearText()
+        NewResponse.Label.TextColor3 = Settings.CommandBar.Response.SuccessColor
+    else
+        NewResponse.Label.TextColor3 = Settings.CommandBar.Response.ErrorColor   
+    end     
+
+    Debris:AddItem(NewResponse, MaxDur)
+end
+
+function Module.UpdateSelectedField(Step)
+    for _,OldSelectedField in pairs(Core.Get(AutoComplete, "TextButton")) do
+        if OldSelectedField.IsSelected.Value then
+            local NewSelectedField = AutoComplete:FindFirstChild(OldSelectedField.Name + Step)
+            if NewSelectedField then
+                OldSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
+                NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                NewSelectedField.IsSelected.Value, OldSelectedField.IsSelected.Value = true, false
+            end
+            return
         end
     end
 end
@@ -50,7 +81,7 @@ end
 function Module.UpdateHint()
     local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)
     for Name, Info in pairs(Commands) do
-        if string.lower(Name) == string.lower(Args[1]) then
+        if Name:lower() == Args[1]:lower() then
             local ArgumentInfo = Info.Arguments[#Args-1]
             if ArgumentInfo then
                 Hint.Title.Text = ArgumentInfo.Title
@@ -69,30 +100,31 @@ end
 function Module.CreateFields(PossibleFields)
     local BiggestSize = 0
     for i, Field in pairs(PossibleFields) do
+
+        -- Create new field
         local NewField = AutoComplete.ListLayout.Template:Clone() do
             NewField.Title.Text = Field.Title
             NewField.Description.Text = Field.Description
             NewField.LayoutOrder = i
         end
         
+        -- Set selection
         if i == 1 then
             NewField.IsSelected.Value = true
             NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
         end
 
+        -- Set sizes
         NewField.Parent = AutoComplete
         NewField.Title.Size = UDim2.new(0, NewField.Title.TextBounds.X, 1, 0)
 
         local X = NewField.Description.TextBounds.X
         local FinalY = Core.Round(X/Settings.CommandBar.AutoComplete.MaxDescriptionSize) + 1            
         if FinalY > 1 then
-            NewField.Description.Size = UDim2.new(0, X/FinalY, 1, 0)
             NewField.Description.TextWrapped = true
-            NewField.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxDescriptionSize, FinalY, 0)
-        else
-            NewField.Description.Size = UDim2.new(0, X, 1, 0)
-            NewField.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxDescriptionSize, 1, 0)
         end
+        NewField.Description.Size = UDim2.new(0, X/FinalY, 1, 0)
+        NewField.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxDescriptionSize, FinalY, 0)
 
         local GoalX = NewField.Description.Size.X.Offset + NewField.Title.Size.X.Offset + Settings.CommandBar.AutoComplete.FieldSpacing
         if GoalX > BiggestSize then
@@ -100,7 +132,7 @@ function Module.CreateFields(PossibleFields)
         end
 
         NewField.MouseButton1Click:Connect(function()
-            Module.RunAutoComplete(NewField)
+            Module.ExecuteAutoComplete(NewField)
         end)
     end
 
@@ -111,7 +143,7 @@ end
 
 function Module.CheckDifference(Title, Description, LastArg, Table, GetAll)
     -- Check if already in table
-    local Found, Approved
+    local Found
     for _,Info in pairs(Table) do
         if Info.Title == Title then
             Found = true
@@ -120,11 +152,8 @@ function Module.CheckDifference(Title, Description, LastArg, Table, GetAll)
     end
 
     -- Check differences in chars
-    for Char = #LastArg, 1, -1 do
-        if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
-            GetAll = true
-        end
-        break
+    if LastArg:lower():sub(1, #LastArg) == Title:lower():sub(1, #LastArg) and not Found then
+        GetAll = true
     end
 
     if GetAll then
@@ -136,8 +165,9 @@ function Module.CheckDifference(Title, Description, LastArg, Table, GetAll)
 end
 
 function Module.GetFields(Text)
-    local Args = string.split(Text, Settings.CommandBar.AutoComplete.ArgSplit)
+    local Args = Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
     local PossibleFields = {}
+    Text = Text:lower()
 
     if #Args == 1 then
         local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " 
@@ -145,10 +175,16 @@ function Module.GetFields(Text)
             Module.CheckDifference(Title, Info.Description, Args[#Args], PossibleFields, GetAll)
         end
     elseif #Args > 1 then
-        local Command = Commands[Args[1]]
+        local Command = Commands[Args[1]:lower()]
         if Command then
+            Handler.Data.Command = Args[1]:lower()
+            Handler.Data.CommandInfo = Command
+            Handler.Data.Arguments = {}
+
             local Argument = Command.Arguments[#Args-1]
             if Argument then
+                Handler.Data.Argument = Argument
+
                 local Choices           
                 if typeof(Argument.Choices) == "function" then
                     Choices = Argument.Choices()
@@ -156,11 +192,9 @@ function Module.GetFields(Text)
                     Choices = Argument.Choices
                 end
 
-                if Choices then
-                    local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " "
-                    for _,Title in pairs(Choices) do
-                        Module.CheckDifference(Title, "", Args[#Args], PossibleFields, GetAll)
-                    end
+                local GetAll = Text:sub(#Text) == "" or Text:sub(#Text) == " "
+                for _,Title in pairs(Choices or {}) do
+                    Module.CheckDifference(Title, "", Args[#Args], PossibleFields, GetAll)
                 end
             end
         end  
@@ -169,7 +203,7 @@ function Module.GetFields(Text)
     return PossibleFields
 end
 
-function Module.CheckAutoComplete()
+function Module.TextChanged()
     CommandBar.Size = Settings.CommandBar.DefaultSize + UDim2.new(0, TextBox.TextBounds.X, 0, 0)
 
     for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
