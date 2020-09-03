@@ -36,7 +36,7 @@ Module.InputFunctions = {
         Module.CloseUI() 
     end,
 
-    [Settings.CommandBar.AutoComplete.UseKey1] = function()
+    [Settings.CommandBar.AutoComplete.UseKey1]= function()
         Module.Returned() 
     end,
 

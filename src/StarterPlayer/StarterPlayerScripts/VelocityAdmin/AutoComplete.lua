@@ -3,7 +3,6 @@
 local Module = {}
 
 local RunService = game:GetService("RunService")
-
 local Core = require(game.ReplicatedStorage.Core)
 local Settings = require(script.Parent.Settings)
 
@@ -73,7 +72,7 @@ function Module.CreateFields(PossibleFields)
         local NewField = AutoComplete.ListLayout.Template:Clone() do
             NewField.Title.Text = Field.Title
             NewField.Description.Text = Field.Description
-            NewField.Name, NewField.LayoutOrder = i, i
+            NewField.LayoutOrder = i
         end
         
         if i == 1 then
@@ -112,7 +111,7 @@ end
 
 function Module.CheckDifference(Title, Description, LastArg, Table, GetAll)
     -- Check if already in table
-    local Found
+    local Found, Approved
     for _,Info in pairs(Table) do
         if Info.Title == Title then
             Found = true
@@ -120,24 +119,20 @@ function Module.CheckDifference(Title, Description, LastArg, Table, GetAll)
         end
     end
 
+    -- Check differences in chars
+    for Char = #LastArg, 1, -1 do
+        if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
+            GetAll = true
+        end
+        break
+    end
+
     if GetAll then
         table.insert(Table, {
             ["Title"] = Title,
             ["Description"] = Description
-        })        
-    else
-        -- Check differences in chars
-        for Char = #LastArg, 1, -1 do
-            if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
-                table.insert(Table, {
-                    ["Title"] = Title,
-                    ["Description"] = Description
-                })       
-            end
-            break
-        end
-    end
-
+        })  
+    end   
 end
 
 function Module.GetFields(Text)
@@ -145,21 +140,16 @@ function Module.GetFields(Text)
     local PossibleFields = {}
 
     if #Args == 1 then
-        if string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " then
-            for Title, Info in pairs(Commands) do
-                Module.CheckDifference(Title, Info.Description, Args[#Args], PossibleFields, true)
-            end
-        else
-            for Title, Info in pairs(Commands) do
-                Module.CheckDifference(Title, Info.Description, Args[#Args], PossibleFields)
-            end
+        local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " 
+        for Title, Info in pairs(Commands) do
+            Module.CheckDifference(Title, Info.Description, Args[#Args], PossibleFields, GetAll)
         end
     elseif #Args > 1 then
         local Command = Commands[Args[1]]
         if Command then
             local Argument = Command.Arguments[#Args-1]
             if Argument then
-                local Choices                    
+                local Choices           
                 if typeof(Argument.Choices) == "function" then
                     Choices = Argument.Choices()
                 elseif typeof(Argument.Choices) == "table" then
@@ -167,14 +157,9 @@ function Module.GetFields(Text)
                 end
 
                 if Choices then
-                    if string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " then
-                        for _,Title in pairs(Choices) do
-                            Module.CheckDifference(Title, "", Args[#Args], PossibleFields, true)
-                        end
-                    else
-                        for _,Title in pairs(Choices) do
-                            Module.CheckDifference(Title, "", Args[#Args], PossibleFields)
-                        end
+                    local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " "
+                    for _,Title in pairs(Choices) do
+                        Module.CheckDifference(Title, "", Args[#Args], PossibleFields, GetAll)
                     end
                 end
             end
