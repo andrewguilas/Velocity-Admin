@@ -15,7 +15,9 @@ local Commands = require(game.ReplicatedStorage.Velocity).Commands
 local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
 local AutoComplete = CommandBar.AutoComplete
-local Hint = CommandBar.Hint
+
+local Info = CommandBar.Info
+local Hint = Info.Hint
 
 -- // Functions \\ --
 
@@ -105,7 +107,7 @@ function Module.CreateFields(PossibleFields)
         local NewField = AutoComplete.ListLayout.Template:Clone() do
             NewField.Title.Text = Field.Title
             NewField.Description.Text = Field.Description
-            NewField.LayoutOrder = i
+            NewField.Name, NewField.LayoutOrder = i, i
         end
         
         -- Set selection
@@ -156,6 +158,7 @@ function Module.CheckDifference(Title, Description, LastArg, Table, GetAll)
         GetAll = true
     end
 
+    -- Inserts in table
     if GetAll then
         table.insert(Table, {
             ["Title"] = Title,
