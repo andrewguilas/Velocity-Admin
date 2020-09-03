@@ -110,7 +110,7 @@ function Module.CreateFields(PossibleFields)
     end
 end
 
-function Module.CheckDifference(Title, Description, LastArg, Table)
+function Module.CheckDifference(Title, Description, LastArg, Table, GetAll)
     -- Check if already in table
     local Found
     for _,Info in pairs(Table) do
@@ -120,16 +120,24 @@ function Module.CheckDifference(Title, Description, LastArg, Table)
         end
     end
 
-    -- Check differences in chars
-    for Char = #LastArg, 1, -1 do
-        if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
-            table.insert(Table, {
-                ["Title"] = Title,
-                ["Description"] = Description
-            })        
+    if GetAll then
+        table.insert(Table, {
+            ["Title"] = Title,
+            ["Description"] = Description
+        })        
+    else
+        -- Check differences in chars
+        for Char = #LastArg, 1, -1 do
+            if string.sub(string.lower(LastArg), 1, Char) == string.sub(string.lower(Title), 1, Char) and not Found then
+                table.insert(Table, {
+                    ["Title"] = Title,
+                    ["Description"] = Description
+                })       
+            end
+            break
         end
-        break
     end
+
 end
 
 function Module.GetFields(Text)
@@ -137,8 +145,14 @@ function Module.GetFields(Text)
     local PossibleFields = {}
 
     if #Args == 1 then
-        for Title, Info in pairs(Commands) do
-            Module.CheckDifference(Title, Info.Description, Args[#Args], PossibleFields)
+        if string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " then
+            for Title, Info in pairs(Commands) do
+                Module.CheckDifference(Title, Info.Description, Args[#Args], PossibleFields, true)
+            end
+        else
+            for Title, Info in pairs(Commands) do
+                Module.CheckDifference(Title, Info.Description, Args[#Args], PossibleFields)
+            end
         end
     elseif #Args > 1 then
         local Command = Commands[Args[1]]
@@ -153,12 +167,18 @@ function Module.GetFields(Text)
                 end
 
                 if Choices then
-                    for _,Title in pairs(Choices) do
-                        Module.CheckDifference(Title, "", Args[#Args], PossibleFields)
+                    if string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " then
+                        for _,Title in pairs(Choices) do
+                            Module.CheckDifference(Title, "", Args[#Args], PossibleFields, true)
+                        end
+                    else
+                        for _,Title in pairs(Choices) do
+                            Module.CheckDifference(Title, "", Args[#Args], PossibleFields)
+                        end
                     end
                 end
             end
-        end       
+        end  
     end
 
     return PossibleFields

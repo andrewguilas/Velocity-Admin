@@ -1,7 +1,6 @@
 local Velocity = {
     Commands = {
-        Kick = {
-            ["Startup"] = "kick",
+        kick = {
             ["Description"] = "Kicks a player from the game.",
             ["Arguments"] = {
                 [1] = {
@@ -25,8 +24,7 @@ local Velocity = {
 				
 			end
         },
-        Speed = {
-            ["Startup"] = "speed",
+        speed = {
             ["Description"] = "Changes a player's walk speed.",
             ["Arguments"] = {
                 [1] = {
@@ -50,8 +48,7 @@ local Velocity = {
                 
             end
         },
-        Kill = {
-            ["Startup"] = "kill",
+        kill = {
             ["Description"] = "Kills a player.",
             ["Arguments"] = {
                 [1] = {
