@@ -7,7 +7,7 @@ local Debris = game:GetService("Debris")
 
 local Core = require(game.ReplicatedStorage.Modules.Core)
 local Handler = require(script.Parent.Handler)
-local Settings = require(script.Parent.Settings)
+local Settings = require(game.ReplicatedStorage.Modules.Settings)
 
 local Remotes = game.ReplicatedStorage.Remotes
 local Commands = require(game.ReplicatedStorage.Modules.Velocity).Commands

@@ -22,7 +22,7 @@ function Module.Init()
     local UserInputService = game:GetService("UserInputService")
     local InputModule = require(script.Parent.Input)
     local AutoCompleteModule = require(script.Parent.AutoComplete)
-    local Settings = require(script.Parent.Settings)
+    local Settings = require(game.ReplicatedStorage.Modules.Settings)
     local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 
     CommandBar.Position = Settings.CommandBar.DefaultPos

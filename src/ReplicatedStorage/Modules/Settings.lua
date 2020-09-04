@@ -27,7 +27,7 @@ local Settings = {
             SecondsPerLetter = 0.1,
             MaxDuration = 10,
         }
-    }
+    },
 }
 
 return Settings
