@@ -44,7 +44,7 @@
 
 20. `ungod (player)` - Sets the player's health to the previous health before being goded.
 
-21. `health (player, number)` - Changes a player's Health.
+21. **[LIVE]** `health (player, number)` - Changes a player's Health.
 
 22. `maxhealth (player, number)` - Changes a player's max Health.
 
