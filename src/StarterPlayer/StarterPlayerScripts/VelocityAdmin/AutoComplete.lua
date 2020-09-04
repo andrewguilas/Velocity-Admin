@@ -36,7 +36,11 @@ function Module.ExecuteCommand()
 
     if Handler.Data.Command and Handler.Data.CommandInfo then
         local Success, Status = Remotes.FireCommand:InvokeServer(Handler.Data)
-        if Status then
+        if typeof(Success) == "table" then
+            for _,Info in pairs(Success) do
+                Module.UpdateResponse(Info.Success, Info.Status)
+            end
+        elseif Status then
             Module.UpdateResponse(Success, Status)     
         end
     end
