@@ -60,7 +60,7 @@
 
 27. `pban (player, length, reason` - Bans a player from all places.
 
-28. `age (player` - Returns the player's account age.
+28. **[LIVE]** `age (player` - Returns the player's account age.
 
 29. `id (player)` - Returns the player's user ID.
 
