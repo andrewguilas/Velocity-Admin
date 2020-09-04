@@ -78,18 +78,16 @@
 
 35. `pm (player, text)` - Announces a message to a specific player.
 
-36. `respawntime (duration)` - Changes the default respawn time for all Players.
+36. **[LIVE]** `respawntime (duration)` - Changes the default respawn time for all Players.
 
-37. `characterloads (bool)` - Changes if the player's character loads on respawn.
+37. **[LIVE]** `brightness (number)` - Changes the game's brightness.
 
-38. `brightness` - Changes the game's brightness.
+38. `time` - Changes the game's clock time.
 
-39. `time` - Changes the game's clock time.
+39. `defaultjumppower (number)` - Changes the default jump power when a player joins the game.
 
-40. `defaultjumppower (number)` - Changes the default jump power when a player joins the game.
+40. `defaultspeed (number)` - Changes the default walk speed when a player joins the game.
 
-41. `defaultspeed (number)` - Changes the default walk speed when a player joins the game.
+41. `defaultcharacterloads (number)` - If true, characters of players who join the game won't load in.
 
-42. `defaultcharacterloads (number)` - If true, characters of players who join the game won't load in.
-
-43. `useemotes (bool)` - If true, new players won't be able to use emotes.
+42. `useemotes (bool)` - If true, new players won't be able to use emotes.

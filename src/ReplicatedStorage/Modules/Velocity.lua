@@ -415,33 +415,6 @@ Velocity.Commands.damage = {
 
 -- // Player \\ --
 
-Velocity.Commands.respawntime = {
-    ["Description"] = "Changes the default respawn time for all Players.",
-    ["Arguments"] = {
-        [1] = {
-            ["Title"] = "duration",
-            ["Description"] = "How long it will take for a player to respawn.",
-            ["Choices"] = true
-        },
-    },
-    ["Run"] = function(CurrentPlayer, Duration)
-
-        -- Check if necessary arguments are there
-        if not Duration then
-            return false, "Duration Argument Missing"
-        end
-
-        Duration = tonumber(Duration)
-        if not Duration then
-            return false, "Duration argument must be a number"
-        end
-
-        -- Run Command
-        game.Players.RespawnTime = Duration
-        return true, "Respawn duration changed to " .. Duration
-    end
-}
-
 Velocity.Commands.kick = {
     ["Description"] = "Kicks a player from the game.",
     ["Arguments"] = {
@@ -490,5 +463,59 @@ Velocity.Commands.kick = {
 }
 
 -- // Game \\ --
+
+Velocity.Commands.respawntime = {
+    ["Description"] = "Changes the default respawn time for all Players.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "duration",
+            ["Description"] = "How long it will take for a player to respawn.",
+            ["Choices"] = true
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Duration)
+
+        -- Check if necessary arguments are there
+        if not Duration then
+            return false, "Duration Argument Missing"
+        end
+
+        Duration = tonumber(Duration)
+        if not Duration then
+            return false, "Duration argument must be a number"
+        end
+
+        -- Run Command
+        game.Players.RespawnTime = Duration
+        return true, "Respawn duration changed to " .. Duration
+    end
+}
+
+Velocity.Commands.brightness = {
+    ["Description"] = "Changes the game's brightness.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "number",
+            ["Description"] = "The number the brightness will be set to.",
+            ["Choices"] = true
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Brightness)
+
+        -- Check if necessary arguments are there
+        if not Brightness then
+            return false, "Brightness Argument Missing"
+        end
+
+        Brightness = tonumber(Brightness)
+        if not Brightness then
+            return false, "Brightness argument must be a number"
+        end
+
+        -- Run Command
+        game.Lighting.Brightness = Brightness
+        return true, "Game brightness set to " .. Brightness
+    end
+}
 
 return Velocity
