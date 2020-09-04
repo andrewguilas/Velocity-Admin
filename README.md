@@ -2,7 +2,7 @@
 
 ## Character
 
-1. **[IN PROGRESS]** `char (player1, player2)` - Changes player 1's appearance to any user on Roblox: player 2.
+1. **[LIVE]** `char (player1, player2)` - Changes player 1's appearance to any user on Roblox: player 2.
 
 2. **[IN PROGRESS]** `loadchar (player)` - Resets the character, backpack, playerGui.
 
