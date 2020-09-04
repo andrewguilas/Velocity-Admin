@@ -7,10 +7,10 @@ local Debris = game:GetService("Debris")
 
 local Core = require(game.ReplicatedStorage.Modules.Core)
 local Handler = require(script.Parent.Handler)
-local Settings = require(script.Parent.Settings)
+local Settings = require(game.ReplicatedStorage.Modules.Settings)
 
 local Remotes = game.ReplicatedStorage.Remotes
-local Commands = require(game.ReplicatedStorage.Velocity).Commands
+local Commands = require(game.ReplicatedStorage.Modules.Velocity).Commands
 
 local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
@@ -23,6 +23,15 @@ local Hint = Info.Hint
 
 function Module.ExecuteCommand()
     Handler.Data.Arguments = TextBox.Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
+
+    if Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments].NoWordLimit then
+        local LastArg = table.concat(Handler.Data.Arguments, Settings.CommandBar.AutoComplete.ArgSplit, #Handler.Data.CommandInfo.Arguments + 1)      
+        for i = #Handler.Data.CommandInfo.Arguments + 1, #Handler.Data.Arguments do
+            table.remove(Handler.Data.Arguments, #Handler.Data.CommandInfo.Arguments + 1)
+        end
+        table.insert(Handler.Data.Arguments, LastArg)
+    end
+    
     table.remove(Handler.Data.Arguments, 1)
 
     if Handler.Data.Command and Handler.Data.CommandInfo then
@@ -84,7 +93,16 @@ function Module.UpdateHint()
     local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)
     for Name, Info in pairs(Commands) do
         if Name:lower() == Args[1]:lower() then
-            local ArgumentInfo = Info.Arguments[#Args-1]
+
+            -- Gets the argument info
+            local ArgumentInfo
+            if Info.Arguments[#Info.Arguments].NoWordLimit and #Args > #Info.Arguments then
+                ArgumentInfo = Info.Arguments[#Info.Arguments]
+            else
+                ArgumentInfo = Info.Arguments[#Args-1]
+            end
+
+            -- Creates the hint
             if ArgumentInfo then
                 Hint.Title.Text = ArgumentInfo.Title
                 Hint.Description.Text = ArgumentInfo.Description
@@ -94,6 +112,7 @@ function Module.UpdateHint()
                 Hint.Size = UDim2.new(0, Hint.Title.Size.X.Offset + Hint.Description.Size.X.Offset, 0, Settings.CommandBar.Hint.DefaultSize.Y.Offset)                
                 return
             end
+
         end
     end
     Hint.Visible = false

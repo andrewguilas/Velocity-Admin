@@ -3,7 +3,7 @@ local Module = {}
 local RunService = game:GetService("RunService")
 local Core = require(game.ReplicatedStorage.Modules.Core)
 local Handler = require(script.Parent.Handler)
-local Settings = require(script.Parent.Settings)
+local Settings = require(game.ReplicatedStorage.Modules.Settings)
 local AutoCompleteModule = require(script.Parent.AutoComplete)
 
 local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
