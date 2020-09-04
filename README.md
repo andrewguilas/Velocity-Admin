@@ -78,7 +78,7 @@
 
 35. `pm (player, text)` - Announces a message to a specific player.
 
-36. `respawntime (number)` - Changes the default respawn time for all Players.
+36. `respawntime (duration)` - Changes the default respawn time for all Players.
 
 37. `characterloads (bool)` - Changes if the player's character loads on respawn.
 
