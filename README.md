@@ -36,7 +36,7 @@
 
 16. **[LIVE]** `jump (player)` - Makes a player jump.
 
-17. `jumppower (player, number)` - Changes a player's jump power.
+17. **[LIVE]** `jumppower (player, number)` - Changes a player's jump power.
 
 18. `heal (player, number)` - Heals a player's health by an amount.
 

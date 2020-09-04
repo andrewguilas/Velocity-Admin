@@ -50,18 +50,18 @@ Velocity.Commands.speed = {
             end
         },
         [2] = {
-            ["Title"] = "walkpeed",
-            ["Description"] = "The speed you want to set the player's walkspeed to.",
+            ["Title"] = "amount",
+            ["Description"] = "The amount you want to set the player's walkspeed to.",
             ["Choices"] = true,
         }
     },
-    ["Run"] = function(CurrentPlayer, Player, Speed)
+    ["Run"] = function(CurrentPlayer, Player, Amount)
 
         -- Check if necessary arguments are there
         if not Player then
             return false, "Player Argument Missing"
-        elseif not Speed then
-            return false, "Speed Argument Missing"
+        elseif not Amount then
+            return false, "Amount Argument Missing"
         end
 
         -- Run Command
@@ -71,8 +71,8 @@ Velocity.Commands.speed = {
                 local Char = p.Character
                 if Char then
                     local Hum = Char:WaitForChild("Humanoid")
-                    Hum.WalkSpeed = Speed
-                    return true, Player .. "'s speed was changed to " .. Speed
+                    Hum.WalkSpeed = Amount
+                    return true, Player .. "'s walk speed was changed to " .. Amount
                 else
                     return false, Player .. "'s character does not exist."
                 end   
@@ -126,6 +126,54 @@ Velocity.Commands.jump = {
     end
 }
 
+Velocity.Commands.jumppower = {
+    ["Description"] = "Changes a player's jump power.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to change the walk speed of..",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+        [2] = {
+            ["Title"] = "amount",
+            ["Description"] = "The amount you want to set the player's jump power to.",
+            ["Choices"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Player, Amount)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        elseif not Amount then
+            return false, "Amount Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    local Hum = Char:WaitForChild("Humanoid")
+                    Hum.JumpPower = Amount
+                    return true, Player .. "'s jump power was changed to " .. Amount
+                else
+                    return false, Player .. "'s character does not exist."
+                end   
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
 
 Velocity.Commands.health = {
     ["Description"] = "Changes a player's health.",
@@ -144,7 +192,7 @@ Velocity.Commands.health = {
         [2] = {
             ["Title"] = "amount",
             ["Description"] = "The health you want to change the player's health to.",
-            ["Choices"] = {}
+            ["Choices"] = true
         },
     },
     ["Run"] = function(CurrentPlayer, Player, Amount)
@@ -192,8 +240,8 @@ Velocity.Commands.maxhealth = {
         },
         [2] = {
             ["Title"] = "amount",
-            ["Description"] = "The health you want to change the player's max health to.",
-            ["Choices"] = {}
+            ["Description"] = "The amount you want to change the player's max health to.",
+            ["Choices"] = true
         },
     },
     ["Run"] = function(CurrentPlayer, Player, Amount)
@@ -282,7 +330,7 @@ Velocity.Commands.damage = {
             end
         },
         [2] = {
-            ["Title"] = "Amount",
+            ["Title"] = "amount",
             ["Description"] = "The amount of damage that will be dealt to the player..",
             ["Choices"] = {}
         },
