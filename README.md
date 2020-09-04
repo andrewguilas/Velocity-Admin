@@ -34,7 +34,7 @@
 
 15. **[LIVE]** `speed (player, number)` - Changes a player's walkspeed.
 
-16. `jump (player)` - Makes a player jump.
+16. **[LIVE]** `jump (player)` - Makes a player jump.
 
 17. `jumppower (player, number)` - Changes a player's jump power.
 
