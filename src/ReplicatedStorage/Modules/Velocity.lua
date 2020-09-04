@@ -31,52 +31,9 @@ function Velocity.Helper.FindPlayer(Key, p)
     end   
 end
 
-Velocity.Commands.kick = {
-    ["Description"] = "Kicks a player from the game.",
-    ["Arguments"] = {
-        [1] = {
-            ["Title"] = "player",
-            ["Description"] = "The player you want to kick.",
-            ["Choices"] = function()
-                local Players = {}
-                for _,p in pairs(game.Players:GetPlayers()) do
-                    table.insert(Players, p.Name)
-                end
-                return Players
-            end
-        },
-        [2] = {
-            ["Title"] = "reason",
-            ["Description"] = "Why you want to kick the player.",
-            ["Choices"] = true,
-            ["NoWordLimit"] = true,
-        }
-    },
-    ["Run"] = function(Player, Reason)
+-- // Character \\ --
 
-        -- Check if necessary arguments are there
-        if not Player then
-            return false, "Player Argument Missing"
-        end
-
-        -- Run Command
-        local Players = Velocity.Helper.FindPlayer(Player)
-        if Players then
-            for _,p in pairs(Players) do
-                if Reason then
-                    p:Kick(Reason)
-                    return true, Player .. " was kicked for " .. Reason
-                else
-                    p:Kick()
-                    return true, Player .. " was kicked."
-                end      
-            end              
-        else
-            return false, Player .. " is not a valid player."
-        end
-
-    end
-}
+-- // Humanoid \\ --
 
 Velocity.Commands.speed = {
     ["Description"] = "Changes a player's walk speed.",
@@ -98,7 +55,7 @@ Velocity.Commands.speed = {
             ["Choices"] = true,
         }
     },
-    ["Run"] = function(Player, Speed)
+    ["Run"] = function(CurrentPlayer, Player, Speed)
 
         -- Check if necessary arguments are there
         if not Player then
@@ -108,7 +65,7 @@ Velocity.Commands.speed = {
         end
 
         -- Run Command
-        local Players = Velocity.Helper.FindPlayer(Player)
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
         if Players then
             for _,p in pairs(Players) do
                 local Char = p.Character
@@ -142,7 +99,7 @@ Velocity.Commands.kill = {
             end
         },
     },
-    ["Run"] = function(Player)
+    ["Run"] = function(CurrentPlayer, Player)
         
         -- Check if necessary arguments are there
         if not Player then
@@ -150,7 +107,7 @@ Velocity.Commands.kill = {
         end
 
         -- Run Command
-        local Players = Velocity.Helper.FindPlayer(Player)
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
         if Players then
             for _,p in pairs(Players) do
                 local Char = p.Character
@@ -168,5 +125,105 @@ Velocity.Commands.kill = {
 
     end
 }
+
+Velocity.Commands.damage = {
+    ["Description"] = "Damages a player.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to damage.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+        [2] = {
+            ["Title"] = "Amount",
+            ["Description"] = "The amount of damage that will be dealt to the player..",
+            ["Choices"] = {}
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player, Amount)
+        
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        elseif not Amount then
+            return false, "Amount Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    local Hum = Char:WaitForChild("Humanoid")
+                    Hum.Health = Hum.Health - Amount
+                    return true, Player .. " was damaged by " .. Amount .. " HP's."
+                else
+                    return false, Player .. "'s character does not exist."
+                end 
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+-- // Player \\ --
+
+Velocity.Commands.kick = {
+    ["Description"] = "Kicks a player from the game.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to kick.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+        [2] = {
+            ["Title"] = "reason",
+            ["Description"] = "Why you want to kick the player.",
+            ["Choices"] = true,
+            ["NoWordLimit"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Player, Reason)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                if Reason then
+                    p:Kick(Reason)
+                    return true, Player .. " was kicked for " .. Reason
+                else
+                    p:Kick()
+                    return true, Player .. " was kicked."
+                end      
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+-- // Game \\ --
 
 return Velocity

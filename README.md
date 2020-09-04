@@ -50,7 +50,7 @@
 
 23. **[LIVE]** `kill (player)` - Kills a player.
 
-24. `damage (player, number)` - Damages a player.
+24. **[LIVE]** `damage (player, number)` - Damages a player.
 
 ## Player
 
