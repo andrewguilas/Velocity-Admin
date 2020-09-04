@@ -32,7 +32,7 @@
 
 14. `unfreeze/unlock (player)` - Sets the player's walkspeed and jump power to their previous stats before being frozen.
 
-15. `speed (player, number)` - Changes a player's walkspeed.
+15. **[LIVE]** `speed (player, number)` - Changes a player's walkspeed.
 
 16. `jump (player)` - Makes a player jump.
 
@@ -48,15 +48,15 @@
 
 22. `maxhealth (player, number)` - Changes a player's max Health.
 
-23. `kill (player)` - Kills a player.
+23. **[LIVE]** `kill (player)` - Kills a player.
 
 24. `damage (player, number)` - Damages a player.
 
 ## Player
 
-25. `kick (player, reason)` - Kicks a player from the game.
+25. **[LIVE]** `kick (player, reason)` - Kicks a player from the game.
 
-26. `tempban (player, length, reason)` - Bans a player from that specific place.
+26. `ban (player, length, reason)` - Bans a player from that specific place.
 
 27. `pban (player, length, reason` - Bans a player from all places.
 
