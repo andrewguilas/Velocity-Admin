@@ -38,7 +38,7 @@
 
 17. **[LIVE]** `jumppower (player, number)` - Changes a player's jump power.
 
-18. `heal (player, number)` - Heals a player's health by an amount.
+18. **[LIVE]** `heal (player, number)` - Heals a player's health by an amount.
 
 19. `god (player)` - Sets the player's health to infinite.
 
