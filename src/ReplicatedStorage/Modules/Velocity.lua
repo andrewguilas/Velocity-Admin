@@ -40,7 +40,7 @@ Velocity.Commands.speed = {
     ["Arguments"] = {
         [1] = {
             ["Title"] = "player",
-            ["Description"] = "The player you want to kick.",
+            ["Description"] = "The player you want to change the walk speed of..",
             ["Choices"] = function()
                 local Players = {}
                 for _,p in pairs(game.Players:GetPlayers()) do
@@ -85,7 +85,7 @@ Velocity.Commands.speed = {
 }
 
 Velocity.Commands.health = {
-    ["Description"] = "Kills a player.",
+    ["Description"] = "Changes a player's health.",
     ["Arguments"] = {
         [1] = {
             ["Title"] = "player",
@@ -122,6 +122,55 @@ Velocity.Commands.health = {
                     local Hum = Char:WaitForChild("Humanoid")
                     Hum.Health = Amount
                     return true, Player .. " 's health was changed to " .. Amount
+                else
+                    return false, Player .. "'s character does not exist."
+                end 
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+Velocity.Commands.maxhealth = {
+    ["Description"] = "Changes a player's max health.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to change the health of.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+        [2] = {
+            ["Title"] = "amount",
+            ["Description"] = "The health you want to change the player's max health to.",
+            ["Choices"] = {}
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player, Amount)
+        
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        elseif not Amount then
+            return false, "Amount Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    local Hum = Char:WaitForChild("Humanoid")
+                    Hum.MaxHealth = Amount
+                    return true, Player .. " 's max health was changed to " .. Amount
                 else
                     return false, Player .. "'s character does not exist."
                 end 

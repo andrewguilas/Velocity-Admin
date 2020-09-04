@@ -46,7 +46,7 @@
 
 21. **[LIVE]** `health (player, number)` - Changes a player's Health.
 
-22. `maxhealth (player, number)` - Changes a player's max Health.
+22. **[LIVE]** `maxhealth (player, number)` - Changes a player's max health.
 
 23. **[LIVE]** `kill (player)` - Kills a player.
 
