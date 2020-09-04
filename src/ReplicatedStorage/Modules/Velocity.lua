@@ -518,4 +518,31 @@ Velocity.Commands.brightness = {
     end
 }
 
+Velocity.Commands.time = {
+    ["Description"] = "Changes the game's clock time.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "number",
+            ["Description"] = "The number the time will be set to.",
+            ["Choices"] = true
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Time)
+
+        -- Check if necessary arguments are there
+        if not Time then
+            return false, "Time Argument Missing"
+        end
+
+        Time = tonumber(Time)
+        if not Time then
+            return false, "Time argument must be a number"
+        end
+
+        -- Run Command
+        game.Lighting.ClockTime = Time
+        return true, "Game time set to " .. Time
+    end
+}
+
 return Velocity

@@ -82,7 +82,7 @@
 
 37. **[LIVE]** `brightness (number)` - Changes the game's brightness.
 
-38. `time` - Changes the game's clock time.
+38. **[LIVE]** `time` - Changes the game's clock time.
 
 39. `defaultjumppower (number)` - Changes the default jump power when a player joins the game.
 
