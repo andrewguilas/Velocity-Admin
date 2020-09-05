@@ -652,6 +652,120 @@ Velocity.Commands.f3x = {
     end
 }
 
+Velocity.Commands.unequipall = {
+    ["Description"] = "Unequipps the tools the player is holding if any.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to reset the name of.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    local Hum = Char:WaitForChild("Humanoid")
+                    local Tools = {}
+
+                    for _,Tool in pairs(p.Character:GetChildren()) do
+                        if Tool:IsA("Tool") then
+                            table.insert(Tools, Tool.Name)
+                        end
+                    end
+
+                    if #Tools > 0 then
+                        Hum:UnequipTools()
+                        return true, Player .. " unequipped... " .. table.concat(Tools, ", ")
+                    else
+                        return true, Player .. " has no tools in their backpack."
+                    end
+                else
+                    return false, p.Name .. "'s character does not exist.."
+                end
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+Velocity.Commands.cleartools = {
+    ["Description"] = "Removes all the tools the player is holding or is in their backpack.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to remove the tools of.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    local Hum = Char:WaitForChild("Humanoid")
+                    local Tools = {}
+
+                    for _,Tool in pairs(p.Character:GetChildren()) do
+                        if Tool:IsA("Tool") then
+                            table.insert(Tools, Tool.Name)
+                            Tool:Destroy()
+                        end
+                    end
+
+                    for _,Tool in pairs(p:WaitForChild("Backpack"):GetChildren()) do
+                        if Tool:IsA("Tool") then
+                            table.insert(Tools, Tool.Name)
+                            Tool:Destroy()
+                        end
+                    end
+
+                    if #Tools > 0 then
+                        return true, "The following tools were removed from " .. Player .. "... " .. table.concat(Tools, ", ")
+                    else
+                        return true, Player .. " has no tools."
+                    end
+                else
+                    return false, p.Name .. "'s character does not exist.."
+                end
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
 
 -- // Humanoid \\ --
 

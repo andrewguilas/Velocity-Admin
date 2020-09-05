@@ -26,7 +26,9 @@
 
 8.  `f3x (player)` - Gives the player building tools.
 
-9.  **[IN PROGRESS]** `unequip (player)` - Unequipps the tools the player is holding if any.
+9.  `unequipall (player)` - Unequipps the tools the player is holding if any.
+
+10. `cleartools (player)` - Removes all the tools the player is holding or is in their backpack.
 
 ## Humanoid
 
