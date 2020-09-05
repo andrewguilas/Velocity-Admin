@@ -33,8 +33,6 @@ end
 
 -- // Character \\ --
 
--- // Humanoid \\ --
-
 Velocity.Commands.char = {
     ["Description"] = "Changes player 1's appearance to any user on Roblox: player 2.",
     ["Arguments"] = {
@@ -111,41 +109,6 @@ Velocity.Commands.char = {
     end
 }
 
-Velocity.Commands.loadchar = {
-    ["Description"] = "Resets the character, backpack, playerGui.",
-    ["Arguments"] = {
-        [1] = {
-            ["Title"] = "player",
-            ["Description"] = "The player with the character you want to load.",
-            ["Choices"] = function()
-                local Players = {}
-                for _,p in pairs(game.Players:GetPlayers()) do
-                    table.insert(Players, p.Name)
-                end
-                return Players
-            end
-        },
-    },
-    ["Run"] = function(CurrentPlayer, Player)
-        
-        -- Check if necessary arguments are there
-        if not Player then
-            return false, "Player Argument Missing"
-        end
-
-        -- Run Command
-        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
-        if Players then
-            for _,p in pairs(Players) do
-                p:LoadCharacter()
-            end              
-        else
-            return false, Player .. " is not a valid player."
-        end
-
-    end
-}
-
 Velocity.Commands.re = {
     ["Description"] = "Resets the character, backpack, playerGui.",
     ["Arguments"] = {
@@ -180,6 +143,98 @@ Velocity.Commands.re = {
 
     end
 }
+
+Velocity.Commands.invis = {
+    ["Description"] = "Makes a player invisible.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to make invisible.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player, Amount)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    for _,Part in pairs(Char:GetDescendants()) do
+                        pcall(function()
+                            Part.Transparency = 1
+                        end)
+                    end
+                    return true, Player .. " made invisible."
+                else
+                    return false, Player .. "'s character does not exist."
+                end   
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+Velocity.Commands.vis = {
+    ["Description"] = "Makes a player visible.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to make visible.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player, Amount)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    for _,Part in pairs(Char:GetDescendants()) do
+                        pcall(function()
+                            Part.Transparency = 0
+                        end)
+                    end
+                    return true, Player .. " made visible."
+                else
+                    return false, Player .. "'s character does not exist."
+                end   
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+-- // Humanoid \\ --
 
 Velocity.Commands.speed = {
     ["Description"] = "Changes a player's walk speed.",

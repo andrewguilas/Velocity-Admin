@@ -6,9 +6,9 @@
 
 2. **[LIVE]** `re/loadchar (player)` - Respawns the player & resets the character, backpack, and playerGui.
 
-3. **[IN PROGRESS]** `invis (player)` - Makes a player invisible.
+3. **[LIVE]** `invis (player)` - Makes a player invisible.
 
-4. **[IN PROGRESS]** `uninvis/vis (player)` - Makes a player visible.
+4. **[LIVE]** `vis (player)` - Makes a player visible.
 
 5. **[IN PROGRESS]** `ff (player)` - Gives a player a forcefield.
 
