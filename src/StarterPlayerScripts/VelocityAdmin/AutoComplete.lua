@@ -24,7 +24,7 @@ local Hint = Info.Hint
 function Module.ExecuteCommand()
     Handler.Data.Arguments = TextBox.Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
 
-    if Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments].NoWordLimit then
+    if Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments] and Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments].NoWordLimit then
         local LastArg = table.concat(Handler.Data.Arguments, Settings.CommandBar.AutoComplete.ArgSplit, #Handler.Data.CommandInfo.Arguments + 1)      
         for i = #Handler.Data.CommandInfo.Arguments + 1, #Handler.Data.Arguments do
             table.remove(Handler.Data.Arguments, #Handler.Data.CommandInfo.Arguments + 1)
@@ -36,7 +36,11 @@ function Module.ExecuteCommand()
 
     if Handler.Data.Command and Handler.Data.CommandInfo then
         local Success, Status = Remotes.FireCommand:InvokeServer(Handler.Data)
-        if Status then
+        if typeof(Success) == "table" then
+            for _,Info in pairs(Success) do
+                Module.UpdateResponse(Info.Success, Info.Status)
+            end
+        elseif Status then
             Module.UpdateResponse(Success, Status)     
         end
     end
@@ -96,10 +100,12 @@ function Module.UpdateHint()
 
             -- Gets the argument info
             local ArgumentInfo
-            if Info.Arguments[#Info.Arguments].NoWordLimit and #Args > #Info.Arguments then
-                ArgumentInfo = Info.Arguments[#Info.Arguments]
-            else
-                ArgumentInfo = Info.Arguments[#Args-1]
+            if Info.Arguments[#Info.Arguments] then
+                if Info.Arguments[#Info.Arguments].NoWordLimit and #Args > #Info.Arguments then
+                    ArgumentInfo = Info.Arguments[#Info.Arguments]
+                else
+                    ArgumentInfo = Info.Arguments[#Args-1]
+                end
             end
 
             -- Creates the hint

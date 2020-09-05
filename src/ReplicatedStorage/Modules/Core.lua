@@ -13,13 +13,13 @@ function Core.Get(Parent, Class)
 	for _,v in pairs(Parent:GetChildren()) do
 		if v:IsA(Class) then
 			table.insert(Tbl, v)
-		end
+		end  
 	end
 	
 	return Tbl
 end
 
-function Core.WaitForPath(target, path, maxWait)
+function Core.WaitForPath(target, path, maxWait)  
 	
 	local BAD_ARG_ERROR="%s is not a valid %s"
 	

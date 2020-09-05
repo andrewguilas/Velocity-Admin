@@ -28,6 +28,13 @@ local Settings = {
             MaxDuration = 10,
         }
     },
+    Basic = {
+        BanScope = "BanStore",
+        Assets = {
+            ["Classic Sword"] = 47433,
+            ["Building Tools"] = 142785488,
+        },
+    }
 }
 
 return Settings
