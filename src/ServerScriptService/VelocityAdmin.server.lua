@@ -1,9 +1,24 @@
-local Remotes = game.ReplicatedStorage.Remotes
+-- // Variables \\ --
+
+local DataStoreService = game:GetService("DataStoreService")
+local Settings = require(game.ReplicatedStorage.Modules.Settings)
 local Velocity = require(game.ReplicatedStorage.Modules.Velocity)
+
+local Remotes = game.ReplicatedStorage.Remotes
 local Commands = Velocity.Commands
+
+-- // Events \\ --
 
 game.Players.PlayerAdded:Connect(function(p)
     Velocity.TempData[p.Name] = {}
+
+    local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
+    pcall(function()
+        local Data = BanStore:GetAsync(p.UserId)
+        if Data then
+            p:Kick("BANNED: " .. Data)
+        end
+    end)
 end)
 
 game.Players.PlayerRemoving:Connect(function(p)

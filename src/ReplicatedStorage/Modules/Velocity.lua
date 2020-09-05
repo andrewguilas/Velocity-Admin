@@ -10,8 +10,11 @@ local Velocity = {
 
 local Teams = game:GetService("Teams")
 local Chat = game:GetService("Chat")
+
 local Core = require(game.ReplicatedStorage.Modules.Core)
 local Settings = require(game.ReplicatedStorage.Modules.Settings)
+
+local DataStoreService = game:GetService("DataStoreService")
 
 -- // Helper Functions \\ --
 
@@ -575,7 +578,7 @@ Velocity.Commands.sword = {
             for _,p in pairs(Players) do
                 local Backpack = p:WaitForChild("Backpack")
                 local success, errormsg = pcall(function()
-                    local Sword = game:GetService("InsertService"):LoadAsset(Settings.Assets["Classic Sword"])
+                    local Sword = game:GetService("InsertService"):LoadAsset(Settings.Basic.Assets["Classic Sword"])
                     Sword:GetChildren()[1].Parent = Backpack
                     Sword:Destroy()
                 end)
@@ -630,7 +633,7 @@ Velocity.Commands.f3x = {
             for _,p in pairs(Players) do
                 local Backpack = p:WaitForChild("Backpack")
                 local success, errormsg = pcall(function()
-                    local Asset = game:GetService("InsertService"):LoadAsset(Settings.Assets["Building Tools"])
+                    local Asset = game:GetService("InsertService"):LoadAsset(Settings.Basic.Assets["Building Tools"])
                     Asset:GetChildren()[1].Parent = Backpack
                     Asset:Destroy()
                 end)
@@ -1384,6 +1387,160 @@ Velocity.Commands.kick = {
             end              
         else
             return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+Velocity.Commands.pban = {
+    ["Description"] = "Bans a player from the game.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to ban.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+        [2] = {
+            ["Title"] = "reason",
+            ["Description"] = "Why you want to ban the player.",
+            ["Choices"] = true,
+            ["NoWordLimit"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Player, Reason)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        local Success = pcall(function()
+            Reason = Chat:FilterStringForBroadcast(Reason, CurrentPlayer)
+        end)
+
+        if not Success then
+            return false, "Could not filter Reason" 
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+
+                local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
+                if not BanStore then
+                    return false, "Error calling data stores"
+                end
+
+                Success = pcall(function()
+                    if BanStore:GetAsync(p.UserId) then
+                        return false, p.Name .. " is already banned."
+                    end
+                end)
+
+                if not Success then
+                    return false, "Error checking if player is banned."
+                end
+
+                Success = pcall(function()
+                    BanStore:SetAsync(p.UserId, Reason or true)
+                end)
+
+                if Success then
+                    if Reason then
+                        p:Kick("BANNED: " .. Reason)
+                        return true, Player .. " was banned for " .. Reason
+                    else
+                        p:Kick("BANNED: " .. Reason)
+                        return true, Player .. " was banned."
+                    end   
+                else
+                    return false, "Error banning " .. Player.Name
+                end
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+Velocity.Commands.unban = {
+    ["Description"] = "Unbans a player from the game/server.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The user name/player ID you want to unban.",
+            ["Choices"] = true
+        },
+    },
+    ["Run"] = function(CurrentPlayer, User)
+
+        -- Check if necessary arguments are there
+        if not User then
+            return false, "User Argument Missing"
+        end
+
+        -- Gets the Username & UserId
+        local UserName, UserId
+        if tonumber(User) then
+            UserId = User
+            
+            local success = pcall(function()
+                UserName = game.Players:GetNameFromUserIdAsync(UserId)
+            end)
+
+            if not success then
+                return false, "Error finding username of " .. User
+            end      
+        elseif tostring(User) then
+            UserName = User
+            
+            local success = pcall(function()
+                UserId = game.Players:GetUserIdFromNameAsync(UserName)
+            end)
+
+            if not success then
+                return false, "Error finding user ID of " .. UserName
+            end
+        else
+            return false, "User is not a valid argument type."      
+        end
+
+        -- Run Command
+
+            -- Gets data store
+        local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
+        if not BanStore then
+            return false, "Error calling data stores"
+        end
+
+            -- Checks if not banned
+        local Success = pcall(function()
+            if not BanStore:GetAsync(UserId) then
+                return false, UserName .. " (".. UserId .. ") is not banned."
+            end
+        end)
+
+        if not Success then
+            return false, "Error checking if player is banned."
+        end
+
+            -- Unbans player
+        Success = pcall(function()
+            BanStore:SetAsync(UserId, false)
+        end)
+
+        if Success then
+            return true, UserName .. " (".. UserId .. ") was unbanned."
+        else
+            return false, "Error unbanning " .. UserName .. " (".. UserId .. ")"
         end
 
     end
