@@ -18,13 +18,15 @@
 
 4. `removehats (player)` - Removes all the accessory on the player.
 
-5.  **[IN PROGRESS]** `name (player, Name)` - Changes the player's name over their head.
+5.  `name (player, Name)` - Changes the player's name over their head.
 
-6.  **[IN PROGRESS]** `unname (player)` - Changes the player's name to their default name.
+6.  `unname (player)` - Changes the player's name to their default name.
 
 7.  **[IN PROGRESS]** `sword (player)` - Gives a player a sword.
 
-8.  **[IN PROGRESS]** `unequip (player)` - Unequipps the tools the player is holding if any.
+8.  **[IN PROGRESS]** `f3x (player)` - Gives a player the f3x model.
+
+9.  **[IN PROGRESS]** `unequip (player)` - Unequipps the tools the player is holding if any.
 
 ## Humanoid
 

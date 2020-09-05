@@ -5,6 +5,8 @@ local Velocity = {
 }
 
 local Teams = game:GetService("Teams")
+local Chat = game:GetService("Chat")
+
 local Core = require(game.ReplicatedStorage.Modules.Core)
 local Settings = require(game.ReplicatedStorage.Modules.Settings)
 
@@ -432,6 +434,109 @@ Velocity.Commands.removehats = {
     end
 }
 
+Velocity.Commands.name = {
+    ["Description"] = "Changes the player's name over their head.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to change the name of.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+        [2] = {
+            ["Title"] = "Name",
+            ["Description"] = "The chosen name. (No Word Limit)",
+            ["Choices"] = true,
+            ["NoWordLimit"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Player, Name)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        local success = pcall(function()
+            Name = Chat:FilterStringForBroadcast(Name, CurrentPlayer)
+        end)
+
+        if not success then
+            return false, "Could not filter Name" 
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    local Hum = Char:WaitForChild("Humanoid")
+                    if Name and Name ~= "" then
+                        Hum.DisplayName = Name
+                        return true, Player .. "'s name was changed to " .. Name
+                    else
+                        Hum.DisplayName = ""
+                        return true, Player .. "'s custom name was removed. Now using the player name."
+                    end     
+                else
+                    return false, p.Name .. "'s character does not exist."
+                end
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+Velocity.Commands.unname = {
+    ["Description"] = "Changes the player's name to their default name.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to reset the name of.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    local Hum = Char:WaitForChild("Humanoid")
+                    Hum.DisplayName = ""
+                    return true, Player .. "'s custom name was removed. Now using the player name."
+                else
+                    return false, p.Name .. "'s character does not exist."
+                end
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
 -- // Humanoid \\ --
 
 Velocity.Commands.speed = {
@@ -840,6 +945,14 @@ Velocity.Commands.kick = {
         -- Check if necessary arguments are there
         if not Player then
             return false, "Player Argument Missing"
+        end
+
+        local success = pcall(function()
+            Reason = Chat:FilterStringForBroadcast(Reason, CurrentPlayer)
+        end)
+
+        if not success then
+            return false, "Could not filter Reason" 
         end
 
         -- Run Command
