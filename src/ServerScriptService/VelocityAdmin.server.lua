@@ -12,6 +12,13 @@ local Commands = Velocity.Commands
 game.Players.PlayerAdded:Connect(function(p)
     Velocity.TempData[p.Name] = {}
 
+    -- Checks if tempbanned
+    local Reason = Velocity.TempData.TempBanned[p.UserId]
+    if Reason then
+        p:Kick("TEMP BANNED: " .. Reason)
+    end
+
+    -- Checks if pBanned
     local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
     pcall(function()
         local Data = BanStore:GetAsync(p.UserId)
@@ -19,6 +26,7 @@ game.Players.PlayerAdded:Connect(function(p)
             p:Kick("BANNED: " .. Data)
         end
     end)
+
 end)
 
 game.Players.PlayerRemoving:Connect(function(p)

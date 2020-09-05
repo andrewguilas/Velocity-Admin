@@ -81,17 +81,21 @@
 34. **[IN PROGRESS]** `m (text)` - Announces a message to the entire server.
 
 35. **[IN PROGRESS]** `pm (player, text)` - Announces a message to a specific player.
+    
+36. **[IN PROGRESS]** `slock (text)` - Locks the server preventing incoming people from joining.
 
-36. `respawntime (duration)` - Changes the default respawn time for all Players.
+37. **[IN PROGRESS]** `unslock (text)` - Unocks the server incoming people to join.
 
-37. `brightness (number)` - Changes the game's brightness.
+38. `respawntime (duration)` - Changes the default respawn time for all Players.
 
-38. `time` - Changes the game's clock time.
+39. `brightness (number)` - Changes the game's brightness.
 
-39. `defaultjumppower (number)` - Changes the default jump power.
+40. `time` - Changes the game's clock time.
 
-40. `defaultspeed (number)` - Changes the default walk speed.
+41. `defaultjumppower (number)` - Changes the default jump power.
 
-41. `defaultcharacterloads (bool)` - If true, characters won't load in.
+42. `defaultspeed (number)` - Changes the default walk speed.
 
-42. `useemotes (bool)` - If true, new players won't be able to use emotes.
+43. `defaultcharacterloads (bool)` - If true, characters won't load in.
+
+44. `useemotes (bool)` - If true, new players won't be able to use emotes.
