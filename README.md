@@ -44,9 +44,9 @@
 
 6.  `heal (player, number)` - Heals a player's health by an amount.
 
-7.  **[TO DO]** `god (player)` - Sets the player's health to infinite.
+7.  `god (player)` - Sets the player's health to infinite.
 
-8.  **[TO DO]** `ungod (player)` - Sets the player's health to the previous health before being goded.
+8.  `ungod (player)` - Sets the player's health to the previous health before being goded.
 
 9.  `health (player, number)` - Changes a player's Health.
 
