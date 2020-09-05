@@ -111,6 +111,41 @@ Velocity.Commands.char = {
     end
 }
 
+Velocity.Commands.loadchar = {
+    ["Description"] = "Resets the character, backpack, playerGui.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player with the character you want to load.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player)
+        
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                p:LoadCharacter()
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
 Velocity.Commands.speed = {
     ["Description"] = "Changes a player's walk speed.",
     ["Arguments"] = {

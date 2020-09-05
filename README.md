@@ -4,7 +4,7 @@
 
 1. **[LIVE]** `char (player1, player2)` - Changes player 1's appearance to any user on Roblox: player 2.
 
-2. **[IN PROGRESS]** `loadchar (player)` - Resets the character, backpack, playerGui.
+2. **[LIVE]** `loadchar (player)` - Resets the character, backpack, playerGui.
 
 3. **[IN PROGRESS]** `re (player)` - Respawns a player.
 
