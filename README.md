@@ -66,9 +66,7 @@
 
 31. `isingroup (player, groupID)` - Checks if the player is in a group.
 
-32. **[IN PROGRESS]** `role (player, group ID)` - Returns the player's role in a group.
-
-33. **[IN PROGRESS]** `rank (player, group ID` - Returns the player's rank in a group.
+32. `rank (player, group ID` - Returns the player's rank & role in a group.
 
 ## Game
 
