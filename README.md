@@ -62,17 +62,19 @@
 
 26. **[IN PROGRESS]** `ban (player, length, reason)` - Bans a player from that specific place.
 
-27. **[IN PROGRESS]** `pban (player, length, reason` - Bans a player from all places.
+27. `pban (player, length, reason` - Bans a player from all places.
 
-28. `age (player` - Returns the player's account age.
+28. `unban (player` - Unans a player from all places.
 
-29. `id (player)` - Returns the player's user ID.
+29. `age (player` - Returns the player's account age.
 
-30. `isfriendwith (player1, player2)` - Checks if player 1 is friends with player 2.
+30. `id (player)` - Returns the player's user ID.
 
-31. `isingroup (player, groupID)` - Checks if the player is in a group.
+31. `isfriendwith (player1, player2)` - Checks if player 1 is friends with player 2.
 
-32. `rank (player, group ID` - Returns the player's rank & role in a group.
+32. `isingroup (player, groupID)` - Checks if the player is in a group.
+
+33. `rank (player, group ID` - Returns the player's rank & role in a group.
 
 ## Game
 
