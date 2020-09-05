@@ -64,7 +64,7 @@
 
 30. **[IN PROGRESS]** `isfriendwith (player1, player2)` - Checks if player 1 is friends with player 2.
 
-31. **[IN PROGRESS]** `isingroup (player, groupID)` - Checks if the player is in a group.
+31. `isingroup (player, groupID)` - Checks if the player is in a group.
 
 32. **[IN PROGRESS]** `role (player, group ID)` - Returns the player's role in a group.
 
