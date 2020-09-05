@@ -82,9 +82,9 @@
 
 38. `time` - Changes the game's clock time.
 
-39. **[IN PROGRESS]** `defaultjumppower (number)` - Changes the default jump power when a player joins the game.
+39. `defaultjumppower (number)` - Changes the default jump power.
 
-40. **[IN PROGRESS]** `defaultspeed (number)` - Changes the default walk speed when a player joins the game.
+40. **[IN PROGRESS]** `defaultspeed (number)` - Changes the default walk speed.
 
 41. **[IN PROGRESS]** `defaultcharacterloads (number)` - If true, characters of players who join the game won't load in.
 
