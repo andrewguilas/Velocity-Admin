@@ -60,9 +60,9 @@
 
 25. `kick (player, reason)` - Kicks a player from the game.
 
-26. **[TO DO]** `ban (player, length, reason)` - Bans a player from that specific place.
+26. **[IN PROGRESS]** `ban (player, length, reason)` - Bans a player from that specific place.
 
-27. **[TO DO]** `pban (player, length, reason` - Bans a player from all places.
+27. **[IN PROGRESS]** `pban (player, length, reason` - Bans a player from all places.
 
 28. `age (player` - Returns the player's account age.
 
@@ -76,9 +76,9 @@
 
 ## Game
 
-34. **[TO DO]** `m (text)` - Announces a message to the entire server.
+34. **[IN PROGRESS]** `m (text)` - Announces a message to the entire server.
 
-35. **[TO DO]** `pm (player, text)` - Announces a message to a specific player.
+35. **[IN PROGRESS]** `pm (player, text)` - Announces a message to a specific player.
 
 36. `respawntime (duration)` - Changes the default respawn time for all Players.
 
