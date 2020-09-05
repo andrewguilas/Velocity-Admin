@@ -927,4 +927,32 @@ Velocity.Commands.defaultspeed = {
     end
 }
 
+Velocity.Commands.defaultcharacterloads = {
+    ["Description"] = "If true, characters won't load in.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "characterloads",
+            ["Description"] = "If characters should load.",
+            ["Choices"] = {"true", "false"}
+        },
+    },
+    ["Run"] = function(CurrentPlayer, characterloads)
+
+        -- Check if necessary arguments are there
+        if not characterloads then
+            return false, "characterloads Argument Missing"
+        end
+
+        -- Run Command
+        
+        if characterloads == "true" then
+            game.StarterPlayer.LoadCharacterAppearance = true
+            return true, "Characters will now load"
+        else
+            game.StarterPlayer.LoadCharacterAppearance = false
+            return true, "Characters will no longer load"
+        end
+    end
+}
+
 return Velocity

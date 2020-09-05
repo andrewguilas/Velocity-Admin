@@ -86,6 +86,6 @@
 
 40. `defaultspeed (number)` - Changes the default walk speed.
 
-41. **[IN PROGRESS]** `defaultcharacterloads (number)` - If true, characters of players who join the game won't load in.
+41. `defaultcharacterloads (bool)` - If true, characters won't load in.
 
 42. **[IN PROGRESS]** `useemotes (bool)` - If true, new players won't be able to use emotes.
