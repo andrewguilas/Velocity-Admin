@@ -1,5 +1,14 @@
 local Remotes = game.ReplicatedStorage.Remotes
-local Commands = require(game.ReplicatedStorage.Modules.Velocity).Commands
+local Velocity = require(game.ReplicatedStorage.Modules.Velocity)
+local Commands = Velocity.Commands
+
+game.Players.PlayerAdded:Connect(function(p)
+    Velocity.TempData[p.Name] = {}
+end)
+
+game.Players.PlayerRemoving:Connect(function(p)
+    Velocity.TempData[p.Name] = nil
+end)
 
 Remotes.FireCommand.OnServerInvoke = function(p, Data)
     local SelectedCommand = Commands[Data.Command]

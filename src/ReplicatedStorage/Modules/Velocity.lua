@@ -5,6 +5,7 @@ local Velocity = {
     Commands = {},
     Helper = {},
     Settings = {},
+    TempData = {}
 }
 
 local Teams = game:GetService("Teams")
@@ -178,11 +179,16 @@ Velocity.Commands.invis = {
             for _,p in pairs(Players) do
                 local Char = p.Character
                 if Char then
+                    Velocity.TempData[CurrentPlayer.Name].InvisItems = {}
                     for _,Part in pairs(Char:GetDescendants()) do
                         pcall(function()
-                            Part.Transparency = 1
+                            if Part.Transparency ~= 1 then
+                                Part.Transparency = 1
+                                table.insert(Velocity.TempData[CurrentPlayer.Name].InvisItems, Part)
+                            end
                         end)
                     end
+
                     return true, Player .. " made invisible."
                 else
                     return false, Player .. "'s character does not exist."
@@ -223,10 +229,8 @@ Velocity.Commands.vis = {
             for _,p in pairs(Players) do
                 local Char = p.Character
                 if Char then
-                    for _,Part in pairs(Char:GetDescendants()) do
-                        pcall(function()
-                            Part.Transparency = 0
-                        end)
+                    for _,Part in pairs(Velocity.TempData[CurrentPlayer.Name].InvisItems or {}) do
+                        Part.Transparency = 0
                     end
                     return true, Player .. " made visible."
                 else
