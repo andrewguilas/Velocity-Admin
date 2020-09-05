@@ -60,7 +60,7 @@
 
 25. `kick (player, reason)` - Kicks a player from the game.
 
-26. **[IN PROGRESS]** `ban (player, length, reason)` - Bans a player from that specific place.
+26. `ban (player, length, reason)` - Bans a player from that specific place.
 
 27. `pban (player, length, reason` - Bans a player from all places.
 
