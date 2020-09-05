@@ -10,19 +10,19 @@
 
 4. `vis (player)` - Makes a player visible.
 
-5. `ff (player)` - Gives a player a forcefield.
+1. `ff (player)` - Gives a player a forcefield.
 
-6. `unff (player)` - Removes a player's forcefield if any.
+2. `unff (player)` - Removes a player's forcefield if any.
 
-7. **[IN PROGRESS]** `hat (player, ID)` - Adds an accessory to the player.
+3. **[IN PROGRESS]** `hat (player, ID)` - Adds an accessory to the player.
 
-8.  **[IN PROGRESS]** `name (player, Name)` - Changes the player's name over their head.
+4.  **[IN PROGRESS]** `name (player, Name)` - Changes the player's name over their head.
 
-9.  **[IN PROGRESS]** `unname (player)` - Changes the player's name to their default name.
+5.  **[IN PROGRESS]** `unname (player)` - Changes the player's name to their default name.
 
-10. **[IN PROGRESS]** `sword (player)` - Gives a player a sword.
+6.  **[IN PROGRESS]** `sword (player)` - Gives a player a sword.
 
-11. **[IN PROGRESS]** `unequip (player)` - Unequipps the tools the player is holding if any.
+7.  **[IN PROGRESS]** `unequip (player)` - Unequipps the tools the player is holding if any.
 
 ## Humanoid
 
@@ -62,7 +62,7 @@
 
 29. `id (player)` - Returns the player's user ID.
 
-30. **[IN PROGRESS]** `isfriendwith (player1, player2)` - Checks if player 1 is friends with player 2.
+30. `isfriendwith (player1, player2)` - Checks if player 1 is friends with player 2.
 
 31. `isingroup (player, groupID)` - Checks if the player is in a group.
 
