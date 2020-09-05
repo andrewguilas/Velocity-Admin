@@ -22,9 +22,9 @@
 
 6.  `unname (player)` - Changes the player's name to their default name.
 
-7.  **[IN PROGRESS]** `sword (player)` - Gives a player a sword.
+7.  **[IN PROGRESS]** `sword (player)` - Gives the player a sword.
 
-8.  **[IN PROGRESS]** `f3x (player)` - Gives a player the f3x model.
+8.  **[IN PROGRESS]** `f3x (player)` - Gives the player building tools.
 
 9.  **[IN PROGRESS]** `unequip (player)` - Unequipps the tools the player is holding if any.
 

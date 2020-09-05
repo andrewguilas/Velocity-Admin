@@ -1,3 +1,6 @@
+-- // Variables \\ --
+
+
 local Velocity = {
     Commands = {},
     Helper = {},
@@ -6,9 +9,10 @@ local Velocity = {
 
 local Teams = game:GetService("Teams")
 local Chat = game:GetService("Chat")
-
 local Core = require(game.ReplicatedStorage.Modules.Core)
 local Settings = require(game.ReplicatedStorage.Modules.Settings)
+
+-- // Helper Functions \\ --
 
 function Velocity.Helper.FindPlayer(Key, p)
     local Players = {}
@@ -371,6 +375,7 @@ Velocity.Commands.hat = {
                     end
 
                     Hum:AddAccessory(Asset:GetChildren()[1])
+                    Asset:Destroy()
                     return true, Player .. " given accessory " .. ID
                 else
                     return false, Player .. "'s character does not exist."
@@ -530,6 +535,61 @@ Velocity.Commands.unname = {
                     return false, p.Name .. "'s character does not exist."
                 end
             end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+Velocity.Commands.sword = {
+    ["Description"] = "Gives the player a sword.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player who will receive the sword.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then 
+            local Info = {}
+            for _,p in pairs(Players) do
+                local Backpack = p:WaitForChild("Backpack")
+                local success, errormsg = pcall(function()
+                    local Sword = game:GetService("InsertService"):LoadAsset(Settings.Assets["Classic Sword"])
+                    Sword:GetChildren()[1].Parent = Backpack
+                    Sword:Destroy()
+                end)
+
+                if success then
+                    table.insert(Info, {
+                        Success = true,
+                        Status = p.Name .. "was given a sword."
+                    })
+                else
+                    warn(errormsg)
+                    table.insert(Info, {
+                        Success = false,
+                        Status = "Error giving a sword to " .. p.Name
+                    })
+                end
+            end      
+            return Info        
         else
             return false, Player .. " is not a valid player."
         end
