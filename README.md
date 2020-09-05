@@ -4,27 +4,25 @@
 
 1. **[LIVE]** `char (player1, player2)` - Changes player 1's appearance to any user on Roblox: player 2.
 
-2. **[LIVE]** `loadchar (player)` - Resets the character, backpack, playerGui.
+2. **[LIVE]** `re/loadchar (player)` - Respawns the player & resets the character, backpack, and playerGui.
 
-3. **[IN PROGRESS]** `re (player)` - Respawns a player.
+3. **[IN PROGRESS]** `invis (player)` - Makes a player invisible.
 
-4. **[IN PROGRESS]** `invis (player)` - Makes a player invisible.
+4. **[IN PROGRESS]** `uninvis/vis (player)` - Makes a player visible.
 
-5. **[IN PROGRESS]** `uninvis/vis (player)` - Makes a player visible.
+5. **[IN PROGRESS]** `ff (player)` - Gives a player a forcefield.
 
-6. **[IN PROGRESS]** `ff (player)` - Gives a player a forcefield.
+6. **[IN PROGRESS]** `unff (player)` - Removes a player's forcefield if any.
 
-7. **[IN PROGRESS]** `unff (player)` - Removes a player's forcefield if any.
+7. **[IN PROGRESS]** `hat (player, ID)` - Adds an accessory to the player.
 
-8. **[IN PROGRESS]** `hat (player, ID)` - Adds an accessory to the player.
+8.  **[IN PROGRESS]** `name (player, Name)` - Changes the player's name over their head.
 
-9.  **[IN PROGRESS]** `name (player, Name)` - Changes the player's name over their head.
+9.  **[IN PROGRESS]** `unname (player)` - Changes the player's name to their default name.
 
-10. **[IN PROGRESS]** `unname (player)` - Changes the player's name to their default name.
+10. **[IN PROGRESS]** `sword (player)` - Gives a player a sword.
 
-11. **[IN PROGRESS]** `sword (player)` - Gives a player a sword.
-
-12. **[IN PROGRESS]** `unequip (player)` - Unequipps the tools the player is holding if any.
+11. **[IN PROGRESS]** `unequip (player)` - Unequipps the tools the player is holding if any.
 
 ## Humanoid
 
