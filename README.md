@@ -84,7 +84,7 @@
 
 39. `defaultjumppower (number)` - Changes the default jump power.
 
-40. **[IN PROGRESS]** `defaultspeed (number)` - Changes the default walk speed.
+40. `defaultspeed (number)` - Changes the default walk speed.
 
 41. **[IN PROGRESS]** `defaultcharacterloads (number)` - If true, characters of players who join the game won't load in.
 
