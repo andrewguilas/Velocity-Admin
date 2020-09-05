@@ -88,4 +88,4 @@
 
 41. `defaultcharacterloads (bool)` - If true, characters won't load in.
 
-42. **[IN PROGRESS]** `useemotes (bool)` - If true, new players won't be able to use emotes.
+42. `useemotes (bool)` - If true, new players won't be able to use emotes.

@@ -955,4 +955,32 @@ Velocity.Commands.defaultcharacterloads = {
     end
 }
 
+Velocity.Commands.useemotes = {
+    ["Description"] = "If true, player's won't be able to use emotes.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "useemotes",
+            ["Description"] = "If players can use emotes.",
+            ["Choices"] = {"true", "false"}
+        },
+    },
+    ["Run"] = function(CurrentPlayer, useemotes)
+
+        -- Check if necessary arguments are there
+        if not useemotes then
+            return false, "useemotes Argument Missing"
+        end
+
+        -- Run Command
+        
+        if useemotes == "true" then
+            game.StarterPlayer.UserEmotesEnabled = true
+            return true, "Players can use emotes"
+        else
+            game.StarterPlayer.UserEmotesEnabled = false
+            return true, "Players cannot use emotes"
+        end
+    end
+}
+
 return Velocity
