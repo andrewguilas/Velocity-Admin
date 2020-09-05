@@ -79,12 +79,12 @@
 ## Game
 
 34. **[IN PROGRESS]** `m (text)` - Announces a message to the entire server.
-
-35. **[IN PROGRESS]** `pm (player, text)` - Announces a message to a specific player.
     
-36. **[IN PROGRESS]** `slock (text)` - Locks the server preventing incoming people from joining.
+35. `slock (text)` - Locks the server preventing incoming people from joining.
 
-37. **[IN PROGRESS]** `unslock (text)` - Unocks the server incoming people to join.
+36. `unslock (text)` - Unlocks the server incoming people to join.
+
+37. **[IN PROGRESS]** `shutdown (timer)` - Shutsdown the server in x seconds.
 
 38. `respawntime (duration)` - Changes the default respawn time for all Players.
 

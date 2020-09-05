@@ -1582,8 +1582,6 @@ Velocity.Commands.unban = {
         if Velocity.TempData.TempBanned[UserId] then
             Velocity.TempData.TempBanned[UserId] = false
             return true, UserName .. " (".. UserId .. ") was unbanned."
-        else
-            return false, UserName .. " (".. UserId .. ") is not banned."
         end
 
             -- Gets data store
@@ -1919,6 +1917,49 @@ Velocity.Commands.rank = {
 }
 
 -- // Game \\ --
+
+Velocity.Commands.lock = {
+    ["Description"] = "Locks the server preventing incoming people from joining..",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "reason",
+            ["Description"] = "Why the server is locked. (optional)",
+            ["Choices"] = true,
+            ["NoWordLimit"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Reason)
+        -- Check if necessary arguments are there
+        if Reason then
+            local Success = pcall(function()
+                Reason = Chat:FilterStringForBroadcast(Reason, CurrentPlayer)
+            end)
+
+            if not Success then
+                return false, "Could not filter Reason" 
+            end
+        end
+
+        -- Run Command
+        if Reason ~= "" then
+            Velocity.TempData.ServerLocked = Reason
+            return true, "Server locked for... " .. Reason
+        else
+            Velocity.TempData.ServerLocked = true
+            return true, "Server locked"
+        end
+
+    end
+}
+
+Velocity.Commands.unlock = {
+    ["Description"] = "Unocks the server incoming people to join.",
+    ["Arguments"] = {},
+    ["Run"] = function()
+        Velocity.TempData.ServerLocked = nil
+        return true, "Server unlocked"
+    end
+}
 
 Velocity.Commands.respawntime = {
     ["Description"] = "Changes the default respawn time for all Players.",

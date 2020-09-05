@@ -12,8 +12,14 @@ local Commands = Velocity.Commands
 game.Players.PlayerAdded:Connect(function(p)
     Velocity.TempData[p.Name] = {}
 
+    -- Checks if slocked
+    local Reason = Velocity.TempData.ServerLocked
+    if Reason then
+        p:Kick("Server is locked: " .. Reason)
+    end
+
     -- Checks if tempbanned
-    local Reason = Velocity.TempData.TempBanned[p.UserId]
+    Reason = Velocity.TempData.TempBanned[p.UserId]
     if Reason then
         p:Kick("TEMP BANNED: " .. Reason)
     end

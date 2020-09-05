@@ -24,7 +24,7 @@ local Hint = Info.Hint
 function Module.ExecuteCommand()
     Handler.Data.Arguments = TextBox.Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
 
-    if Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments].NoWordLimit then
+    if Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments] and Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments].NoWordLimit then
         local LastArg = table.concat(Handler.Data.Arguments, Settings.CommandBar.AutoComplete.ArgSplit, #Handler.Data.CommandInfo.Arguments + 1)      
         for i = #Handler.Data.CommandInfo.Arguments + 1, #Handler.Data.Arguments do
             table.remove(Handler.Data.Arguments, #Handler.Data.CommandInfo.Arguments + 1)
@@ -100,10 +100,12 @@ function Module.UpdateHint()
 
             -- Gets the argument info
             local ArgumentInfo
-            if Info.Arguments[#Info.Arguments].NoWordLimit and #Args > #Info.Arguments then
-                ArgumentInfo = Info.Arguments[#Info.Arguments]
-            else
-                ArgumentInfo = Info.Arguments[#Args-1]
+            if Info.Arguments[#Info.Arguments] then
+                if Info.Arguments[#Info.Arguments].NoWordLimit and #Args > #Info.Arguments then
+                    ArgumentInfo = Info.Arguments[#Info.Arguments]
+                else
+                    ArgumentInfo = Info.Arguments[#Args-1]
+                end
             end
 
             -- Creates the hint
