@@ -60,7 +60,7 @@
 
 28. `age (player` - Returns the player's account age.
 
-29. **[IN PROGRESS]** `id (player)` - Returns the player's user ID.
+29. `id (player)` - Returns the player's user ID.
 
 30. **[IN PROGRESS]** `isfriendwith (player1, player2)` - Checks if player 1 is friends with player 2.
 
