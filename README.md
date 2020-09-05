@@ -2,17 +2,17 @@
 
 ## Character
 
-1. **[LIVE]** `char (player1, player2)` - Changes player 1's appearance to any user on Roblox: player 2.
+1. `char (player1, player2)` - Changes player 1's appearance to any user on Roblox: player 2.
 
-2. **[LIVE]** `re/loadchar (player)` - Respawns the player & resets the character, backpack, and playerGui.
+2. `re/loadchar (player)` - Respawns the player & resets the character, backpack, and playerGui.
 
-3. **[LIVE]** `invis (player)` - Makes a player invisible.
+3. `invis (player)` - Makes a player invisible.
 
-4. **[LIVE]** `vis (player)` - Makes a player visible.
+4. `vis (player)` - Makes a player visible.
 
-5. **[IN PROGRESS]** `ff (player)` - Gives a player a forcefield.
+5. `ff (player)` - Gives a player a forcefield.
 
-6. **[IN PROGRESS]** `unff (player)` - Removes a player's forcefield if any.
+6. `unff (player)` - Removes a player's forcefield if any.
 
 7. **[IN PROGRESS]** `hat (player, ID)` - Adds an accessory to the player.
 
@@ -26,39 +26,39 @@
 
 ## Humanoid
 
-13. `freeze/lock (player)` - Sets the player's walkspeed and jump power to 0.
+13. **[TO DO]** `freeze/lock (player)` - Sets the player's walkspeed and jump power to 0.
 
-14. `unfreeze/unlock (player)` - Sets the player's walkspeed and jump power to their previous stats before being frozen.
+14. **[TO DO]** `unfreeze/unlock (player)` - Sets the player's walkspeed and jump power to their previous stats before being frozen.
 
-15. **[LIVE]** `speed (player, number)` - Changes a player's walkspeed.
+15. `speed (player, number)` - Changes a player's walkspeed.
 
-16. **[LIVE]** `jump (player)` - Makes a player jump.
+16. `jump (player)` - Makes a player jump.
 
-17. **[LIVE]** `jumppower (player, number)` - Changes a player's jump power.
+17. `jumppower (player, number)` - Changes a player's jump power.
 
-18. **[LIVE]** `heal (player, number)` - Heals a player's health by an amount.
+18. `heal (player, number)` - Heals a player's health by an amount.
 
-19. `god (player)` - Sets the player's health to infinite.
+19. **[TO DO]** `god (player)` - Sets the player's health to infinite.
 
-20. `ungod (player)` - Sets the player's health to the previous health before being goded.
+20. **[TO DO]** `ungod (player)` - Sets the player's health to the previous health before being goded.
 
-21. **[LIVE]** `health (player, number)` - Changes a player's Health.
+21. `health (player, number)` - Changes a player's Health.
 
-22. **[LIVE]** `maxhealth (player, number)` - Changes a player's max health.
+22. `maxhealth (player, number)` - Changes a player's max health.
 
-23. **[LIVE]** `kill (player)` - Kills a player.
+23. `kill (player)` - Kills a player.
 
-24. **[LIVE]** `damage (player, number)` - Damages a player.
+24. `damage (player, number)` - Damages a player.
 
 ## Player
 
-25. **[LIVE]** `kick (player, reason)` - Kicks a player from the game.
+25. `kick (player, reason)` - Kicks a player from the game.
 
-26. `ban (player, length, reason)` - Bans a player from that specific place.
+26. **[TO DO]** `ban (player, length, reason)` - Bans a player from that specific place.
 
-27. `pban (player, length, reason` - Bans a player from all places.
+27. **[TO DO]** `pban (player, length, reason` - Bans a player from all places.
 
-28. **[LIVE]** `age (player` - Returns the player's account age.
+28. `age (player` - Returns the player's account age.
 
 29. **[IN PROGRESS]** `id (player)` - Returns the player's user ID.
 
@@ -72,15 +72,15 @@
 
 ## Game
 
-34. `m (text)` - Announces a message to the entire server.
+34. **[TO DO]** `m (text)` - Announces a message to the entire server.
 
-35. `pm (player, text)` - Announces a message to a specific player.
+35. **[TO DO]** `pm (player, text)` - Announces a message to a specific player.
 
-36. **[LIVE]** `respawntime (duration)` - Changes the default respawn time for all Players.
+36. `respawntime (duration)` - Changes the default respawn time for all Players.
 
-37. **[LIVE]** `brightness (number)` - Changes the game's brightness.
+37. `brightness (number)` - Changes the game's brightness.
 
-38. **[LIVE]** `time` - Changes the game's clock time.
+38. `time` - Changes the game's clock time.
 
 39. **[IN PROGRESS]** `defaultjumppower (number)` - Changes the default jump power when a player joins the game.
 

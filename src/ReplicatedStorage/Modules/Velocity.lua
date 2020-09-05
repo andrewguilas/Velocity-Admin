@@ -159,7 +159,7 @@ Velocity.Commands.invis = {
             end
         },
     },
-    ["Run"] = function(CurrentPlayer, Player, Amount)
+    ["Run"] = function(CurrentPlayer, Player)
 
         -- Check if necessary arguments are there
         if not Player then
@@ -204,7 +204,7 @@ Velocity.Commands.vis = {
             end
         },
     },
-    ["Run"] = function(CurrentPlayer, Player, Amount)
+    ["Run"] = function(CurrentPlayer, Player)
 
         -- Check if necessary arguments are there
         if not Player then
@@ -223,6 +223,93 @@ Velocity.Commands.vis = {
                         end)
                     end
                     return true, Player .. " made visible."
+                else
+                    return false, Player .. "'s character does not exist."
+                end   
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+Velocity.Commands.ff = {
+    ["Description"] = "Gives a player a forcefield.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to give forcefield.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    local FF = Instance.new("ForceField")
+                    FF.Parent = Char
+                    return true, Player .. " given a forcefield."
+                else
+                    return false, Player .. "'s character does not exist."
+                end   
+            end              
+        else
+            return false, Player .. " is not a valid player."
+        end
+
+    end
+}
+
+Velocity.Commands.unff = {
+    ["Description"] = "Removes a forcefield from a player if any.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player",
+            ["Description"] = "The player you want to remove a forcefield from.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, Player)
+
+        -- Check if necessary arguments are there
+        if not Player then
+            return false, "Player Argument Missing"
+        end
+
+        -- Run Command
+        local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+        if Players then
+            for _,p in pairs(Players) do
+                local Char = p.Character
+                if Char then
+                    for _,FF in pairs(Char:GetDescendants()) do
+                        if FF:IsA("ForceField") then
+                            FF:Destroy()
+                        end
+                    end
+                    return true, Player .. "'s forcefields were removed."
                 else
                     return false, Player .. "'s character does not exist."
                 end   
