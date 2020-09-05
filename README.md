@@ -32,29 +32,29 @@
 
 ## Humanoid
 
-13. **[TO DO]** `freeze/lock (player)` - Sets the player's walkspeed and jump power to 0.
+1.  `freeze (player)` - Sets the player's walkspeed and jump power to 0.
 
-14. **[TO DO]** `unfreeze/unlock (player)` - Sets the player's walkspeed and jump power to their previous stats before being frozen.
+2.  `unfreeze (player)` - Sets the player's walkspeed and jump power to their previous stats before being frozen.
 
-15. `speed (player, number)` - Changes a player's walkspeed.
+3.  `speed (player, number)` - Changes a player's walkspeed.
 
-16. `jump (player)` - Makes a player jump.
+4.  `jump (player)` - Makes a player jump.
 
-17. `jumppower (player, number)` - Changes a player's jump power.
+5.  `jumppower (player, number)` - Changes a player's jump power.
 
-18. `heal (player, number)` - Heals a player's health by an amount.
+6.  `heal (player, number)` - Heals a player's health by an amount.
 
-19. **[TO DO]** `god (player)` - Sets the player's health to infinite.
+7.  **[TO DO]** `god (player)` - Sets the player's health to infinite.
 
-20. **[TO DO]** `ungod (player)` - Sets the player's health to the previous health before being goded.
+8.  **[TO DO]** `ungod (player)` - Sets the player's health to the previous health before being goded.
 
-21. `health (player, number)` - Changes a player's Health.
+9.  `health (player, number)` - Changes a player's Health.
 
-22. `maxhealth (player, number)` - Changes a player's max health.
+10. `maxhealth (player, number)` - Changes a player's max health.
 
-23. `kill (player)` - Kills a player.
+11. `kill (player)` - Kills a player.
 
-24. `damage (player, number)` - Damages a player.
+12. `damage (player, number)` - Damages a player.
 
 ## Player
 
