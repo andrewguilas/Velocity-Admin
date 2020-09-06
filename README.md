@@ -4,7 +4,7 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 - Auto completion 
 - Easy external use. 
   
-**This system is no longer being worked on** due to person reasons. However, it is planned to be continued in the future. Planned features include... 
+**This system is no longer being worked on** due to personal reasons. However, development is planned to resume in the future. Planned features include... 
 - AI directed autocompletion (stores command usage throughout Roblox)
 - Smart field detection (warns user if the argument for the command they are typing does not match the command argument)
 - Bind commands to input
