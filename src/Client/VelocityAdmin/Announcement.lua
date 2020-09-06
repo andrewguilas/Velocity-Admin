@@ -6,13 +6,47 @@ local Module = {}
 
 local Debris = game:GetService("Debris")
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
+local Velocity = require(game.ReplicatedStorage.VelocityAdmin.Modules.Velocity)
 
 local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 local p = game.Players.LocalPlayer
 local An = p.PlayerGui:WaitForChild("VelocityAdmin").Announcement
 
+local IsShuttingDown
+
 -- // Functions \\ --
 
+    -- Shutdown
+function Module.StartShutdown(Delay)
+    -- Cancels shutdown if applicable   
+    Module.CancelShutdown(Delay)
+
+    local Status = Module.NewStatus("Server shutting down in " .. Delay .. " seconds")
+    IsShuttingDown = true
+    for Sec = Delay, 0, -1 do
+        Status.TextLabel.Text = "Server shutting down in " .. Sec .. " seconds"
+        if not IsShuttingDown then
+            Status.TextLabel.Text = "Server shutdown canceled."
+            break
+        end
+        wait(1)
+    end
+
+    if IsShuttingDown then
+        Remotes.FireCommand:InvokeServer({
+            Command = "kick",
+            Arguments = {"all", "Server shut down"}
+        })
+    else
+        Module.RemoveStatus()
+    end
+end
+
+function Module.CancelShutdown(Delay)
+    IsShuttingDown = false
+end
+
+    -- Status
 function Module.NewStatus(Msg)
     local Hint = An:FindFirstChild("Hint")
     if not Hint then
@@ -22,6 +56,7 @@ function Module.NewStatus(Msg)
         NewHint.Transparency = Settings.Announcement.StatusTransparency
         NewHint.Name = "Hint"
         NewHint.Parent = An
+        return NewHint
     else
         Hint.TextLabel.Text = Msg
     end
@@ -34,6 +69,7 @@ function Module.RemoveStatus()
     end
 end
 
+    -- Announcement
 function Module.NewAnnouncement(Msg)
 
     local NewAn = An.ListLayout.Template:Clone()
@@ -49,6 +85,7 @@ function Module.NewAnnouncement(Msg)
     Debris:AddItem(NewAn, MaxDur)
 end
 
+    -- Main
 function Module.HandleRequest(Type, Msg)
     if Type == "Announcement" then
         Module.NewAnnouncement(Msg)
@@ -57,6 +94,12 @@ function Module.HandleRequest(Type, Msg)
             Module.NewStatus(Msg)
         else
             Module.RemoveStatus()
+        end
+    elseif Type == "Shutdown" then
+        if Msg == "Cancel" then
+            Module.CancelShutdown()
+        else
+            Module.StartShutdown(Msg)
         end
     end
 end

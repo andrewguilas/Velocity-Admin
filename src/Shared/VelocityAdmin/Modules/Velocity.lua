@@ -2035,6 +2035,43 @@ Velocity.Commands.unstatus = {
     end
 }
 
+Velocity.Commands.shutdown = {
+    ["Description"] = "Shuts down the server in a duration.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "delay",
+            ["Description"] = "How long until the server is shut down.",
+            ["Choices"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Delay)
+
+        -- Checks parameters
+        if Delay and not tonumber(Delay) then
+            return false, "Delay must be a number"
+        end
+
+        -- Run Command
+        Remotes.Announcement:FireAllClients("Shutdown", Delay)
+        if Delay then
+            return true, "Server shutting down in " .. Delay .. " seconds"
+        else
+            return true, "Server shutting down"
+        end
+
+    end
+}
+
+Velocity.Commands.cancelshutdown = {
+    ["Description"] = "Shuts down the server in a duration.",
+    ["Arguments"] = {},
+    ["Run"] = function(CurrentPlayer)
+        -- Run Command
+        Remotes.Announcement:FireAllClients("Shutdown", "Cancel")
+        return true, "Canceling server shutdown"
+    end
+}
+
 Velocity.Commands.respawntime = {
     ["Description"] = "Changes the default respawn time for all Players.",
     ["Arguments"] = {
