@@ -79,6 +79,7 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 29. `isfriendswith <player, user>` - Checks if the player is friends with the user.
 30. `isingroup <player, groupID>` - Checks if the player is in the group.
 31. `rank <player, group ID` - Returns the player's rank & role in a group.
+32. [IN PROGRESS] `tp <player1> <player2>` - Teleports player1 to player2.
 
 #### Game: Commands for controling the game.
 
