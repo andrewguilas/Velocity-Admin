@@ -2,7 +2,7 @@ local Settings = {
     CommandBar = {
         OpenKey = Enum.KeyCode.BackSlash,
         ExitKey = Enum.KeyCode.Escape,
-        DefaultPos = UDim2.new(0.3, 10, 0, 50),
+        DefaultPos = UDim2.new(0.3, 10, 0, 2),
         DefaultSize = UDim2.new(0, 40, 0, 20),
         Hint = {
             Spacing = 20,
@@ -16,7 +16,7 @@ local Settings = {
             ArgSplit = " ",
             SelectedColor = Color3.fromRGB(100, 100, 100),
             UnselectedColor = Color3.fromRGB(0, 0, 0),
-            MaxDescriptionSize = 500,
+            MaxDescriptionSize = 800,
             FieldSize = UDim2.new(20, 0, 0, 20),
             FieldSpacing = 100,
         },
