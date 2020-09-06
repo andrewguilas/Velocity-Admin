@@ -21,7 +21,7 @@ function Module.StartShutdown(Delay)
     -- Cancels shutdown if applicable   
     Module.CancelShutdown(Delay)
 
-    local Status = Module.NewStatus("Server shutting down in " .. Delay .. " seconds")
+    local Status = Module.NewStatus("Server shutting down in " .. Delay .. " seconds", "Kick")
     IsShuttingDown = true
     for Sec = Delay, 0, -1 do
         Status.TextLabel.Text = "Server shutting down in " .. Sec .. " seconds"
@@ -38,7 +38,7 @@ function Module.StartShutdown(Delay)
             Arguments = {"all", "Server shut down"}
         })
     else
-        Module.RemoveStatus()
+        Module.RemoveStatus("Kick")
     end
 end
 
@@ -47,23 +47,24 @@ function Module.CancelShutdown(Delay)
 end
 
     -- Status
-function Module.NewStatus(Msg)
-    local Hint = An:FindFirstChild("Hint")
+function Module.NewStatus(Msg, Type)
+    local Hint = An:FindFirstChild(Type or "Hint")
     if not Hint then
         local NewHint = An.ListLayout.Template:Clone()
         NewHint.TextLabel.Text = Msg
         NewHint.LayoutOrder = 1
         NewHint.Transparency = Settings.Announcement.StatusTransparency
-        NewHint.Name = "Hint"
+        NewHint.Name = Type or "Hint"
         NewHint.Parent = An
         return NewHint
     else
         Hint.TextLabel.Text = Msg
+        return Hint
     end
 end
 
-function Module.RemoveStatus()
-    local Hint = An:FindFirstChild("Hint")
+function Module.RemoveStatus(Type)
+    local Hint = An:FindFirstChild(Type or "Hint")
     if Hint then
         Hint:Destroy()
     end
