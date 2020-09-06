@@ -1988,9 +1988,50 @@ Velocity.Commands.an = {
         end
 
         -- Run Command
-        Remotes.Announcement:FireAllClients(Text)
+        Remotes.Announcement:FireAllClients("Announcement", Text)
         return true, "Announcement made: " .. Text
 
+    end
+}
+
+Velocity.Commands.status = {
+    ["Description"] = "Displays the status to the entire server. Won't be removed unless called.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "text",
+            ["Description"] = "The status",
+            ["Choices"] = true,
+            ["NoWordLimit"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Text)
+
+        -- Check if necessary arguments are there
+        if not Text then
+            return false, "Text Argument Missing"
+        end
+
+        local success = pcall(function()
+            Text = Chat:FilterStringForBroadcast(Text, CurrentPlayer)
+        end)
+
+        if not success then
+            return false, "Could not filter text" 
+        end
+
+        -- Run Command
+        Remotes.Announcement:FireAllClients("Status", Text)
+        return true, "Status was made: " .. Text
+
+    end
+}
+
+Velocity.Commands.unstatus = {
+    ["Description"] = "Removes the current status.",
+    ["Arguments"] = {},
+    ["Run"] = function()
+        Remotes.Announcement:FireAllClients("Status")
+        return true, "Status was removed"
     end
 }
 

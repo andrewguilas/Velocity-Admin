@@ -13,11 +13,13 @@ local An = p.PlayerGui:WaitForChild("VelocityAdmin").Announcement
 
 -- // Functions \\ --
 
-function Module.NewHint(Msg)
+function Module.NewStatus(Msg)
     local Hint = An:FindFirstChild("Hint")
     if not Hint then
         local NewHint = An.ListLayout.Template:Clone()
         NewHint.TextLabel.Text = Msg
+        NewHint.LayoutOrder = 1
+        NewHint.Transparency = Settings.Announcement.StatusTransparency
         NewHint.Name = "Hint"
         NewHint.Parent = An
     else
@@ -25,17 +27,18 @@ function Module.NewHint(Msg)
     end
 end
 
-function Module.RemoveHint(Msg)
+function Module.RemoveStatus()
     local Hint = An:FindFirstChild("Hint")
     if Hint then
         Hint:Destroy()
     end
 end
 
-function Module.NewAnnoncement(Msg)
+function Module.NewAnnouncement(Msg)
 
     local NewAn = An.ListLayout.Template:Clone()
     NewAn.TextLabel.Text = Msg
+    NewAn.Transparency = Settings.Announcement.AnnouncementTransparency
     NewAn.Parent = An
 
     local MaxDur = Settings.CommandBar.Response.SecondsPerLetter * #Msg
@@ -44,6 +47,18 @@ function Module.NewAnnoncement(Msg)
     end
 
     Debris:AddItem(NewAn, MaxDur)
+end
+
+function Module.HandleRequest(Type, Msg)
+    if Type == "Announcement" then
+        Module.NewAnnouncement(Msg)
+    elseif Type == "Status" then
+        if Msg then
+            Module.NewStatus(Msg)
+        else
+            Module.RemoveStatus()
+        end
+    end
 end
 
 ----------------------------------------

@@ -34,6 +34,10 @@ local Settings = {
             ["Classic Sword"] = 47433,
             ["Building Tools"] = 142785488,
         },
+    },
+    Announcement = {
+        AnnouncementTransparency = 0.7,
+        StatusTransparency = 0.5,
     }
 }
 

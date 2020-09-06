@@ -85,11 +85,13 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 32. `lock <text (optional)>` - Locks the server preventing incoming people from joining with a reason.
 33. `unlock` - Unlocks the server so incoming people can join.
 34. `an <text>` - Announces a message to the entire server.
-35. `shutdown <delay>` - Shuts down the server in a duration.~~
-36. `brightness <number>` - Changes the game's brightness.
-37. `time` - Changes the game's clock time.
-38. `respawntime <duration>` - Changes the default respawn time for all players.
-39. `defaultjumppower <number>` - Changes the default jump power.
-40. `defaultspeed <number>` - Changes the default walk speed.
-41. `defaultcharacterloads <bool>` - If true, characters won't load in.
-42. `useemotes <bool>` - If true, new players won't be able to use emotes.
+35. `status <text>` - Displays the status to the entire server. Won't be removed unless called.
+36. `unstatus` - Removes the current status.
+37. `shutdown <delay>` - Shuts down the server in a duration.~~
+38. `brightness <number>` - Changes the game's brightness.
+39. `time` - Changes the game's clock time.
+40. `respawntime <duration>` - Changes the default respawn time for all players.
+41. `defaultjumppower <number>` - Changes the default jump power.
+42. `defaultspeed <number>` - Changes the default walk speed.
+43. `defaultcharacterloads <bool>` - If true, characters won't load in.
+44. `useemotes <bool>` - If true, new players won't be able to use emotes.
