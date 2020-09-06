@@ -24,7 +24,7 @@ local Settings = {
             DefaultSize = UDim2.new(0, 20, 0, 30),
             SuccessColor = Color3.fromRGB(0, 255, 0),
             ErrorColor = Color3.fromRGB(255, 0, 0),
-            SecondsPerLetter = 0.1,
+            SecondsPerLetter = 0.15,
             MaxDuration = 10,
         }
     },

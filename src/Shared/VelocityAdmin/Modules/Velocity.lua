@@ -12,11 +12,12 @@ local Velocity = {
 
 local Teams = game:GetService("Teams")
 local Chat = game:GetService("Chat")
+local DataStoreService = game:GetService("DataStoreService")
 
 local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
-local DataStoreService = game:GetService("DataStoreService")
+local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 
 -- // Helper Functions \\ --
 
@@ -1958,6 +1959,38 @@ Velocity.Commands.unlock = {
     ["Run"] = function()
         Velocity.TempData.ServerLocked = nil
         return true, "Server unlocked"
+    end
+}
+
+Velocity.Commands.an = {
+    ["Description"] = "Announces a message to the entire server.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "text",
+            ["Description"] = "The announcement",
+            ["Choices"] = true,
+            ["NoWordLimit"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Text)
+
+        -- Check if necessary arguments are there
+        if not Text then
+            return false, "Text Argument Missing"
+        end
+
+        local success = pcall(function()
+            Text = Chat:FilterStringForBroadcast(Text, CurrentPlayer)
+        end)
+
+        if not success then
+            return false, "Could not filter text" 
+        end
+
+        -- Run Command
+        Remotes.Announcement:FireAllClients(Text)
+        return true, "Announcement made: " .. Text
+
     end
 }
 
