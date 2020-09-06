@@ -4,20 +4,20 @@
 		"$className": "DataModel",
 		"ReplicatedStorage": {
 			"$className": "ReplicatedStorage",
-			"$ignoreUnknownInstances": true,
-			"$path": "src/ReplicatedStorage"
+			"$ignoreUnknownInstances": false,
+			"$path": "src/Shared"
 		},
 		"ServerScriptService": {
 			"$className": "ServerScriptService",
 			"$ignoreUnknownInstances": true,
-			"$path": "src/ServerScriptService"
+			"$path": "src/Server"
 		},
 		"StarterPlayer": {
 			"$className": "StarterPlayer",
 			"StarterPlayerScripts": {
 				"$className": "StarterPlayerScripts",
 				"$ignoreUnknownInstances": true,
-				"$path": "src/StarterPlayerScripts"
+				"$path": "src/Client"
 			},
 			"$ignoreUnknownInstances": true
 		}

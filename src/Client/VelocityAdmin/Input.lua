@@ -1,9 +1,9 @@
 local Module = {}
 
 local RunService = game:GetService("RunService")
-local Core = require(game.ReplicatedStorage.Modules.Core)
+local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local Handler = require(script.Parent.Handler)
-local Settings = require(game.ReplicatedStorage.Modules.Settings)
+local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 local AutoCompleteModule = require(script.Parent.AutoComplete)
 
 local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar

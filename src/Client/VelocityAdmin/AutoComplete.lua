@@ -5,12 +5,12 @@ local Module = {}
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
 
-local Core = require(game.ReplicatedStorage.Modules.Core)
+local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local Handler = require(script.Parent.Handler)
-local Settings = require(game.ReplicatedStorage.Modules.Settings)
+local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
-local Remotes = game.ReplicatedStorage.Remotes
-local Commands = require(game.ReplicatedStorage.Modules.Velocity).Commands
+local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
+local Commands = require(game.ReplicatedStorage.VelocityAdmin.Modules.Velocity).Commands
 
 local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox

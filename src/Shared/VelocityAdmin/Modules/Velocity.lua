@@ -13,8 +13,8 @@ local Velocity = {
 local Teams = game:GetService("Teams")
 local Chat = game:GetService("Chat")
 
-local Core = require(game.ReplicatedStorage.Modules.Core)
-local Settings = require(game.ReplicatedStorage.Modules.Settings)
+local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
+local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
 local DataStoreService = game:GetService("DataStoreService")
 

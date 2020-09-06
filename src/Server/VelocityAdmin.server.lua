@@ -1,10 +1,10 @@
 -- // Variables \\ --
 
 local DataStoreService = game:GetService("DataStoreService")
-local Settings = require(game.ReplicatedStorage.Modules.Settings)
-local Velocity = require(game.ReplicatedStorage.Modules.Velocity)
+local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
+local Velocity = require(game.ReplicatedStorage.VelocityAdmin.Modules.Velocity)
 
-local Remotes = game.ReplicatedStorage.Remotes
+local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 local Commands = Velocity.Commands
 
 -- // Events \\ --
