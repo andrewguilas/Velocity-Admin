@@ -10,8 +10,6 @@ local Handler = require(script.Parent.Handler)
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
 local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
-local Commands = require(game.ReplicatedStorage.VelocityAdmin.Modules.Velocity).Commands
-
 local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
 local AutoComplete = CommandBar.AutoComplete
@@ -125,50 +123,79 @@ function Module.UpdateHint()
 end
 
 function Module.CreateFields(PossibleFields)
-    local BiggestSize = 0
-    for i, Field in pairs(PossibleFields) do
 
-        -- Create new field
-        local NewField = AutoComplete.ListLayout.Template:Clone() do
-            NewField.Title.Text = Field.Title
-            NewField.Description.Text = Field.Description
-            NewField.Name, NewField.LayoutOrder = i, i
-        end
-        
-        -- Set selection
-        if i == 1 then
-            NewField.IsSelected.Value = true
-            NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-        end
+    local HeadingNum = 0
+    local BiggestFieldX = 0
 
-        -- Set sizes
-        NewField.Parent = AutoComplete
-        NewField.Title.Size = UDim2.new(0, NewField.Title.TextBounds.X, 1, 0)
+    -- Creates the auto completion section
+    for Heading, Cmds in pairs(PossibleFields) do
+        HeadingNum = HeadingNum + 1
 
-        local X = NewField.Description.TextBounds.X
-        local FinalY = Core.Round(X/Settings.CommandBar.AutoComplete.MaxDescriptionSize) + 1            
-        if FinalY > 1 then
-            NewField.Description.TextWrapped = true
-        end
-        NewField.Description.Size = UDim2.new(0, X/FinalY, 1, 0)
-        NewField.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxDescriptionSize, FinalY, 0)
-
-        local GoalX = NewField.Description.Size.X.Offset + NewField.Title.Size.X.Offset + Settings.CommandBar.AutoComplete.FieldSpacing
-        if GoalX > BiggestSize then
-            BiggestSize = GoalX
+        -- Creates the Heading
+        local NewHeading = AutoComplete.ListLayout.Heading:Clone() do
+            NewHeading.LayoutOrder = HeadingNum * 10
+            NewHeading.Name, NewHeading.TextLabel.Text = Heading .. "-Heading", Heading
+            NewHeading.Parent = AutoComplete
         end
 
-        NewField.MouseButton1Click:Connect(function()
-            Module.ExecuteAutoComplete(NewField)
-        end)
+        -- Creates the Field Frame
+        local NewFieldFrame = AutoComplete.ListLayout.FieldFrame:Clone() do
+            NewFieldFrame.LayoutOrder = HeadingNum * 10 + 1
+            NewFieldFrame.Name = Heading .. "-Frame"
+            NewFieldFrame.Parent = AutoComplete
+        end
+
+        -- Creates the fields
+        local FieldNum = 0
+
+        for Cmd, Info in pairs(Cmds) do
+
+            -- Creates the field
+            FieldNum = FieldNum + 1
+            local NewField = NewFieldFrame.ListLayout.Field:Clone() do
+                NewField.LayoutOrder = FieldNum
+                NewField.Title.Text = Info.Title
+                NewField.Description.Text = Info.Description
+                NewField.Name = Cmd
+            end
+            
+            -- Sets the selection
+            if HeadingNum == 1 and FieldNum == 1 then
+                NewField.IsSelected.Value = true
+                NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+            end
+
+            -- Other properties
+            NewField.Parent = NewFieldFrame
+            NewField.Title.Size = UDim2.new(0, NewField.Title.TextBounds.X, 1, 0)
+            NewField.Description.Size = UDim2.new(1, NewField.Description.TextBounds.X, 1, 0)
+
+            local NewFieldX = NewField.Title.Size.X.Offset + NewField.Description.Size.X.Offset + Settings.CommandBar.AutoComplete.FieldSpacing
+            NewField.Size = UDim2.new(0, NewFieldX, 0, 20)
+
+            if NewFieldX > BiggestFieldX then
+                BiggestFieldX = NewFieldX
+            end
+
+            NewField.MouseButton1Click:Connect(function()
+                Module.ExecuteAutoComplete(NewField)
+            end)
+
+        end
     end
 
-    for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
-        Field.Size = UDim2.new(0, BiggestSize, Field.Size.Y.Scale, 0)
+    AutoComplete.Size = UDim2.new(0, BiggestFieldX, 0, 0)
+
+    for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
+        for __,Field in pairs(Core.Get(Frame, "TextButton")) do
+            Field.Size = UDim2.new(0, BiggestFieldX, 0, 20)
+        end
+        Frame.Size = UDim2.new(1, 0, 0, Frame.ListLayout.AbsoluteContentSize.Y)
     end
+
 end
 
-function Module.CheckDifference(Title, Description, LastArg, Table, GetAll)
+function Module.CheckDifference(Heading, Title, Description, LastArg, Table, GetAll)
     -- Check if already in table
     local Found
     for _,Info in pairs(Table) do
@@ -199,8 +226,12 @@ function Module.GetFields(Text)
 
     if #Args == 1 then
         local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " 
-        for Title, Info in pairs(Commands) do
-            Module.CheckDifference(Title, Info.Description, Args[#Args], PossibleFields, GetAll)
+
+        for Heading, Cmds in pairs(Handler.Commands) do
+            PossibleFields[Heading] = {}
+            for Title, Info in pairs(Cmds) do
+                Module.CheckDifference(Heading, Title, Info.Description, Args[#Args], PossibleFields[Heading], GetAll)
+            end
         end
     elseif #Args > 1 then
         local Command = Commands[Args[1]:lower()]
@@ -232,19 +263,27 @@ function Module.GetFields(Text)
 end
 
 function Module.TextChanged()
+    -- Set the size of the command bar
     CommandBar.Size = Settings.CommandBar.DefaultSize + UDim2.new(0, TextBox.TextBounds.X, 0, 0)
+
+    -- Delete existing auto complete fields
+    for _,Field in pairs(Core.Get(AutoComplete, "Frame")) do
+        Field:Destroy()
+    end
 
     for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
         Field:Destroy()
     end
 
+    -- Create new auto complete fields
     local PossibleFields = Module.GetFields(TextBox.Text)
     if PossibleFields then
         Module.CreateFields(PossibleFields)
-        Module.UpdateHint()
+        --Module.UpdateHint()
     end
     
-    AutoComplete.Size = Settings.CommandBar.AutoComplete.FieldSize + UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, 0)
+    -- Set size of auto complete
+    AutoComplete.Size = UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
 end
 
 return Module

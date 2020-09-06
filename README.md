@@ -81,7 +81,7 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 35. `isingroup <player, groupID>` - Checks if the player is in the group.
 36. `rank <player, group ID` - Returns the player's rank & role in a group.
 
-#### Game: Commands for controling the game.
+### Administration: Commands for controling the game.
 
 37. `lock <text (optional)>` - Locks the server preventing incoming people from joining with a reason.
 38. `unlock` - Unlocks the server so incoming people can join.
