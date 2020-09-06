@@ -70,30 +70,30 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 
 #### Player
 
-23. `kick <player, reason (optional)>` - Kicks the player from the game with a reason.
-24. `ban <player, length, reason>` - Bans the player from the server for a duration with a reason.
-25. `pban <player, length, reason` - Bans a player from all places for a duration.
-26. `unban <player` - Unbans the player from all servers.
-27. `age <player` - Returns the player's account age.
-28. `id <player>` - Returns the player's user ID.
-29. `isfriendswith <player, user>` - Checks if the player is friends with the user.
-30. `isingroup <player, groupID>` - Checks if the player is in the group.
-31. `rank <player, group ID` - Returns the player's rank & role in a group.
-32. [IN PROGRESS] `tp <player1> <player2>` - Teleports player1 to player2.
+27. `tp <player1> <player2>` - Teleports player1 to player2.
+28. `kick <player, reason (optional)>` - Kicks the player from the game with a reason.
+29. `ban <player, length, reason>` - Bans the player from the server for a duration with a reason.
+30. `pban <player, length, reason` - Bans a player from all places for a duration.
+31. `unban <player` - Unbans the player from all servers.
+32. `age <player` - Returns the player's account age.
+33. `id <player>` - Returns the player's user ID.
+34. `isfriendswith <player, user>` - Checks if the player is friends with the user.
+35. `isingroup <player, groupID>` - Checks if the player is in the group.
+36. `rank <player, group ID` - Returns the player's rank & role in a group.
 
 #### Game: Commands for controling the game.
 
-32. `lock <text (optional)>` - Locks the server preventing incoming people from joining with a reason.
-33. `unlock` - Unlocks the server so incoming people can join.
-34. `an <text>` - Announces a message to the entire server.
-35. `status <text>` - Displays the status to the entire server. Won't be removed unless called.
-36. `unstatus` - Removes the current status.
-37. `shutdown <delay>` - Shuts down the server in a duration.
-38. `cancelshutdown` - Cancels the current shut down.
-39. `brightness <number>` - Changes the game's brightness.
-40. `time` - Changes the game's clock time.
-41. `respawntime <duration>` - Changes the default respawn time for all players.
-42. `defaultjumppower <number>` - Changes the default jump power.
-43. `defaultspeed <number>` - Changes the default walk speed.
-44. `defaultcharacterloads <bool>` - If true, characters won't load in.
-45. `useemotes <bool>` - If true, new players won't be able to use emotes.
+37. `lock <text (optional)>` - Locks the server preventing incoming people from joining with a reason.
+38. `unlock` - Unlocks the server so incoming people can join.
+39. `an <text>` - Announces a message to the entire server.
+40. `status <text>` - Displays the status to the entire server. Won't be removed unless called.
+41. `unstatus` - Removes the current status.
+42. `shutdown <delay>` - Shuts down the server in a duration.
+43. `cancelshutdown` - Cancels the current shut down.
+44. `brightness <number>` - Changes the game's brightness.
+45. `time` - Changes the game's clock time.
+46. `respawntime <duration>` - Changes the default respawn time for all players.
+47. `defaultjumppower <number>` - Changes the default jump power.
+48. `defaultspeed <number>` - Changes the default walk speed.
+49. `defaultcharacterloads <bool>` - If true, characters won't load in.
+50. `useemotes <bool>` - If true, new players won't be able to use emotes.
