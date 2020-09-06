@@ -1,5 +1,19 @@
 # Velocity Admin
 
+Velocity Admin is an open sourced admin system designed for speed and minimalism. Key features include... 
+- Auto completion 
+- Easy external use. 
+  
+**This system is no longer being worked on** due to person reasons. However, it is planned to be continued in the future. Planned features include... 
+- AI directed autocompletion (stores command usage throughout Roblox)
+- Smart field detection (warns user if the argument for the command they are typing does not match the command argument)
+- Bind commands to input
+- Customizable command layouts & themes to each individual user
+- Custom admin levels
+- More player arguments (teams, user ID's)
+- Usable in chat & as a menu
+- Compressed into one folder
+
 ## Info
 
 ### Keybinds
@@ -37,21 +51,20 @@
 10. `unff <player>` - Removes the player's forcefield.
 11. `sword <player>` - Gives the player a sword.
 12. `f3x <player>` - Gives the player f3x.
-13. [PLANNED] `btools <player>` - Gives the player btools.
-14. `unequipall <player>` - Unequipps the tools the player is holding.
-15. `cleartools <player>` - Removes all the tools the player is holding or is in their backpack.
-16. `freeze <player>` - Makes the player immovable.
-17. `unfreeze <player>` - Makes the player movable.
-18. `speed <player, number>` - Changes the player's walkspeed.
-19. `jump <player>` - Makes the player jump.
-20. `jumppower <player, number>` - Changes the player's jump power.
-21. `heal <player, number>` - Heals the player's health by an amount.
-22. `god <player>` - Sets the player's health to infinite.
-23. `ungod <player>` - Sets the player's health to the previous health before being goded.
-24. `health <player, number>` - Changes the player's health to an amount.
-25. `maxhealth <player, number>` - Changes the player's max health to an amount.
-26. `kill <player>` - Kills the player.
-27. `damage <player, number>` - Damages the player by an amount.
+13. `unequipall <player>` - Unequipps the tools the player is holding.
+14. `cleartools <player>` - Removes all the tools the player is holding or is in their backpack.
+15. `freeze <player>` - Makes the player immovable.
+16. `unfreeze <player>` - Makes the player movable.
+17. `speed <player, number>` - Changes the player's walkspeed.
+18. `jump <player>` - Makes the player jump.
+19. `jumppower <player, number>` - Changes the player's jump power.
+20. `heal <player, number>` - Heals the player's health by an amount.
+21. `god <player>` - Sets the player's health to infinite.
+22. `ungod <player>` - Sets the player's health to the previous health before being goded.
+23. `health <player, number>` - Changes the player's health to an amount.
+24. `maxhealth <player, number>` - Changes the player's max health to an amount.
+25. `kill <player>` - Kills the player.
+26. `damage <player, number>` - Damages the player by an amount.
 
 ### Player
 
@@ -67,14 +80,13 @@
 
 ## Game: Commands for controling the game.
 
-32. [PLANNED] `m <text>` - Announces a message to the entire server.
-33. `lock <text (optional)>` - Locks the server preventing incoming people from joining with a reason.
-34. `unlock` - Unlocks the server so incoming people can join.
-35. [PLANNED] `shutdown <delay>` - Shuts down the server in a duration.
-36. `brightness <number>` - Changes the game's brightness.
-37. `time` - Changes the game's clock time.
-38. `respawntime <duration>` - Changes the default respawn time for all players.
-39. `defaultjumppower <number>` - Changes the default jump power.
-40. `defaultspeed <number>` - Changes the default walk speed.
-41. `defaultcharacterloads <bool>` - If true, characters won't load in.
-42. `useemotes <bool>` - If true, new players won't be able to use emotes.
+32. `lock <text (optional)>` - Locks the server preventing incoming people from joining with a reason.
+33. `unlock` - Unlocks the server so incoming people can join.
+34. `shutdown <delay>` - Shuts down the server in a duration.~~
+35. `brightness <number>` - Changes the game's brightness.
+36. `time` - Changes the game's clock time.
+37. `respawntime <duration>` - Changes the default respawn time for all players.
+38. `defaultjumppower <number>` - Changes the default jump power.
+39. `defaultspeed <number>` - Changes the default walk speed.
+40. `defaultcharacterloads <bool>` - If true, characters won't load in.
+41. `useemotes <bool>` - If true, new players won't be able to use emotes.
