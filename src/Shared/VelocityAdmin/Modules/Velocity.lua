@@ -12,11 +12,12 @@ local Velocity = {
 
 local Teams = game:GetService("Teams")
 local Chat = game:GetService("Chat")
+local DataStoreService = game:GetService("DataStoreService")
 
 local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
-local DataStoreService = game:GetService("DataStoreService")
+local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 
 -- // Helper Functions \\ --
 
@@ -41,6 +42,18 @@ function Velocity.Helper.FindPlayer(Key, p)
     if #Players > 0 then
         return Players
     end   
+end
+
+function Velocity.Helper.FindSinglePlayer(Key, p)
+    if Key == "me" then
+        return p
+    else
+        for _,p in pairs(game.Players:GetPlayers()) do
+            if p.Name:lower() == Key:lower() then
+                return p
+            end
+        end        
+    end 
 end
 
 -- // Character \\ --
@@ -1339,6 +1352,86 @@ Velocity.Commands.damage = {
 
 -- // Player \\ --
 
+Velocity.Commands.tp = {
+    ["Description"] = "Teleports player1 to player2",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "player1",
+            ["Description"] = "The player who will be teleported.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+        [2] = {
+            ["Title"] = "player2",
+            ["Description"] = "Where player1 will be teleported to.",
+            ["Choices"] = function()
+                local Players = {}
+                for _,p in pairs(game.Players:GetPlayers()) do
+                    table.insert(Players, p.Name)
+                end
+                return Players
+            end
+        },
+    },
+    ["Run"] = function(CurrentPlayer, player1, player2)
+
+        -- Settings
+        local TP_OFFSET = CFrame.new(0, 0, 5)
+
+        -- Check if necessary arguments are there
+        if not player1 then
+            return false, "Player 1 Argument Missing"
+        elseif not player2 then
+            return false, "Player 2 Argument Missing"
+        end
+
+        -- Run Command       
+            
+            -- Gets player 2 instance
+        player2 = Velocity.Helper.FindSinglePlayer(player2, CurrentPlayer)
+        if not player2 then
+            return false, player2 .. " does not exist."
+        end
+
+            -- Gets the player 2 character  
+        local player2Char = player2.Character
+        if not player2Char then
+            return false, player2 .. "'s character does not exist"
+        end
+        local player2Root = player2Char:WaitForChild("HumanoidRootPart")
+
+        local Players = Velocity.Helper.FindPlayer(player1, CurrentPlayer)
+        if Players then
+            local Info = {}
+            for _,p in pairs(Players) do
+                local pChar = p.Character
+                if pChar then
+                    local pRoot = pChar:WaitForChild("HumanoidRootPart")
+                    pRoot.CFrame = player2Root.CFrame * TP_OFFSET
+                    table.insert(Info, {
+                        Success = true,
+                        Status = p.Name .. " was teleported to " .. player2.Name
+                    })
+                else
+                    table.insert(Info, {
+                        Success = false,
+                        Status = p.Name .. "'s character does not exist"
+                    })
+                end
+            end         
+            return Info     
+        else
+            return false, player1 .. " is not a valid player."
+        end
+
+    end
+}
+
 Velocity.Commands.kick = {
     ["Description"] = "Kicks a player from the game.",
     ["Arguments"] = {
@@ -1958,6 +2051,116 @@ Velocity.Commands.unlock = {
     ["Run"] = function()
         Velocity.TempData.ServerLocked = nil
         return true, "Server unlocked"
+    end
+}
+
+Velocity.Commands.an = {
+    ["Description"] = "Announces a message to the entire server.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "text",
+            ["Description"] = "The announcement",
+            ["Choices"] = true,
+            ["NoWordLimit"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Text)
+
+        -- Check if necessary arguments are there
+        if not Text then
+            return false, "Text Argument Missing"
+        end
+
+        local success = pcall(function()
+            Text = Chat:FilterStringForBroadcast(Text, CurrentPlayer)
+        end)
+
+        if not success then
+            return false, "Could not filter text" 
+        end
+
+        -- Run Command
+        Remotes.Announcement:FireAllClients("Announcement", Text)
+        return true, "Announcement made: " .. Text
+
+    end
+}
+
+Velocity.Commands.status = {
+    ["Description"] = "Displays the status to the entire server. Won't be removed unless called.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "text",
+            ["Description"] = "The status",
+            ["Choices"] = true,
+            ["NoWordLimit"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Text)
+
+        -- Check if necessary arguments are there
+        if not Text then
+            return false, "Text Argument Missing"
+        end
+
+        local success = pcall(function()
+            Text = Chat:FilterStringForBroadcast(Text, CurrentPlayer)
+        end)
+
+        if not success then
+            return false, "Could not filter text" 
+        end
+
+        -- Run Command
+        Remotes.Announcement:FireAllClients("Status", Text)
+        return true, "Status was made: " .. Text
+
+    end
+}
+
+Velocity.Commands.unstatus = {
+    ["Description"] = "Removes the current status.",
+    ["Arguments"] = {},
+    ["Run"] = function()
+        Remotes.Announcement:FireAllClients("Status")
+        return true, "Status was removed"
+    end
+}
+
+Velocity.Commands.shutdown = {
+    ["Description"] = "Shuts down the server in a duration.",
+    ["Arguments"] = {
+        [1] = {
+            ["Title"] = "delay",
+            ["Description"] = "How long until the server is shut down.",
+            ["Choices"] = true,
+        }
+    },
+    ["Run"] = function(CurrentPlayer, Delay)
+
+        -- Checks parameters
+        if Delay and not tonumber(Delay) then
+            return false, "Delay must be a number"
+        end
+
+        -- Run Command
+        Remotes.Announcement:FireAllClients("Shutdown", Delay)
+        if Delay then
+            return true, "Server shutting down in " .. Delay .. " seconds"
+        else
+            return true, "Server shutting down"
+        end
+
+    end
+}
+
+Velocity.Commands.cancelshutdown = {
+    ["Description"] = "Shuts down the server in a duration.",
+    ["Arguments"] = {},
+    ["Run"] = function(CurrentPlayer)
+        -- Run Command
+        Remotes.Announcement:FireAllClients("Shutdown", "Cancel")
+        return true, "Canceling server shutdown"
     end
 }
 
