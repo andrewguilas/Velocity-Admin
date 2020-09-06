@@ -32,7 +32,9 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 - Player: Someone who is in the server.
 - User: Anyone user on Roblox.
 
-## Fun: Commands that provide no competitive advantage.
+## Commands
+
+### Fun: Commands that provide no competitive advantage.
 
 1. `hat <player, accessoryid>` - Adds an accessory to the player with the given Roblox accessory ID.
 2. `removehats <player>` - Removes all the accessories on the player.
@@ -40,9 +42,9 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 4. `name <player, name>` - Changes the player's name over their head.
 5. `unname <player>` - Changes the player's name to their default name.
 
-## Moderation: Commands for moderation and administrative purposes.
+### Moderation: Commands for moderation and administrative purposes.
 
-### Character
+#### Character
 
 6. `re <player>` - Respawns the player.
 7. `invis <player>` - Makes the player invisible.
@@ -66,7 +68,7 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 25. `kill <player>` - Kills the player.
 26. `damage <player, number>` - Damages the player by an amount.
 
-### Player
+#### Player
 
 23. `kick <player, reason (optional)>` - Kicks the player from the game with a reason.
 24. `ban <player, length, reason>` - Bans the player from the server for a duration with a reason.
@@ -78,7 +80,7 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 30. `isingroup <player, groupID>` - Checks if the player is in the group.
 31. `rank <player, group ID` - Returns the player's rank & role in a group.
 
-## Game: Commands for controling the game.
+#### Game: Commands for controling the game.
 
 32. `lock <text (optional)>` - Locks the server preventing incoming people from joining with a reason.
 33. `unlock` - Unlocks the server so incoming people can join.
