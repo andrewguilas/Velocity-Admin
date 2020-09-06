@@ -1,5 +1,19 @@
 # Velocity Admin
 
+## Info
+
+### Keybinds
+- `\` to open/close UI
+- `esc` to close UI
+- `tab`/`return` to use autocompletion
+- `up`/`down` to use different fields
+
+### Player Arguments
+- me
+- all
+- others
+- <username>
+
 ## Character
 
 1. `char (player1, player2)` - Changes player 1's appearance to any user on Roblox: player 2.
