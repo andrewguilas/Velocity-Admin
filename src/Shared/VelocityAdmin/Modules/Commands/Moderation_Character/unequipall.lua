@@ -1,14 +1,15 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
+local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Removes all the accessory on the player."
+Cmd.Description = "Unequipps the tools the player is holding if any."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player you want to remove all the accessories of.",
+        ["Description"] = "The player you want to reset the name of.",
         ["Choices"] = function()
             local Players = {}
             for _,p in pairs(game.Players:GetPlayers()) do
@@ -32,21 +33,24 @@ Cmd.Run = function(CurrentPlayer, Player)
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
-                local Items = {}
-                for _,Accessory in pairs(Char:GetDescendants()) do
-                    if Accessory:IsA("Accessory") then
-                        table.insert(Items, Accessory.Name)
-                        Accessory:Destroy()
+                local Hum = Char:WaitForChild("Humanoid")
+                local Tools = {}
+
+                for _,Tool in pairs(p.Character:GetChildren()) do
+                    if Tool:IsA("Tool") then
+                        table.insert(Tools, Tool.Name)
                     end
                 end
-                if Items then
-                    return true, "Removed the following accessories from " .. Player .. "... " .. table.concat(Items, ", ")
+
+                if #Tools > 0 then
+                    Hum:UnequipTools()
+                    return true, Player .. " unequipped... " .. table.concat(Tools, ", ")
                 else
-                    return true, "No accessories detected for " .. Player
+                    return true, Player .. " has no tools in their backpack."
                 end
             else
-                return false, Player .. "'s character does not exist."
-            end   
+                return false, p.Name .. "'s character does not exist.."
+            end
         end              
     else
         return false, Player .. " is not a valid player."

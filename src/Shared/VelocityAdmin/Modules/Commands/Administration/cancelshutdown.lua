@@ -4,13 +4,14 @@ local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Unocks the server incoming people to join."
+Cmd.Description = "Shuts down the server in a duration."
 
 Cmd.Arguments = {}
 
-Cmd.Run = function()
-    Velocity.TempData.ServerLocked = nil
-    return true, "Server unlocked"
+Cmd.Run = function(CurrentPlayer)
+    -- Run Command
+    Remotes.Announcement:FireAllClients("Shutdown", "Cancel")
+    return true, "Canceling server shutdown"
 end
 
 ----------------------------------------------------------------------

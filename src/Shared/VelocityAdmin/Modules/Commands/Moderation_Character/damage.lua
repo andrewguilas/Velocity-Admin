@@ -1,14 +1,15 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
+local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Removes all the accessory on the player."
+Cmd.Description = "Damages a player."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player you want to remove all the accessories of.",
+        ["Description"] = "The player you want to damage.",
         ["Choices"] = function()
             local Players = {}
             for _,p in pairs(game.Players:GetPlayers()) do
@@ -17,13 +18,20 @@ Cmd.Arguments = {
             return Players
         end
     },
+    [2] = {
+        ["Title"] = "amount",
+        ["Description"] = "The amount of damage that will be dealt to the player..",
+        ["Choices"] = {}
+    },
 }
 
-Cmd.Run = function(CurrentPlayer, Player)
-
+Cmd.Run = function(CurrentPlayer, Player, Amount)
+        
     -- Check if necessary arguments are there
     if not Player then
         return false, "Player Argument Missing"
+    elseif not Amount then
+        return false, "Amount Argument Missing"
     end
 
     -- Run Command
@@ -32,21 +40,12 @@ Cmd.Run = function(CurrentPlayer, Player)
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
-                local Items = {}
-                for _,Accessory in pairs(Char:GetDescendants()) do
-                    if Accessory:IsA("Accessory") then
-                        table.insert(Items, Accessory.Name)
-                        Accessory:Destroy()
-                    end
-                end
-                if Items then
-                    return true, "Removed the following accessories from " .. Player .. "... " .. table.concat(Items, ", ")
-                else
-                    return true, "No accessories detected for " .. Player
-                end
+                local Hum = Char:WaitForChild("Humanoid")
+                Hum.Health = Hum.Health - Amount
+                return true, Player .. " was damaged by " .. Amount .. " HP's."
             else
                 return false, Player .. "'s character does not exist."
-            end   
+            end 
         end              
     else
         return false, Player .. " is not a valid player."

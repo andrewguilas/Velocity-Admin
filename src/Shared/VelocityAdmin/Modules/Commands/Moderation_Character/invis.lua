@@ -1,5 +1,6 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
+local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
@@ -27,17 +28,17 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
-                Helper.Data[CurrentPlayer.Name].InvisItems = {}
+                Velocity.TempData[CurrentPlayer.Name].InvisItems = {}
                 for _,Part in pairs(Char:GetDescendants()) do
                     pcall(function()
                         if Part.Transparency ~= 1 then
                             Part.Transparency = 1
-                            table.insert(Helper.Data[CurrentPlayer.Name].InvisItems, Part)
+                            table.insert(Velocity.TempData[CurrentPlayer.Name].InvisItems, Part)
                         end
                     end)
                 end

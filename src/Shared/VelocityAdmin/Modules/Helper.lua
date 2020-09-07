@@ -1,5 +1,8 @@
 local Helper = {
     Data = {
+        Commands = {},
+        Helper = {},
+        Settings = {},
         TempBanned = {}
     }
 }

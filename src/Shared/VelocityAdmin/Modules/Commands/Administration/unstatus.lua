@@ -4,13 +4,13 @@ local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Unocks the server incoming people to join."
+Cmd.Description = "Removes the current status."
 
 Cmd.Arguments = {}
 
 Cmd.Run = function()
-    Velocity.TempData.ServerLocked = nil
-    return true, "Server unlocked"
+    Remotes.Announcement:FireAllClients("Status")
+    return true, "Status was removed"
 end
 
 ----------------------------------------------------------------------
