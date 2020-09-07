@@ -169,15 +169,13 @@ function Module.CreateFields(PossibleFields)
             NewField.Parent = NewFieldFrame
             NewField.Title.Size = UDim2.new(0, NewField.Title.TextBounds.X, 1, 0)
 
-            -- Sizes description & field
-            local X = NewField.Description.TextBounds.X 
-            local Y = Core.Round(X/Settings.CommandBar.AutoComplete.MaxFieldSizeX) + 1
-            print(Y)
-            if Y > 1 then
+            -- Set description size
+            local yMultiplier = Core.Round(NewField.Description.TextBounds.X / 130)
+            print(Info.Title, yMultiplier)
+            if yMultiplier > 1 then
                 NewField.Description.TextWrapped = true
+                NewField.Size = UDim2.new(1, 0, 0, yMultiplier * 20)
             end
-            NewField.Description.Size = UDim2.new(0, X/Y, 1, 0)
-            NewField.Size = UDim2.new(1, 0, 0, Y * 20)
 
             -- On Click Event
             NewField.MouseButton1Click:Connect(function()
