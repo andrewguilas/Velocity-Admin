@@ -16,7 +16,7 @@ local Settings = {
             ArgSplit = " ",
             SelectedColor = Color3.fromRGB(100, 100, 100),
             UnselectedColor = Color3.fromRGB(0, 0, 0),
-            MaxDescriptionSize = 300,
+            MaxFieldSizeX = 350,
             FieldSize = UDim2.new(20, 0, 0, 20),
             FieldSpacing = 100,
         },

@@ -125,7 +125,7 @@ end
 function Module.CreateFields(PossibleFields)
 
     local HeadingNum = 0
-    local BiggestFieldX = 0
+    local BiggestSize = 0
 
     -- Creates the auto completion section
     for Heading, Cmds in pairs(PossibleFields) do
@@ -168,31 +168,28 @@ function Module.CreateFields(PossibleFields)
             -- Other properties
             NewField.Parent = NewFieldFrame
             NewField.Title.Size = UDim2.new(0, NewField.Title.TextBounds.X, 1, 0)
-            NewField.Description.Size = UDim2.new(1, NewField.Description.TextBounds.X, 1, 0)
 
-            local NewFieldX = NewField.Title.Size.X.Offset + NewField.Description.Size.X.Offset + Settings.CommandBar.AutoComplete.FieldSpacing
-            NewField.Size = UDim2.new(0, NewFieldX, 0, 20)
-
-            if NewFieldX > BiggestFieldX then
-                BiggestFieldX = NewFieldX
+            -- Sizes description & field
+            local X = NewField.Description.TextBounds.X 
+            local Y = Core.Round(X/Settings.CommandBar.AutoComplete.MaxFieldSizeX) + 1
+            print(Y)
+            if Y > 1 then
+                NewField.Description.TextWrapped = true
             end
+            NewField.Description.Size = UDim2.new(0, X/Y, 1, 0)
+            NewField.Size = UDim2.new(1, 0, 0, Y * 20)
 
+            -- On Click Event
             NewField.MouseButton1Click:Connect(function()
                 Module.ExecuteAutoComplete(NewField)
             end)
 
         end
+
+        NewFieldFrame.Size = UDim2.new(1, 0, 0, NewFieldFrame.ListLayout.AbsoluteContentSize.Y)
     end
 
-    AutoComplete.Size = UDim2.new(0, BiggestFieldX, 0, 0)
-
-    for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
-        for __,Field in pairs(Core.Get(Frame, "TextButton")) do
-            Field.Size = UDim2.new(0, BiggestFieldX, 0, 20)
-        end
-        Frame.Size = UDim2.new(1, 0, 0, Frame.ListLayout.AbsoluteContentSize.Y)
-    end
-
+    AutoComplete.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxFieldSizeX, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
 end
 
 function Module.CheckDifference(Heading, Title, Description, LastArg, Table, GetAll)
