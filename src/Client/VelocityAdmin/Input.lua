@@ -56,13 +56,14 @@ end
 
 function Module.Returned()
     local SelectedField
-    for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
-        if Field.IsSelected.Value then
-            AutoCompleteModule.ExecuteAutoComplete(Field)
-            return
+    for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
+        for __,Field in pairs(Core.Get(Frame, "TextButton")) do
+            if Field.IsSelected.Value then
+                AutoCompleteModule.ExecuteAutoComplete(Field)
+                return
+            end
         end
     end
-
     if AutoCompleteModule.ExecuteCommand() then
         Module.CloseUI()
     end

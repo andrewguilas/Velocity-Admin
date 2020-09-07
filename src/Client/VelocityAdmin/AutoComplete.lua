@@ -21,7 +21,6 @@ local Hint = Info.Hint
 
 function Module.ExecuteCommand()
     Handler.Data.Arguments = TextBox.Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
-
     if Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments] and Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments].NoWordLimit then
         local LastArg = table.concat(Handler.Data.Arguments, Settings.CommandBar.AutoComplete.ArgSplit, #Handler.Data.CommandInfo.Arguments + 1)      
         for i = #Handler.Data.CommandInfo.Arguments + 1, #Handler.Data.Arguments do
@@ -29,9 +28,8 @@ function Module.ExecuteCommand()
         end
         table.insert(Handler.Data.Arguments, LastArg)
     end
-    
-    table.remove(Handler.Data.Arguments, 1)
 
+    table.remove(Handler.Data.Arguments, 1)
     if Handler.Data.Command and Handler.Data.CommandInfo then
         local Success, Status = Remotes.FireCommand:InvokeServer(Handler.Data)
         if typeof(Success) == "table" then
@@ -78,116 +76,143 @@ function Module.UpdateResponse(Success, Status)
 end
 
 function Module.UpdateSelectedField(Step)
-    for _,OldSelectedField in pairs(Core.Get(AutoComplete, "TextButton")) do
-        if OldSelectedField.IsSelected.Value then
-            local NewSelectedField = AutoComplete:FindFirstChild(OldSelectedField.Name + Step)
-            if NewSelectedField then
-                OldSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
-                NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-                NewSelectedField.IsSelected.Value, OldSelectedField.IsSelected.Value = true, false
+    for FrameIndex,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
+        for _,Field in pairs(Core.Get(Frame, "TextButton")) do
+            if Field.IsSelected.Value then
+
+                -- Finds the next possible selected field
+                local NewSelectedField
+                if Step == 1 then
+                    NewSelectedField = Frame:FindFirstChild(Field.Name + Step)
+                    if not NewSelectedField then
+                        for _, NextFrame in pairs(Core.Get(AutoComplete, "Frame")) do
+                            if NextFrame.LayoutOrder == Frame.LayoutOrder + 10 then
+                                NewSelectedField = Core.Get(NextFrame, "TextButton")[1]
+                                break
+                            end
+                        end
+                    end
+                elseif Step == -1 then
+                    NewSelectedField = Frame:FindFirstChild(Field.Name + Step)
+                    if not NewSelectedField then
+                        for _, NextFrame in pairs(Core.Get(AutoComplete, "Frame")) do
+                            if NextFrame.LayoutOrder == Frame.LayoutOrder - 10 then
+                                NewSelectedField = Core.Get(NextFrame, "TextButton")[#Core.Get(NextFrame, "TextButton")]
+                                break
+                            end
+                        end
+                    end
+                end
+
+                -- Sets a new selection
+                if NewSelectedField then
+                    Field.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
+                    NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                    NewSelectedField.IsSelected.Value, Field.IsSelected.Value = true, false
+                end
+                return
             end
-            return
         end
     end
 end
 
 function Module.UpdateHint()
-    local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)
-    for Name, Info in pairs(Commands) do
-        if Name:lower() == Args[1]:lower() then
+    local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)  
+    for Type,Commands in pairs(Handler.Commands) do
+        for Command, Info in pairs(Commands) do
+            if Command:lower() == Args[1]:lower() then
+                -- Gets the argument info
+                local ArgumentInfo
+                if Info.Arguments[#Info.Arguments] then
+                    if Info.Arguments[#Info.Arguments].NoWordLimit and #Args > #Info.Arguments then
+                        ArgumentInfo = Info.Arguments[#Info.Arguments]
+                    else
+                        ArgumentInfo = Info.Arguments[#Args-1]
+                    end
+                end
 
-            -- Gets the argument info
-            local ArgumentInfo
-            if Info.Arguments[#Info.Arguments] then
-                if Info.Arguments[#Info.Arguments].NoWordLimit and #Args > #Info.Arguments then
-                    ArgumentInfo = Info.Arguments[#Info.Arguments]
-                else
-                    ArgumentInfo = Info.Arguments[#Args-1]
+                -- Creates the hint
+                if ArgumentInfo then
+                    Hint.Title.Text = ArgumentInfo.Title
+                    Hint.Description.Text = ArgumentInfo.Description
+                    Hint.Visible = true
+                    Hint.Title.Size = UDim2.new(0, Hint.Title.TextBounds.X + Settings.CommandBar.Hint.Spacing, 1, 0)
+                    Hint.Description.Size = UDim2.new(0, Hint.Description.TextBounds.X + Settings.CommandBar.Hint.Spacing, 1, 0)
+                    Hint.Size = UDim2.new(0, Hint.Title.Size.X.Offset + Hint.Description.Size.X.Offset, 0, Settings.CommandBar.Hint.DefaultSize.Y.Offset)                
+                    return
                 end
             end
-
-            -- Creates the hint
-            if ArgumentInfo then
-                Hint.Title.Text = ArgumentInfo.Title
-                Hint.Description.Text = ArgumentInfo.Description
-                Hint.Visible = true
-                Hint.Title.Size = UDim2.new(0, Hint.Title.TextBounds.X + Settings.CommandBar.Hint.Spacing, 1, 0)
-                Hint.Description.Size = UDim2.new(0, Hint.Description.TextBounds.X + Settings.CommandBar.Hint.Spacing, 1, 0)
-                Hint.Size = UDim2.new(0, Hint.Title.Size.X.Offset + Hint.Description.Size.X.Offset, 0, Settings.CommandBar.Hint.DefaultSize.Y.Offset)                
-                return
-            end
-
         end
     end
     Hint.Visible = false
 end
 
 function Module.CreateFields(PossibleFields)
-
     local HeadingNum = 0
-    local BiggestSize = 0
 
     -- Creates the auto completion section
     for Heading, Cmds in pairs(PossibleFields) do
         HeadingNum = HeadingNum + 1
 
-        -- Creates the Heading
-        local NewHeading = AutoComplete.ListLayout.Heading:Clone() do
-            NewHeading.LayoutOrder = HeadingNum * 10
-            NewHeading.Name, NewHeading.TextLabel.Text = Heading .. "-Heading", Heading
-            NewHeading.Parent = AutoComplete
-        end
+        if #Cmds > 0 then
 
-        -- Creates the Field Frame
-        local NewFieldFrame = AutoComplete.ListLayout.FieldFrame:Clone() do
-            NewFieldFrame.LayoutOrder = HeadingNum * 10 + 1
-            NewFieldFrame.Name = Heading .. "-Frame"
-            NewFieldFrame.Parent = AutoComplete
-        end
-
-        -- Creates the fields
-        local FieldNum = 0
-
-        for Cmd, Info in pairs(Cmds) do
-
-            -- Creates the field
-            FieldNum = FieldNum + 1
-            local NewField = NewFieldFrame.ListLayout.Field:Clone() do
-                NewField.LayoutOrder = FieldNum
-                NewField.Title.Text = Info.Title
-                NewField.Description.Text = Info.Description
-                NewField.Name = Cmd
-            end
-            
-            -- Sets the selection
-            if HeadingNum == 1 and FieldNum == 1 then
-                NewField.IsSelected.Value = true
-                NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+            -- Creates the Heading
+            local NewHeading = AutoComplete.ListLayout.Heading:Clone() do
+                NewHeading.LayoutOrder = HeadingNum * 10
+                NewHeading.Name, NewHeading.TextLabel.Text = Heading .. "-Heading", Heading
+                NewHeading.Parent = AutoComplete
             end
 
-            -- Other properties
-            NewField.Parent = NewFieldFrame
-            NewField.Title.Size = UDim2.new(0, NewField.Title.TextBounds.X, 1, 0)
-
-            -- Set description size
-            local yMultiplier = Core.Round(NewField.Description.TextBounds.X / 130)
-            print(Info.Title, yMultiplier)
-            if yMultiplier > 1 then
-                NewField.Description.TextWrapped = true
-                NewField.Size = UDim2.new(1, 0, 0, yMultiplier * 20)
+            -- Creates the Field Frame
+            local NewFieldFrame = AutoComplete.ListLayout.FieldFrame:Clone() do
+                NewFieldFrame.LayoutOrder = HeadingNum * 10 + 1
+                NewFieldFrame.Name = Heading .. "-Frame"
+                NewFieldFrame.Parent = AutoComplete
             end
 
-            -- On Click Event
-            NewField.MouseButton1Click:Connect(function()
-                Module.ExecuteAutoComplete(NewField)
-            end)
+            -- Creates the fields
+            local FieldNum = 0
+            for Cmd, Info in pairs(Cmds) do
 
+                -- Creates the field
+                FieldNum = FieldNum + 1
+                local NewField = NewFieldFrame.ListLayout.Field:Clone() do
+                    NewField.LayoutOrder = FieldNum
+                    NewField.Title.Text = Info.Title
+                    NewField.Description.Text = Info.Description
+                    NewField.Name = Cmd
+                end
+                
+                -- Sets the selection
+                if HeadingNum == 1 and FieldNum == 1 then
+                    NewField.IsSelected.Value = true
+                    NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                end
+
+                -- Other properties
+                NewField.Parent = NewFieldFrame
+                NewField.Title.Size = UDim2.new(0, NewField.Title.TextBounds.X, 1, 0)
+                NewField.Description.Size = UDim2.new(1, -NewField.Title.TextBounds.X - 20 - Settings.CommandBar.AutoComplete.TitleToDescriptionSpacing, 1, 0)
+
+                -- Adjusts if the sizing is too small
+                local yMultiplier = math.floor(NewField.Description.TextBounds.X / NewField.Description.AbsoluteSize.X) + 1
+                if yMultiplier > 1 then
+                    NewField.Description.TextWrapped = true
+                    NewField.Size = UDim2.new(1, 0, 0, yMultiplier * 20)
+                end
+
+                -- Click Event
+                NewField.MouseButton1Click:Connect(function()
+                    Module.ExecuteAutoComplete(NewField)
+                end)
+
+            end
+
+            NewFieldFrame.Size = UDim2.new(1, 0, 0, NewFieldFrame.ListLayout.AbsoluteContentSize.Y)
         end
-
-        NewFieldFrame.Size = UDim2.new(1, 0, 0, NewFieldFrame.ListLayout.AbsoluteContentSize.Y)
     end
 
-    AutoComplete.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.MaxFieldSizeX, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
+    AutoComplete.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.FieldSizeX, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
 end
 
 function Module.CheckDifference(Heading, Title, Description, LastArg, Table, GetAll)
@@ -215,13 +240,12 @@ function Module.CheckDifference(Heading, Title, Description, LastArg, Table, Get
 end
 
 function Module.GetFields(Text)
-    local Args = Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
     local PossibleFields = {}
+    local Args = Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
     Text = Text:lower()
 
     if #Args == 1 then
         local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " 
-
         for Heading, Cmds in pairs(Handler.Commands) do
             PossibleFields[Heading] = {}
             for Title, Info in pairs(Cmds) do
@@ -229,29 +253,35 @@ function Module.GetFields(Text)
             end
         end
     elseif #Args > 1 then
-        local Command = Commands[Args[1]:lower()]
-        if Command then
-            Handler.Data.Command = Args[1]:lower()
-            Handler.Data.CommandInfo = Command
-            Handler.Data.Arguments = {}
 
-            local Argument = Command.Arguments[#Args-1]
-            if Argument then
-                Handler.Data.Argument = Argument
+        for Heading, Cmds in pairs(Handler.Commands) do
+            local Command = Cmds[Args[1]:lower()]
+            if Command then
+                PossibleFields[Heading] = {}
 
-                local Choices           
-                if typeof(Argument.Choices) == "function" then
-                    Choices = Argument.Choices()
-                elseif typeof(Argument.Choices) == "table" then
-                    Choices = Argument.Choices
+                Handler.Data.Command = Args[1]:lower()
+                Handler.Data.CommandInfo = Command
+                Handler.Data.Arguments = {}
+    
+                local Argument = Command.Arguments[#Args-1]
+                if Argument then
+                    Handler.Data.Argument = Argument
+    
+                    local Choices           
+                    if typeof(Argument.Choices) == "function" then
+                        Choices = Argument.Choices()
+                    elseif typeof(Argument.Choices) == "table" then
+                        Choices = Argument.Choices
+                    end
+    
+                    local GetAll = Text:sub(#Text) == "" or Text:sub(#Text) == " "
+                    for _,Title in pairs(Choices or {}) do
+                        Module.CheckDifference(Heading, Title, Command.Description, Args[#Args], PossibleFields[Heading], GetAll)
+                        --Module.CheckDifference(Title, "", Args[#Args], PossibleFields, GetAll)
+                    end
                 end
-
-                local GetAll = Text:sub(#Text) == "" or Text:sub(#Text) == " "
-                for _,Title in pairs(Choices or {}) do
-                    Module.CheckDifference(Title, "", Args[#Args], PossibleFields, GetAll)
-                end
-            end
-        end  
+            end  
+        end       
     end
 
     return PossibleFields
@@ -262,23 +292,22 @@ function Module.TextChanged()
     CommandBar.Size = Settings.CommandBar.DefaultSize + UDim2.new(0, TextBox.TextBounds.X, 0, 0)
 
     -- Delete existing auto complete fields
-    for _,Field in pairs(Core.Get(AutoComplete, "Frame")) do
-        Field:Destroy()
-    end
-
-    for _,Field in pairs(Core.Get(AutoComplete, "TextButton")) do
-        Field:Destroy()
+    for _,Field in pairs(AutoComplete:GetChildren()) do
+        if Field:IsA("Frame") or Field:IsA("TextButton") then
+            Field:Destroy()
+        end
     end
 
     -- Create new auto complete fields
     local PossibleFields = Module.GetFields(TextBox.Text)
     if PossibleFields then
         Module.CreateFields(PossibleFields)
-        --Module.UpdateHint()
+        Module.UpdateHint()
     end
     
     -- Set size of auto complete
     AutoComplete.Size = UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
+    AutoComplete.CanvasSize = UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
 end
 
 return Module

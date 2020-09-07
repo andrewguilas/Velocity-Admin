@@ -2,24 +2,23 @@
 
 local DataStoreService = game:GetService("DataStoreService")
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
-local Velocity = require(game.ReplicatedStorage.VelocityAdmin.Modules.Velocity)
-
+local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
+local Commands = game.ReplicatedStorage.VelocityAdmin.Modules.Commands
 local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
-local Commands = Velocity.Commands
 
 -- // Events \\ --
 
 game.Players.PlayerAdded:Connect(function(p)
-    Velocity.TempData[p.Name] = {}
+    Helper.Data[p.Name] = {}
 
     -- Checks if slocked
-    local Reason = Velocity.TempData.ServerLocked
+    local Reason = Helper.Data.ServerLocked
     if Reason then
         p:Kick("Server is locked: " .. Reason)
     end
 
     -- Checks if tempbanned
-    Reason = Velocity.TempData.TempBanned[p.UserId]
+    Reason = Helper.Data.TempBanned[p.UserId]
     if Reason then
         p:Kick("TEMP BANNED: " .. Reason)
     end
@@ -36,12 +35,15 @@ game.Players.PlayerAdded:Connect(function(p)
 end)
 
 game.Players.PlayerRemoving:Connect(function(p)
-    Velocity.TempData[p.Name] = nil
+    Helper.Data[p.Name] = nil
 end)
 
 Remotes.FireCommand.OnServerInvoke = function(p, Data)
-    local SelectedCommand = Commands[Data.Command]
-    if SelectedCommand then
-        return SelectedCommand.Run(p, table.unpack(Data.Arguments))
+    for _,Heading in pairs(Commands:GetChildren()) do
+        for __,Command in pairs(Heading:GetChildren()) do
+            if Command.Name == Data.Command then
+                return require(Command).Run(p, table.unpack(Data.Arguments))
+            end
+        end
     end
 end
