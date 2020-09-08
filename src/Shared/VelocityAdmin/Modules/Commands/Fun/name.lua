@@ -20,7 +20,7 @@ Cmd.Arguments = {
     },
     [2] = {
         ["Title"] = "Name",
-        ["Description"] = "The chosen name. (No Word Limit)",
+        ["Description"] = "The chosen name (no word limit). If blank, the player's name will be set to their default username. (Optional)",
         ["Choices"] = true,
         ["NoWordLimit"] = true,
     }
@@ -42,23 +42,36 @@ Cmd.Run = function(CurrentPlayer, Player, Name)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
                 local Hum = Char:WaitForChild("Humanoid")
                 if Name and Name ~= "" then
                     Hum.DisplayName = Name
-                    return true, Player .. "'s name was changed to " .. Name
+
+                    table.insert(Info, {
+                        Success = true,
+                        Status = Player .. "'s name was changed to " .. Name
+                    })
                 else
                     Hum.DisplayName = ""
-                    return true, Player .. "'s custom name was removed. Now using the player name."
+
+                    table.insert(Info, {
+                        Success = true,
+                        Status = Player .. "'s custom name was removed. Now using the player name."
+                    })
                 end     
-            else
-                return false, p.Name .. "'s character does not exist."
+            else    
+                table.insert(Info, {
+                    Success = false,
+                    Status = p.Name .. "'s character does not exist."
+                })
             end
-        end              
+        end     
+        return Info         
     else
         return false, Player .. " is not a valid player."
     end

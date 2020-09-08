@@ -1,6 +1,5 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
@@ -28,16 +27,24 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
                 local Hum = Char:WaitForChild("Humanoid")
                 Hum.DisplayName = ""
-                return true, Player .. "'s custom name was removed. Now using the player name."
+                
+                table.insert(Info, {
+                    Success = true,
+                    Status = Player .. "'s custom name was removed. Now using the player name."
+                })
             else
-                return false, p.Name .. "'s character does not exist."
+                table.insert(Info, {
+                    Success = false,
+                    Status = p.Name .. "'s character does not exist."
+                })
             end
         end              
     else

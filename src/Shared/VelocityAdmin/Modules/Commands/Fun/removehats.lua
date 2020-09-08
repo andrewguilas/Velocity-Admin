@@ -3,7 +3,7 @@ local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Removes all the accessory on the player."
+Cmd.Description = "Removes all the accessories on the player."
 
 Cmd.Arguments = {
     [1] = {
@@ -27,8 +27,9 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
@@ -40,14 +41,21 @@ Cmd.Run = function(CurrentPlayer, Player)
                     end
                 end
                 if Items then
-                    return true, "Removed the following accessories from " .. Player .. "... " .. table.concat(Items, ", ")
+                    table.insert(Info, {
+                        Success = true,
+                        Status = "Removed the following accessories from " .. Player .. "... " .. table.concat(Items, ", ")
+                    })
                 else
-                    return true, "No accessories detected for " .. Player
+                    table.insert(Info, {
+                        Success = true,
+                        Status = "No accessories detected for " .. Player
+                    })
                 end
             else
                 return false, Player .. "'s character does not exist."
             end   
-        end              
+        end 
+        return Info             
     else
         return false, Player .. " is not a valid player."
     end

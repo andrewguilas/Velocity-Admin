@@ -3,7 +3,7 @@ local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Adds an accessory to the player."
+Cmd.Description = "Adds an accessory to the player with the given Roblox accessory ID."
 
 Cmd.Arguments = {
     [1] = {
@@ -28,14 +28,15 @@ Cmd.Run = function(CurrentPlayer, Player, ID)
 
     -- Check if necessary arguments are there
     if not Player then
-        return false, "Player Argument Missing"
+        return false, "Player argument Missing"
     elseif not ID then
-        return false, "ID Argument Missing"
+        return false, "ID argument Missing"
     end
 
     -- Run Command
     local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
@@ -48,16 +49,27 @@ Cmd.Run = function(CurrentPlayer, Player, ID)
                 end)
 
                 if not success then
-                    return false, "Error retrieving asset"
+                    table.insert(Info, {
+                        Success = false,
+                        Status = "Error retrieving asset"
+                    })
                 end
 
                 Hum:AddAccessory(Asset:GetChildren()[1])
                 Asset:Destroy()
-                return true, Player .. " given accessory " .. ID
+
+                table.insert(Info, {
+                    Success = true,
+                    Status = Player .. " was given accessory " .. ID
+                })
             else
-                return false, Player .. "'s character does not exist."
+                table.insert(Info, {
+                    Success = false,
+                    Status = Player .. "'s character does not exist."
+                })
             end   
-        end              
+        end    
+        return Info          
     else
         return false, Player .. " is not a valid player."
     end

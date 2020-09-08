@@ -36,10 +36,10 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 
 ### Fun: Commands that provide no competitive advantage.
 
-1. `hat <player, accessoryid>` - Adds an accessory to the player with the given Roblox accessory ID.
+1. `hat <player> accessoryid>` - Adds an accessory to the player with the given Roblox accessory ID.
 2. `removehats <player>` - Removes all the accessories on the player.
 3. `char <player> <user>` - Changes player's appearance to user's.
-4. `name <player, name>` - Changes the player's name over their head.
+4. `name <player> <name>` - Changes the player's name over their head.
 5. `unname <player>` - Changes the player's name to their default name.
 
 ### Moderation: Commands for moderation and administrative purposes.
@@ -72,8 +72,8 @@ Velocity Admin is an open sourced admin system designed for speed and minimalism
 
 27. `tp <player1> <player2>` - Teleports player1 to player2.
 28. `kick <player, reason (optional)>` - Kicks the player from the game with a reason.
-29. `ban <player, length, reason>` - Bans the player from the server for a duration with a reason.
-30. `pban <player, length, reason` - Bans a player from all places for a duration.
+29. `ban <player> <length> reason (optional)>` - Bans the player from the server for a duration with a reason.
+30. `pban <player> <length> <reason (optional)` - Bans a player from all places for a duration.
 31. `unban <player` - Unbans the player from all servers.
 32. `age <player` - Returns the player's account age.
 33. `id <player>` - Returns the player's user ID.
