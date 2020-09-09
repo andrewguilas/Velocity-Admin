@@ -1,15 +1,14 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Removes a forcefield from a player if any."
+Cmd.Description = "Removes the player's forcefield."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player you want to remove a forcefield from.",
+        ["Description"] = "The player you want to remove the forcefield from.",
         ["Choices"] = function()
             local Players = {}
             for _,p in pairs(game.Players:GetPlayers()) do
@@ -28,8 +27,9 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
@@ -38,11 +38,19 @@ Cmd.Run = function(CurrentPlayer, Player)
                         FF:Destroy()
                     end
                 end
-                return true, Player .. "'s forcefields were removed."
+
+                table.insert(Info, {
+                    Success = true,
+                    Status = Player .. "'s forcefields were removed."
+                })
             else
-                return false, Player .. "'s character does not exist."
+                table.insert(Info, {
+                    Success = false,
+                    Status = Player .. "'s character does not exist."
+                })
             end   
-        end              
+        end  
+        return Info            
     else
         return false, Player .. " is not a valid player."
     end

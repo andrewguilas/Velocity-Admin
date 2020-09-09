@@ -60,12 +60,12 @@ Cmd.Run = function(CurrentPlayer, Player, ID)
 
                 table.insert(Info, {
                     Success = true,
-                    Status = Player .. " was given accessory " .. ID
+                    Status = p.Name .. " was given accessory " .. ID
                 })
             else
                 table.insert(Info, {
                     Success = false,
-                    Status = Player .. "'s character does not exist."
+                    Status = p.Name .. "'s character does not exist."
                 })
             end   
         end    

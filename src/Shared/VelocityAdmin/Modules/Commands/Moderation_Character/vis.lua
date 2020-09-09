@@ -1,10 +1,9 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Makes a player visible."
+Cmd.Description = "Makes the player visible."
 
 Cmd.Arguments = {
     [1] = {
@@ -28,19 +27,28 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
-                for _,Part in pairs(Velocity.TempData[CurrentPlayer.Name].InvisItems or {}) do
+                for _,Part in pairs(Helper.Data[CurrentPlayer.Name].InvisItems or {}) do
                     Part.Transparency = 0
                 end
-                return true, Player .. " made visible."
+
+                table.insert(Info, {
+                    Success = true,
+                    Status = Player .. " made visible."
+                })
             else
-                return false, Player .. "'s character does not exist."
+                table.insert(Info, {
+                    Success = false,
+                    Status =  Player .. "'s character does not exist."
+                })
             end   
-        end              
+        end      
+        return Info        
     else
         return false, Player .. " is not a valid player."
     end

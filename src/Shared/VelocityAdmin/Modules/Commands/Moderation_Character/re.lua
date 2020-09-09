@@ -3,12 +3,12 @@ local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Resets the character, backpack, playerGui."
+Cmd.Description = "Respawns the player."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player with the character you want to load.",
+        ["Description"] = "The player you want to respawn",
         ["Choices"] = function()
             local Players = {}
             for _,p in pairs(game.Players:GetPlayers()) do
@@ -27,11 +27,17 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             p:LoadCharacter()
-        end              
+            table.insert(Info, {
+                Success = true,
+                Status = p.Name .. " was respawned."
+            })
+        end          
+        return Info    
     else
         return false, Player .. " is not a valid player."
     end

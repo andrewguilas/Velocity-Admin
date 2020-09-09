@@ -1,15 +1,14 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Makes a player invisible."
+Cmd.Description = "Makes the player invisible."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player you want to make invisible.",
+        ["Description"] = "The player you want to make invisible",
         ["Choices"] = function()
             local Players = {}
             for _,p in pairs(game.Players:GetPlayers()) do
@@ -28,26 +27,34 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
-                Velocity.TempData[CurrentPlayer.Name].InvisItems = {}
+                Helper.Data[CurrentPlayer.Name].InvisItems = {}
                 for _,Part in pairs(Char:GetDescendants()) do
                     pcall(function()
                         if Part.Transparency ~= 1 then
                             Part.Transparency = 1
-                            table.insert(Velocity.TempData[CurrentPlayer.Name].InvisItems, Part)
+                            table.insert(Helper.Data[CurrentPlayer.Name].InvisItems, Part)
                         end
                     end)
                 end
 
-                return true, Player .. " made invisible."
+                table.insert(Info, {
+                    Success = true,
+                    Status = Player .. " made invisible."
+                })
             else
-                return false, Player .. "'s character does not exist."
+                table.insert(Info, {
+                    Success = false,
+                    Status = Player .. "'s character does not exist."
+                })
             end   
-        end              
+        end     
+        return Info         
     else
         return false, Player .. " is not a valid player."
     end

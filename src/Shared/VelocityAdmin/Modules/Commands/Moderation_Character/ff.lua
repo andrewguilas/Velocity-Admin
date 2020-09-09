@@ -1,10 +1,9 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Gives a player a forcefield."
+Cmd.Description = "Gives the player a forcefield."
 
 Cmd.Arguments = {
     [1] = {
@@ -28,18 +27,27 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
                 local FF = Instance.new("ForceField")
                 FF.Parent = Char
-                return true, Player .. " given a forcefield."
+
+                table.insert(Info, {
+                    Success = true,
+                    Status = p.Name .. " given a forcefield."
+                })
             else
-                return false, Player .. "'s character does not exist."
+                table.insert(Info, {
+                    Success = false,
+                    Status = p.Name .. "'s character does not exist."
+                })
             end   
-        end              
+        end  
+        return Info            
     else
         return false, Player .. " is not a valid player."
     end
