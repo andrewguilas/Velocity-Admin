@@ -1,15 +1,16 @@
 local Cmd = {}
+local DataStoreService = game:GetService("DataStoreService")
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
+local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Unbans a player from the game/server."
+Cmd.Description = "Unbans the user from all servers."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The user name/player ID you want to unban.",
+        ["Description"] = "The user (name/ID) you want to unban.",
         ["Choices"] = true
     },
 }
@@ -50,8 +51,8 @@ Cmd.Run = function(CurrentPlayer, User)
     -- Run Command
 
         -- Checks if tempbvanned
-    if Velocity.TempData.TempBanned[UserId] then
-        Velocity.TempData.TempBanned[UserId] = false
+    if Helper.Data.TempBanned[UserId] then
+        Helper.Data.TempBanned[UserId] = false
         return true, UserName .. " (".. UserId .. ") was unbanned."
     end
 
@@ -64,7 +65,7 @@ Cmd.Run = function(CurrentPlayer, User)
         -- Checks if not banned
     local Success = pcall(function()
         if not BanStore:GetAsync(UserId) then
-            return false, UserName .. " (".. UserId .. ") is not banned."
+            return true, UserName .. " (".. UserId .. ") is not banned."
         end
     end)
 
