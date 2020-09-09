@@ -4,7 +4,7 @@ local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Teleports player1 to player2"
+Cmd.Description = "Teleports player1 to player2."
 
 Cmd.Arguments = {
     [1] = {
@@ -46,7 +46,7 @@ Cmd.Run = function(CurrentPlayer, player1, player2)
     -- Run Command       
         
         -- Gets player 2 instance
-    player2 = Velocity.Helper.FindSinglePlayer(player2, CurrentPlayer)
+    player2 = Helper.FindSinglePlayer(player2, CurrentPlayer)
     if not player2 then
         return false, player2 .. " does not exist."
     end
@@ -58,7 +58,7 @@ Cmd.Run = function(CurrentPlayer, player1, player2)
     end
     local player2Root = player2Char:WaitForChild("HumanoidRootPart")
 
-    local Players = Velocity.Helper.FindPlayer(player1, CurrentPlayer)
+    local Players = Helper.FindPlayer(player1, CurrentPlayer)
     if Players then
         local Info = {}
         for _,p in pairs(Players) do
