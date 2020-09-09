@@ -1,15 +1,14 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Returns if a player is friends with another player."
+Cmd.Description = "Checks if the player is friends with the user."
 
 Cmd.Arguments = {
     [1] = {
-        ["Title"] = "player1",
-        ["Description"] = "The first player.",
+        ["Title"] = "player",
+        ["Description"] = "The player.",
         ["Choices"] = function()
             local Players = {}
             for _,p in pairs(game.Players:GetPlayers()) do
@@ -19,67 +18,67 @@ Cmd.Arguments = {
         end
     },
     [2] = {
-        ["Title"] = "player2",
-        ["Description"] = "The second player. Can be anyone on Roblox.",
+        ["Title"] = "user",
+        ["Description"] = "The user.",
         ["Choices"] = true
     },
 }
 
-Cmd.Run = function(CurrentPlayer, Player1, Player2)
+Cmd.Run = function(CurrentPlayer, Player, User)
 
     -- Check if necessary arguments are there
-    if not Player1 then
-        return false, "Player 1 Argument Missing"
-    elseif not Player2 then
-        return false, "Player 2 Argument Missing"
+    if not Player then
+        return false, "Player Argument Missing"
+    elseif not User then
+        return false, "User Argument Missing"
     end
 
     -- Gets the player ID and name
-    local Player2Name, Player2Id
-    if tonumber(Player2) then
-        Player2Id = Player2
+    local UserName, UserId
+    if tonumber(User) then
+        UserId = User
         
         local success = pcall(function()
-            Player2Name = game.Players:GetNameFromUserIdAsync(Player2Id)
+            UserName = game.Players:GetNameFromUserIdAsync(UserId)
         end)
 
         if not success then
-            return false, "Error finding username of " .. Player2Id
+            return false, "Error finding username of " .. UserId
         end      
-    elseif tostring(Player2) then
-        Player2Name = Player2
+    elseif tostring(User) then
+        UserName = User
         
         local success = pcall(function()
-            Player2Id = game.Players:GetUserIdFromNameAsync(Player2Name)
+            UserId = game.Players:GetUserIdFromNameAsync(UserName)
         end)
 
         if not success then
-            return false, "Error finding user ID of " .. Player2Name
+            return false, "Error finding user ID of " .. UserName
         end
     else
-        return false, "Player2 is not a valid argument type."      
+        return false, "User is not a valid argument type."      
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player1, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
         local Info = {}
         for _,p in pairs(Players) do
-            if p:IsFriendsWith(Player2Id) then
+            if p:IsFriendsWith(UserId) then
                 table.insert(Info, {
                     Success = true,
-                    Status = p.Name .. " is friends with " .. Player2Name .. " (" .. Player2Id .. ")"
+                    Status = p.Name .. " is friends with " .. UserName .. " (" .. UserId .. ")"
                 })
             else
                 table.insert(Info, {
                     Success = true,
-                    Status = p.Name .. " is NOT friends with " .. Player2Name .. " (" .. Player2Id .. ")"
+                    Status = p.Name .. " is NOT friends with " .. UserName .. " (" .. UserId .. ")"
                 })
             end
         end      
         return Info        
     else
-        return false, Player1 .. " is not a valid player."
+        return false, Player .. " is not a valid player."
     end
 
 end
