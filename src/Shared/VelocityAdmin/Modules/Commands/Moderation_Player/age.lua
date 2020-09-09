@@ -19,7 +19,7 @@ Cmd.Arguments = {
     },
 }
 
-Cmd.Run = function(CurrentPlayer, Player, Reason)
+Cmd.Run = function(CurrentPlayer, Player)
 
     -- Check if necessary arguments are there
     if not Player then
@@ -27,7 +27,7 @@ Cmd.Run = function(CurrentPlayer, Player, Reason)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
         local Info = {}
         for _,p in pairs(Players) do
