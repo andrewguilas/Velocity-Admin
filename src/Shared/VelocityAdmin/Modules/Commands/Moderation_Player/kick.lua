@@ -4,7 +4,7 @@ local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Kicks a player from the game."
+Cmd.Description = "Kicks the player from the game with a reason."
 
 Cmd.Arguments = {
     [1] = {
@@ -20,7 +20,7 @@ Cmd.Arguments = {
     },
     [2] = {
         ["Title"] = "reason",
-        ["Description"] = "Why you want to kick the player.",
+        ["Description"] = "Why you want to kick the player (optional).",
         ["Choices"] = true,
         ["NoWordLimit"] = true,
     }
@@ -42,17 +42,25 @@ Cmd.Run = function(CurrentPlayer, Player, Reason)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             if Reason then
                 p:Kick(Reason)
-                return true, Player .. " was kicked for " .. Reason
+                table.insert(Info, {
+                    Success = true,
+                    Status = Player .. " was kicked for " .. Reason
+                })
             else
                 p:Kick()
-                return true, Player .. " was kicked."
+                table.insert(Info, {
+                    Success = true,
+                    Status = Player .. " was kicked"
+                })
             end      
-        end              
+        end      
+        return Info        
     else
         return false, Player .. " is not a valid player."
     end
