@@ -42,7 +42,7 @@ function Helper.FindPlayer(Key, p)
     elseif Key:find(",") then
         Key = Key:sub(1,#Key)
         local function getPlrsFromNameString(stringWithNames)
-            for i, s in ipairs(stringWithNames:split(",")) do
+            for i, s in pairs(stringWithNames:split(",")) do
                 local name = s:match("%S")
                 local plr = Players:FindFirstChild(name)
                 if plr then
