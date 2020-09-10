@@ -39,6 +39,17 @@ function Helper.FindPlayer(Key, p)
                 end
             end
         end
+    elseif Key:find(",") then
+        Key = Key:sub(1,#Key)
+        local function getPlrsFromNameString(stringWithNames)
+            for i, s in ipairs(stringWithNames:split(",")) do
+                local name = s:match("%S")
+                local plr = Players:FindFirstChild(name)
+                if plr then
+                    Players[#Players+1] = plr
+                end
+            end
+    end
     else
         for _,p in pairs(game.Players:GetPlayers()) do
             if p.Name:lower() == Key:lower() then
