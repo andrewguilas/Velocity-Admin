@@ -1,10 +1,9 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Locks the player in place maknig them immovable."
+Cmd.Description = "Makes the player immovable."
 
 Cmd.Arguments = {
     [1] = {
@@ -28,18 +27,27 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
                 local Root = Char:WaitForChild("HumanoidRootPart")
                 Root.Anchored = true
-                return true, Player .. " was frozen."
+
+                Info:insert({
+                    Success = true,
+                    Status = Player .. " was frozen."
+                })
             else
-                return false, Player .. "'s character does not exist."
+                Info:insert({
+                    Success = false,
+                    Status = Player .. "'s character does not exist."
+                })
             end   
-        end              
+        end      
+        return Info        
     else
         return false, Player .. " is not a valid player."
     end
