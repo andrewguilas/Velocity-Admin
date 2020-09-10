@@ -1,6 +1,5 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
@@ -9,7 +8,7 @@ Cmd.Description = "Removes all the tools the player is holding or is in their ba
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player you want to remove the tools of.",
+        ["Description"] = "The player you want to clear the tools of.",
         ["Choices"] = function()
             local Players = {}
             for _,p in pairs(game.Players:GetPlayers()) do
@@ -28,8 +27,9 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
@@ -51,14 +51,24 @@ Cmd.Run = function(CurrentPlayer, Player)
                 end
 
                 if #Tools > 0 then
-                    return true, "The following tools were removed from " .. Player .. "... " .. table.concat(Tools, ", ")
+                    Info:insert({
+                        Success = true,
+                        Status = "The following tools were removed from " .. Player .. "... " .. table.concat(Tools, ", ")
+                    })
                 else
-                    return true, Player .. " has no tools."
+                    Info:insert({
+                        Success = true,
+                        Status = Player .. " has no tools."
+                    })
                 end
             else
-                return false, p.Name .. "'s character does not exist.."
+                Info:insert({
+                    Success = false,
+                    Status = p.Name .. "'s character does not exist.."
+                })
             end
-        end              
+        end   
+        return Info           
     else
         return false, Player .. " is not a valid player."
     end
