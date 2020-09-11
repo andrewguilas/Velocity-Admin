@@ -40,16 +40,25 @@ Cmd.Run = function(CurrentPlayer, Player, Amount)
     -- Run Command
     local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
                 local Hum = Char:WaitForChild("Humanoid")
                 Hum.Health = Amount
-                return true, Player .. " 's health was changed to " .. Amount
+
+                Info:insert({
+                    Success = true,
+                    Status = Player .. " 's health was changed to " .. Amount
+                })
             else
-                return false, Player .. "'s character does not exist."
+                Info:insert({
+                    Success = false,
+                    Status = Player .. "'s character does not exist."
+                })
             end 
-        end              
+        end   
+        return Info           
     else
         return false, Player .. " is not a valid player."
     end
