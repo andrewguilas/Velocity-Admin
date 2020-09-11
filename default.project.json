@@ -3,16 +3,20 @@
 	"tree": {
 		"$className": "DataModel",
 		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
 			"$ignoreUnknownInstances": true,
 			"$path": "src/Shared"
 		},
 		"ServerScriptService": {
+			"$className": "ServerScriptService",
 			"$path": "src/Server"
 		},
 		"StarterPlayer": {
+			"$className": "StarterPlayer",
 			"StarterPlayerScripts": {
+				"$className": "StarterPlayerScripts",
 				"$path": "src/Client"
-			}
+			},
 		}
 	}
 }
