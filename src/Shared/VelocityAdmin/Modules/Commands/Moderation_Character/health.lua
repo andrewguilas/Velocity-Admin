@@ -1,15 +1,14 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Changes a player's health."
+Cmd.Description = "Changes the player's health to an amount."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player you want to change the health of.",
+        ["Description"] = "The player you want to change the health of (username/user ID)",
         ["Choices"] = function()
             local Players = {}
             for _,p in pairs(game.Players:GetPlayers()) do
@@ -20,7 +19,7 @@ Cmd.Arguments = {
     },
     [2] = {
         ["Title"] = "amount",
-        ["Description"] = "The health you want to change the player's health to.",
+        ["Description"] = "The health you want to change the player's health to",
         ["Choices"] = true
     },
 }
@@ -34,8 +33,12 @@ Cmd.Run = function(CurrentPlayer, Player, Amount)
         return false, "Amount Argument Missing"
     end
 
+    if not tonumber(Amount) then
+        return false, Amount .. " is not a number"
+    end
+
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
         for _,p in pairs(Players) do
             local Char = p.Character
