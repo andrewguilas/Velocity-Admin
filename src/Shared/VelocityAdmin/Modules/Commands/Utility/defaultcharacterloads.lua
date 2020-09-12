@@ -1,6 +1,5 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
@@ -18,7 +17,7 @@ Cmd.Run = function(CurrentPlayer, characterloads)
 
     -- Check if necessary arguments are there
     if not characterloads then
-        return false, "characterloads Argument Missing"
+        characterloads = "true"
     end
 
     -- Run Command
