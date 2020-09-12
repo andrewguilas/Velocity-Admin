@@ -159,7 +159,8 @@ function Module.CreateFields(PossibleFields)
             -- Creates the Heading
             local NewHeading = AutoComplete.ListLayout.Heading:Clone() do
                 NewHeading.LayoutOrder = HeadingNum * 10
-                NewHeading.Name, NewHeading.TextLabel.Text = Heading .. "-Heading", Heading
+                NewHeading.Name = Heading .. "-Heading"
+                NewHeading.TextLabel.Text = Heading:gsub("_", ": ")
                 NewHeading.Parent = AutoComplete
             end
 
@@ -170,6 +171,11 @@ function Module.CreateFields(PossibleFields)
                 NewFieldFrame.Parent = AutoComplete
             end
 
+            -- Event for heading clicked
+            NewHeading.MouseButton1Click:Connect(function()
+                NewFieldFrame.Visible = not NewFieldFrame.Visible
+            end)
+
             -- Creates the fields
             local FieldNum = 0
             for Cmd, Info in pairs(Cmds) do
@@ -177,7 +183,7 @@ function Module.CreateFields(PossibleFields)
                 -- Creates the field
                 FieldNum = FieldNum + 1
                 local NewField = NewFieldFrame.ListLayout.Field:Clone() do
-                    NewField.LayoutOrder = FieldNum
+                    NewField.LayoutOrder = FieldNum                 
                     NewField.Title.Text = Info.Title
                     NewField.Description.Text = Info.Description
                     NewField.Name = Cmd
@@ -211,8 +217,6 @@ function Module.CreateFields(PossibleFields)
             NewFieldFrame.Size = UDim2.new(1, 0, 0, NewFieldFrame.ListLayout.AbsoluteContentSize.Y)
         end
     end
-
-    AutoComplete.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.FieldSizeX, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
 end
 
 function Module.CheckDifference(Heading, Title, Description, LastArg, Table, GetAll)
@@ -306,8 +310,8 @@ function Module.TextChanged()
     end
     
     -- Set size of auto complete
-    AutoComplete.Size = UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
-    AutoComplete.CanvasSize = UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
+    AutoComplete.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.FieldSizeX, 0, AutoComplete.Parent.Parent.AbsoluteSize.Y/2)
+    AutoComplete.CanvasSize = UDim2.new(0, 0, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
 end
 
 return Module
