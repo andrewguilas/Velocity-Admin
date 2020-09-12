@@ -1,3 +1,4 @@
+local LENGTH_SUFFIXES = {"s", "mi", "h", "d", "w", "mo", "y", "forever"}
 local Helper = {
     Data = {
         Commands = {},
@@ -10,6 +11,8 @@ local Helper = {
 ----------------------------------------------------------------------
 
 local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
+
+-- Players
 
 function Helper.FindPlayer(Key, p)
     local Players = {}
@@ -44,6 +47,51 @@ function Helper.FindSinglePlayer(Key, p)
             end
         end        
     end 
+end
+
+-- Lengths
+
+local CalculateLength = {
+    ["s"] = function(Length)
+        return tonumber(Length:sub(1, #Length-1))
+    end,
+
+    ["mi"] = function(Length)
+        return tonumber(Length:sub(1, #Length-2) * 60)
+    end,
+
+    ["h"] = function(Length)
+        return tonumber(Length:sub(1, #Length-1) * 3600)
+    end,
+
+    ["d"] = function(Length)
+        return tonumber(Length:sub(1, #Length-1) * 86400)
+    end,
+
+    ["w"] = function(Length)
+        return tonumber(Length:sub(1, #Length-1) * 604800)
+    end,
+
+    ["mo"] = function(Length)
+        return tonumber(Length:sub(1, #Length-2) * 2628000)
+    end,
+
+    ["y"] = function(Length)
+        return tonumber(Length:sub(1, #Length-1) * 31536000)
+    end,
+
+    ["forever"] = function(Length)
+        return math.huge
+    end,
+}
+
+function Helper.GetLength(Length)
+    Length = Length:lower()
+    for _,Suffix in pairs(LENGTH_SUFFIXES) do
+		if Length:find(Suffix) then
+			return CalculateLength[Suffix](Length)
+        end
+    end
 end
 
 ----------------------------------------------------------------------

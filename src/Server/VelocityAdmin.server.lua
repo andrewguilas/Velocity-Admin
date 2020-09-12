@@ -18,9 +18,10 @@ game.Players.PlayerAdded:Connect(function(p)
     end
 
     -- Checks if tempbanned
-    Reason = Helper.Data.TempBanned[p.UserId]
-    if Reason then
-        p:Kick("TEMP BANNED: " .. Reason)
+    local BanInfo = Helper.Data.TempBanned[p.UserId]
+    if BanInfo then      
+        print(os.time() - BanInfo.StartTime .. " seconds has passed sinced banned. " .. p.Name .. " was banned for " .. BanInfo.PublishedLength .. "(" .. BanInfo.RealLength .. ")")
+        p:Kick("TEMP BANNED (duration: " .. BanInfo.PublishedLength .. "): " .. BanInfo.Reason)
     end
 
     -- Checks if pBanned
