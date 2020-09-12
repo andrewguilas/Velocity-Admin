@@ -3,7 +3,7 @@ local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Changes the default jump power.."
+Cmd.Description = "Changes the default jump power."
 
 Cmd.Arguments = {
     [1] = {
