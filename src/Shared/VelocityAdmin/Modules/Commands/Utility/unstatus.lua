@@ -1,6 +1,6 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
+local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 
 ----------------------------------------------------------------------
 
