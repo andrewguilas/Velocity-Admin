@@ -1,10 +1,9 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Changes the default jump power."
+Cmd.Description = "Changes the default jump power.."
 
 Cmd.Arguments = {
     [1] = {
