@@ -1,4 +1,5 @@
 local Cmd = {}
+local Chat = game:GetService("Chat")
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 
@@ -8,8 +9,8 @@ Cmd.Description = "Announces a message to the entire server."
 
 Cmd.Arguments = {
     [1] = {
-        ["Title"] = "reason",
-        ["Description"] = "Why the server is locked. (optional)",
+        ["Title"] = "Text",
+        ["Description"] = "The message that will be sent",
         ["Choices"] = true,
         ["NoWordLimit"] = true,
     }
