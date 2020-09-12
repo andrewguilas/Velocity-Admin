@@ -1,6 +1,5 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
@@ -9,7 +8,7 @@ Cmd.Description = "Changes the game's brightness."
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "number",
-        ["Description"] = "The number the brightness will be set to.",
+        ["Description"] = " .",
         ["Choices"] = true
     },
 }
