@@ -1,10 +1,10 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
+local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Shuts down the server in a duration."
+Cmd.Description = "Cancels the current shut down."
 
 Cmd.Arguments = {}
 
