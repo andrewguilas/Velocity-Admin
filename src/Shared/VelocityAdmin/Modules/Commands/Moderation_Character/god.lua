@@ -1,6 +1,5 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
@@ -28,26 +27,38 @@ Cmd.Run = function(CurrentPlayer, Player)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
                 local Hum = Char:WaitForChild("Humanoid")
-                if not Velocity.TempData[CurrentPlayer.Name].God then                      
-                    Velocity.TempData[CurrentPlayer.Name].God = {
+                if not Helper.Data[CurrentPlayer.Name].God then                      
+                    Helper.Data[CurrentPlayer.Name].God = {
                         Health = Hum.Health,
                         MaxHealth = Hum.MaxHealth
                     }
                     Hum.MaxHealth, Hum.Health = math.huge, math.huge
-                    return true, Player .. " was godded."
+
+                    Info:insert({
+                        Success = true,
+                        Status = Player .. " was godded."
+                    })
                 else
-                    return false, Player .. " is already godded."
+                    Info:insert({
+                        Success = true,
+                        Status = Player .. " is already godded."
+                    })
                 end
             else
-                return false, Player .. "'s character does not exist."
+                Info:insert({
+                    Success = false,
+                    Status = Player .. "'s character does not exist."
+                })
             end   
-        end              
+        end   
+        return Info           
     else
         return false, Player .. " is not a valid player."
     end
