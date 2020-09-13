@@ -32,7 +32,7 @@ Cmd.Run = function(CurrentPlayer, Player)
 
                 table.insert(Info, {
                     Success = true,
-                    Status = Player .. " jumped."
+                    Status = p.Name .. " jumped."
                 })
             else
                 table.insert(Info, {

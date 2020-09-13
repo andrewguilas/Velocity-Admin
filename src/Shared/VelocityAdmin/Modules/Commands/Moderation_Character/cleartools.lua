@@ -52,7 +52,7 @@ Cmd.Run = function(CurrentPlayer, Player)
                 else
                     table.insert(Info, {
                         Success = true,
-                        Status = Player .. " has no tools."
+                        Status = p.Name .. " has no tools."
                     })
                 end
             else

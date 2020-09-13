@@ -43,12 +43,12 @@ Cmd.Run = function(CurrentPlayer, Player, Amount)
 
                 table.insert(Info, {
                     Success = true,
-                    Status = Player .. " 's max health was changed to " .. Amount .. " HP"
+                    Status = p.Name .. " 's max health was changed to " .. Amount .. " HP"
                 })
             else
                 table.insert(Info, {
                     Success = false,
-                    Status = Player .. "'s character does not exist."
+                    Status = p.Name .. "'s character does not exist."
                 })
             end 
         end    

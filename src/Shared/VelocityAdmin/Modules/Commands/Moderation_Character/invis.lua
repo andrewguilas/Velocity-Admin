@@ -39,12 +39,12 @@ Cmd.Run = function(CurrentPlayer, Player)
 
                 table.insert(Info, {
                     Success = true,
-                    Status = Player .. " made invisible."
+                    Status = p.Name .. " made invisible."
                 })
             else
                 table.insert(Info, {
                     Success = false,
-                    Status = Player .. "'s character does not exist."
+                    Status = p.Name .. "'s character does not exist."
                 })
             end   
         end     

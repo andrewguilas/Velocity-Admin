@@ -40,12 +40,12 @@ Cmd.Run = function(CurrentPlayer, Player)
                     Hum:UnequipTools()
                     table.insert(Info, {
                         Success = true,
-                        Status = Player .. " unequipped... " .. table.concat(Tools, ", ")
+                        Status = p.Name .. " unequipped... " .. table.concat(Tools, ", ")
                     })
                 else
                     table.insert(Info, {
                         Success = true,
-                        Status = Player .. " has no tools in their backpack."
+                        Status = p.Name .. " has no tools in their backpack."
                     })
                 end
             else

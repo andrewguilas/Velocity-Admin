@@ -37,18 +37,18 @@ Cmd.Run = function(CurrentPlayer, Player)
 
                     table.insert(Info, {
                         Success = true,
-                        Status = Player .. " was godded."
+                        Status = p.Name .. " was godded."
                     })
                 else
                     table.insert(Info, {
                         Success = true,
-                        Status = Player .. " is already godded."
+                        Status = p.Name .. " is already godded."
                     })
                 end
             else
                 table.insert(Info, {
                     Success = false,
-                    Status = Player .. "'s character does not exist."
+                    Status = p.Name .. "'s character does not exist."
                 })
             end   
         end   

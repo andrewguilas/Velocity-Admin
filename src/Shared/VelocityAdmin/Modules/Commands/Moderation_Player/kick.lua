@@ -44,13 +44,13 @@ Cmd.Run = function(CurrentPlayer, Player, Reason)
                 p:Kick(Reason)
                 table.insert(Info, {
                     Success = true,
-                    Status = Player .. " was kicked for " .. Reason
+                    Status = p.Name .. " was kicked for " .. Reason
                 })
             else
                 p:Kick()
                 table.insert(Info, {
                     Success = true,
-                    Status = Player .. " was kicked"
+                    Status = p.Name .. " was kicked"
                 })
             end      
         end      

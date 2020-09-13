@@ -32,12 +32,12 @@ Cmd.Run = function(CurrentPlayer, Player)
 
                 table.insert(Info, {
                     Success = true,
-                    Status = Player .. " was unfrozen."
+                    Status = p.Name .. " was unfrozen."
                 })
             else
                 table.insert(Info, {
                     false,
-                    Status = Player .. "'s character does not exist."
+                    Status = p.Name .. "'s character does not exist."
                 })
             end   
         end    

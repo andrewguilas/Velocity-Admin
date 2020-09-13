@@ -68,22 +68,18 @@ function Helper.GetPlayers(CurrentPlayer)
     return Players
 end
 
-function Helper.FindPlayer(Key, p)
+function Helper.FindPlayer(Key, CurrentPlayer)
     local Players = {}
 
     if Key == "all" then
         Players = game.Players:GetPlayers()
     elseif Key == "others" then
         Players = game.Players:GetPlayers()
-        Core.TableRemove(Players, p)
+        Core.TableRemove(Players, CurrentPlayer)
     elseif Key == "me" then
-        Players = {p}
+        Players = {CurrentPlayer}
     elseif Key == "random" then
-        Players = game.Players:GetPlayers()
-        if Players[1] ~= nil then
-            local value = math.random(1,#Players)
-            local picked = Players[value]
-        end
+        table.insert(Players, game.Players:GetPlayers()[math.random(#game.Players:GetPlayers())])
     elseif Key:find("team:") then
         for _,Team in pairs(game:GetService("Teams"):GetChildren()) do
             if Team.Name:lower():gsub("%s+", "") == Key:sub(6, #Key):lower():gsub("%s+", "") then
@@ -92,9 +88,9 @@ function Helper.FindPlayer(Key, p)
         end
     elseif Key:find(",") then
         for _,pName in pairs(Key:split(",")) do
-            for __,plr in pairs(game.Players:GetPlayers()) do
-                if plr.Name:lower() == pName then
-                    table.insert(Players, plr)
+            for __,p in pairs(game.Players:GetPlayers()) do
+                if p.Name:lower() == pName:lower() then
+                    table.insert(Players, p)
                 end
             end
         end
@@ -102,6 +98,7 @@ function Helper.FindPlayer(Key, p)
         for _,p in pairs(game.Players:GetPlayers()) do
             if p.Name:lower() == Key:lower() then
                 table.insert(Players, p)
+                break
             end
         end        
     end

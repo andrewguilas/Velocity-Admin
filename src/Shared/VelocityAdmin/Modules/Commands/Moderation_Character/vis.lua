@@ -33,7 +33,7 @@ Cmd.Run = function(CurrentPlayer, Player)
 
                 table.insert(Info, {
                     Success = true,
-                    Status = Player .. " made visible."
+                    Status = p.Name .. " made visible."
                 })
             else
                 table.insert(Info, {

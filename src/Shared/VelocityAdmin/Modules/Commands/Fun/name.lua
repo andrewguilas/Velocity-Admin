@@ -48,14 +48,14 @@ Cmd.Run = function(CurrentPlayer, Player, Name)
 
                     table.insert(Info, {
                         Success = true,
-                        Status = Player .. "'s name was changed to " .. Name
+                        Status = p.Name .. "'s name was changed to " .. Name
                     })
                 else
                     Hum.DisplayName = ""
 
                     table.insert(Info, {
                         Success = true,
-                        Status = Player .. "'s custom name was removed. Now using the player name."
+                        Status = p.Name .. "'s custom name was removed. Now using the player name."
                     })
                 end     
             else    
