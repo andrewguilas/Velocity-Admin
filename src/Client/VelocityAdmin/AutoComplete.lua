@@ -4,18 +4,15 @@ local Module = {}
 
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
-
 local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local Handler = require(script.Parent.Handler)
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
 local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
-
 local p = game.Players.LocalPlayer
 local CommandBar = p.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
 local AutoComplete = CommandBar.AutoComplete
-
 local Info = CommandBar.Info
 local Hint = Info.Hint
 
@@ -78,7 +75,7 @@ function Module.UpdateResponse(Success, Status)
 end
 
 function Module.UpdateSelectedField(Step)
-    for FrameIndex,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
+    for FrameIndex, Frame in pairs(Core.Get(AutoComplete, "Frame")) do
         for _,Field in pairs(Core.Get(Frame, "TextButton")) do
             if Field.IsSelected.Value then
 
@@ -120,9 +117,10 @@ end
 
 function Module.UpdateHint()
     local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)  
-    for Type,Commands in pairs(Handler.Commands) do
+    for Type, Commands in pairs(Handler.Commands) do
         for Command, Info in pairs(Commands) do
             if Command:lower() == Args[1]:lower() then
+
                 -- Gets the argument info
                 local ArgumentInfo
                 if Info.Arguments[#Info.Arguments] then
@@ -216,6 +214,7 @@ function Module.CreateFields(PossibleFields)
 
             end
 
+            -- Sets the final size of the new field frame
             NewFieldFrame.Size = UDim2.new(1, 0, 0, NewFieldFrame.ListLayout.AbsoluteContentSize.Y)
         end
     end
@@ -248,10 +247,12 @@ end
 function Module.GetFields(Text)
     local PossibleFields = {}
     local Args = Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
+    local GetAll = Text:sub(#Text) == "" or Text:sub(#Text) == " " 
     Text = Text:lower()
 
     if #Args == 1 then
-        local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " 
+        -- Gets possible commands
+        
         for Heading, Cmds in pairs(Handler.Commands) do
             PossibleFields[Heading] = {}
             for Title, Info in pairs(Cmds) do
@@ -259,7 +260,7 @@ function Module.GetFields(Text)
             end
         end
     elseif #Args > 1 then
-
+        -- Gets possible arguments
         for Heading, Cmds in pairs(Handler.Commands) do
             local Command = Cmds[Args[1]:lower()]
             if Command then
@@ -280,9 +281,7 @@ function Module.GetFields(Text)
                         Choices = Argument.Choices
                     end
     
-                    local GetAll = Text:sub(#Text) == "" or Text:sub(#Text) == " "
                     for Sect1, Sect2 in pairs(Choices or {}) do
-
                         local Title, Description
                         if typeof(Sect1) == "number" then
                             Title = Sect2

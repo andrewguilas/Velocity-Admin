@@ -20,13 +20,15 @@ function Module.DisconnectCon(Con)
 end
 
 function Module.Init()
+    -- Variables
     local UserInputService = game:GetService("UserInputService")
-
     local InputModule = require(script.Parent.Input)
     local AutoCompleteModule = require(script.Parent.AutoComplete)
     local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
     local Commands = game.ReplicatedStorage.VelocityAdmin.Modules.Commands
+    local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 
+    -- Requires all commands and places them into a dictionary
     for _,Heading in pairs(Commands:GetChildren()) do
         Module.Commands[Heading.Name] = {}
         for __,Cmd in pairs(Heading:GetChildren()) do
@@ -34,12 +36,12 @@ function Module.Init()
         end
     end
 
-    local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
-
+    -- Sets default properties of command bar
     CommandBar.Position = Settings.CommandBar.DefaultPos
     CommandBar.Visible = false
 
-    UserInputService.InputBegan:Connect(InputModule.RunUI)
+    -- Fires functions when player starts input or types
+    UserInputService.InputBegan:Connect(InputModule.RunInput)
     CommandBar.TextBox:GetPropertyChangedSignal("Text"):Connect(AutoCompleteModule.TextChanged)
 end
 

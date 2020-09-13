@@ -22,6 +22,10 @@ Cmd.Run = function(CurrentPlayer, Delay)
         return false, "Delay must be a number"
     end
 
+    if not Delay then
+        Delay = 0
+    end
+
     -- Run Command
     Remotes.Announcement:FireAllClients("Shutdown", Delay)
     if Delay then
