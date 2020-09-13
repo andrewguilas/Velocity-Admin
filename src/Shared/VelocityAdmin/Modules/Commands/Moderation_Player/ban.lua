@@ -37,7 +37,7 @@ Cmd.Run = function(CurrentPlayer, Player, Length, Reason)
     if not Player then
         return false, "Player Argument Missing"
     elseif not Length then
-        return false, "Length Argument Missing"
+        Length = "forever"
     end
 
     local SecondsBanned = Helper.GetLength(Length)
@@ -58,14 +58,6 @@ Cmd.Run = function(CurrentPlayer, Player, Length, Reason)
     if Players then
         local Info = {}
         for _,p in pairs(Players) do
-
-            -- Checks if banned
-            if Helper.Data.TempBanned[p.UserId] then
-                table.insert(Info, {
-                    Success = true,
-                    Status = p.Name .. " is already banned."
-                })
-            end
 
             -- Stores banned in server data
             Helper.Data.TempBanned[p.UserId] = {
