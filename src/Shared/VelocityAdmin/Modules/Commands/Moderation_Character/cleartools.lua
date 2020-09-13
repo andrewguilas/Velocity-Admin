@@ -45,18 +45,18 @@ Cmd.Run = function(CurrentPlayer, Player)
                 end
 
                 if #Tools > 0 then
-                    Info:insert({
+                    table.insert(Info, {
                         Success = true,
                         Status = "The following tools were removed from " .. Player .. "... " .. table.concat(Tools, ", ")
                     })
                 else
-                    Info:insert({
+                    table.insert(Info, {
                         Success = true,
                         Status = Player .. " has no tools."
                     })
                 end
             else
-                Info:insert({
+                table.insert(Info, {
                     Success = false,
                     Status = p.Name .. "'s character does not exist.."
                 })

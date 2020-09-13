@@ -35,18 +35,18 @@ Cmd.Run = function(CurrentPlayer, Player)
                     }
                     Hum.MaxHealth, Hum.Health = math.huge, math.huge
 
-                    Info:insert({
+                    table.insert(Info, {
                         Success = true,
                         Status = Player .. " was godded."
                     })
                 else
-                    Info:insert({
+                    table.insert(Info, {
                         Success = true,
                         Status = Player .. " is already godded."
                     })
                 end
             else
-                Info:insert({
+                table.insert(Info, {
                     Success = false,
                     Status = Player .. "'s character does not exist."
                 })

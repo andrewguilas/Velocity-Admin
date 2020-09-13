@@ -41,13 +41,13 @@ Cmd.Run = function(CurrentPlayer, Player, Amount)
                 local Hum = Char:WaitForChild("Humanoid")
                 Hum.Health = Hum.Health - Amount
 
-                Info:insert({
+                table.insert(Info, {
                     Success = true,
                     Status = Player .. " was damaged by " .. Amount .. " HP's."
                 })
             else
 
-                Info:insert({
+                table.insert(Info, {
                     Success = false,
                     Status = Player .. "'s character does not exist."
                 })

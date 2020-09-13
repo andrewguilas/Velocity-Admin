@@ -32,18 +32,18 @@ Cmd.Run = function(CurrentPlayer, Player)
                     Hum.MaxHealth, Hum.Health = Helper.Data[CurrentPlayer.Name].God.MaxHealth, Helper.Data[CurrentPlayer.Name].God.Health
                     Helper.Data[CurrentPlayer.Name].God = nil
 
-                    Info:insert({
+                    table.insert(Info, {
                         Success = true,
                         Status = Player .. " was ungodded."
                     })
                 else
-                    Info:insert({
+                    table.insert(Info, {
                         Success = true,
                         Status = Player .. " is already ungodded."
                     })
                 end
             else
-                Info:insert({
+                table.insert(Info, {
                     Success = false,
                     Status = Player .. "'s character does not exist."
                 })

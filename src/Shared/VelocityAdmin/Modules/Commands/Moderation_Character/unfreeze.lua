@@ -30,12 +30,12 @@ Cmd.Run = function(CurrentPlayer, Player)
                 local Root = Char:WaitForChild("HumanoidRootPart")
                 Root.Anchored = false
 
-                Info:insert({
+                table.insert(Info, {
                     Success = true,
                     Status = Player .. " was unfrozen."
                 })
             else
-                Info:insert({
+                table.insert(Info, {
                     false,
                     Status = Player .. "'s character does not exist."
                 })

@@ -38,18 +38,18 @@ Cmd.Run = function(CurrentPlayer, Player)
 
                 if #Tools > 0 then
                     Hum:UnequipTools()
-                    Info:insert({
+                    table.insert(Info, {
                         Success = true,
                         Status = Player .. " unequipped... " .. table.concat(Tools, ", ")
                     })
                 else
-                    Info:insert({
+                    table.insert(Info, {
                         Success = true,
                         Status = Player .. " has no tools in their backpack."
                     })
                 end
             else
-                Info:insert({
+                table.insert(Info, {
                     Success = false,
                     Status = p.Name .. "'s character does not exist.."
                 })

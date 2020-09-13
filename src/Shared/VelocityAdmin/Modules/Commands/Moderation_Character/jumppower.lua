@@ -37,13 +37,13 @@ Cmd.Run = function(CurrentPlayer, Player, Amount)
                 local Hum = Char:WaitForChild("Humanoid")
                 Hum.JumpPower = Amount
 
-                Info:insert({
+                table.insert(Info, {
                     Success = true,
                     Status = Player .. "'s jump power was changed to " .. Amount
                 })
             else
 
-                Info:insert({
+                table.insert(Info, {
                     Success = false,
                     Status = Player .. "'s character does not exist."
                 })

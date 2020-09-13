@@ -41,12 +41,12 @@ Cmd.Run = function(CurrentPlayer, Player, Amount)
                 local Hum = Char:WaitForChild("Humanoid")
                 Hum.MaxHealth = Amount
 
-                Info:insert({
+                table.insert(Info, {
                     Success = true,
                     Status = Player .. " 's max health was changed to " .. Amount .. " HP"
                 })
             else
-                Info:insert({
+                table.insert(Info, {
                     Success = false,
                     Status = Player .. "'s character does not exist."
                 })
