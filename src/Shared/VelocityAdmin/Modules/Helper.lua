@@ -78,6 +78,35 @@ function Helper.FindPlayer(Key, p)
         Core.TableRemove(Players, p)
     elseif Key == "me" then
         Players = {p}
+    elseif Key == "random" then
+        Players = game.Players:GetPlayers()
+        if Players[1] ~= nil then
+            local value = math.random(1,#Players)
+            local picked = Players[value]
+        end
+    elseif Key:find("team:") then
+        Key = Key:sub(5,#Key):lower():gsub("%s+", "")
+
+        for _,v in pairs(game:GetService("Teams")) do
+            if v.Name:lower():gsub("%s+", "") == Key then
+                for _,player in pairs(game.Players:GetPlayers()) do
+                    if player.Team.Name == Key then
+                        table.insert(Players,player)
+                    end
+                end
+            end
+        end
+    elseif Key:find(",") then
+        Key = Key:sub(1,#Key)
+        local function getPlrsFromNameString(stringWithNames)
+            for i, s in pairs(stringWithNames:split(",")) do
+                local name = s:match("%S")
+                local plr = Players:FindFirstChild(name)
+                if plr then
+                    Players[#Players+1] = plr
+                end
+            end
+    end
     else
         for _,p in pairs(game.Players:GetPlayers()) do
             if p.Name:lower() == Key:lower() then
