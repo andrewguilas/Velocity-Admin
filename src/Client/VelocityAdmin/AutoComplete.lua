@@ -10,7 +10,9 @@ local Handler = require(script.Parent.Handler)
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
 local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
-local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
+
+local p = game.Players.LocalPlayer
+local CommandBar = p.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
 local AutoComplete = CommandBar.AutoComplete
 
@@ -273,15 +275,24 @@ function Module.GetFields(Text)
     
                     local Choices           
                     if typeof(Argument.Choices) == "function" then
-                        Choices = Argument.Choices()
+                        Choices = Argument.Choices(p)
                     elseif typeof(Argument.Choices) == "table" then
                         Choices = Argument.Choices
                     end
     
                     local GetAll = Text:sub(#Text) == "" or Text:sub(#Text) == " "
-                    for _,Title in pairs(Choices or {}) do
-                        Module.CheckDifference(Heading, Title, Command.Description, Args[#Args], PossibleFields[Heading], GetAll)
-                        --Module.CheckDifference(Title, "", Args[#Args], PossibleFields, GetAll)
+                    for Sect1, Sect2 in pairs(Choices or {}) do
+
+                        local Title, Description
+                        if typeof(Sect1) == "number" then
+                            Title = Sect2
+                            Description = Command.Description
+                        elseif typeof(Sect1) == "string" then
+                            Title = Sect1
+                            Description = Sect2
+                        end
+
+                        Module.CheckDifference(Heading, Title, Description, Args[#Args], PossibleFields[Heading], GetAll)
                     end
                 end
             end  

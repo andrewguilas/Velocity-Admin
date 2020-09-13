@@ -9,13 +9,7 @@ Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
         ["Description"] = "The player you want to reset the name of.",
-        ["Choices"] = function()
-            local Players = {}
-            for _,p in pairs(game.Players:GetPlayers()) do
-                table.insert(Players, p.Name)
-            end
-            return Players
-        end
+        ["Choices"] = Helper.GetPlayers
     },
 }
 

@@ -10,24 +10,12 @@ Cmd.Arguments = {
     [1] = {
         ["Title"] = "player1",
         ["Description"] = "The player who will be teleported.",
-        ["Choices"] = function()
-            local Players = {}
-            for _,p in pairs(game.Players:GetPlayers()) do
-                table.insert(Players, p.Name)
-            end
-            return Players
-        end
+        ["Choices"] = Helper.GetPlayers
     },
     [2] = {
         ["Title"] = "player2",
         ["Description"] = "Where player1 will be teleported to.",
-        ["Choices"] = function()
-            local Players = {}
-            for _,p in pairs(game.Players:GetPlayers()) do
-                table.insert(Players, p.Name)
-            end
-            return Players
-        end
+        ["Choices"] = Helper.GetPlayers
     },
 }
 

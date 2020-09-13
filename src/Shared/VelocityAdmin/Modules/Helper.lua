@@ -1,4 +1,8 @@
 local LENGTH_SUFFIXES = {"s", "mi", "h", "d", "w", "mo", "y", "forever"}
+local MAX_DETECTION_DIST = math.huge
+
+local Teams = game:GetService("Teams")
+local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local Helper = {
     Data = {
         Commands = {},
@@ -10,9 +14,59 @@ local Helper = {
 
 ----------------------------------------------------------------------
 
-local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 
 -- Players
+
+function Helper.GetPlayers(CurrentPlayer)
+    local Players = {
+        ["all"] = "",
+        ["others"] = "",
+    }
+
+    local Dist, ClosestPlayer = MAX_DETECTION_DIST, nil
+    for _,p in pairs(game.Players:GetPlayers()) do
+        -- Creates all
+        Players["all"] = Players["all"] .. p.Name .. " (" .. p.UserId .. "), "
+
+        -- Creates others
+        if p ~= CurrentPlayer then
+            Players["others"] = Players["others"] .. p.Name .. " (" .. p.UserId .. "), "
+        end
+
+        -- Creates single players
+        Players[p.Name] = "UserID: " .. p.UserId
+
+        -- Gets closests player
+        if p.Character and CurrentPlayer.Character then
+            local pDist = Core.Mag(p.Character:WaitForChild("HumanoidRootPart"), CurrentPlayer.Character:WaitForChild("HumanoidRootPart"))
+            if pDist < MAX_DETECTION_DIST and p ~= CurrentPlayer then
+                ClosestPlayer = p
+                Dist = pDist
+            end
+        end
+
+    end
+
+    -- Creates closest Player
+    if ClosestPlayer then
+        Players["closest_player"] = ClosestPlayer.Name .. " (" .. ClosestPlayer.UserId .. ")"
+    end
+
+    -- Finishes others
+    if not Players["others"] then
+        Players["others"] = nil
+    end
+
+    -- Creates team
+    for _,Team in pairs(Teams:GetChildren()) do
+        Players["team:" .. Team.Name] = ""
+        for __,TeamMember in pairs(Team:GetPlayers()) do
+            Players["team:" .. Team.Name] = Players["team:" .. Team.Name] .. TeamMember.Name .. " (" .. TeamMember.UserId .. "), "
+        end
+    end
+
+    return Players
+end
 
 function Helper.FindPlayer(Key, p)
     local Players = {}

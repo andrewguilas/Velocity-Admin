@@ -10,13 +10,7 @@ Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
         ["Description"] = "The player who will receive the sword.",
-        ["Choices"] = function()
-            local Players = {}
-            for _,p in pairs(game.Players:GetPlayers()) do
-                table.insert(Players, p.Name)
-            end
-            return Players
-        end
+        ["Choices"] = Helper.GetPlayers
     },
 }
 
