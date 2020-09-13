@@ -4,7 +4,6 @@
 		"$className": "DataModel",
 		"ReplicatedStorage": {
 			"$className": "ReplicatedStorage",
-			"$ignoreUnknownInstances": true,
 			"$path": "src/Shared"
 		},
 		"ServerScriptService": {
