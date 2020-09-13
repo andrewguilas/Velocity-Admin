@@ -6,7 +6,6 @@ local Module = {}
 
 local Debris = game:GetService("Debris")
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
-local Velocity = require(game.ReplicatedStorage.VelocityAdmin.Modules.Velocity)
 
 local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 local p = game.Players.LocalPlayer
@@ -50,12 +49,13 @@ end
 function Module.NewStatus(Msg, Type)
     local Hint = An:FindFirstChild(Type or "Hint")
     if not Hint then
-        local NewHint = An.ListLayout.Template:Clone()
-        NewHint.TextLabel.Text = Msg
-        NewHint.LayoutOrder = 1
-        NewHint.Transparency = Settings.Announcement.StatusTransparency
-        NewHint.Name = Type or "Hint"
-        NewHint.Parent = An
+        local NewHint = An.ListLayout.Template:Clone() do
+            NewHint.TextLabel.Text = Msg
+            NewHint.LayoutOrder = 1
+            NewHint.Transparency = Settings.Announcement.StatusTransparency
+            NewHint.Name = Type or "Hint"
+            NewHint.Parent = An
+        end
         return NewHint
     else
         Hint.TextLabel.Text = Msg
@@ -73,11 +73,13 @@ end
     -- Announcement
 function Module.NewAnnouncement(Msg)
 
+    -- Creates the announcement
     local NewAn = An.ListLayout.Template:Clone()
     NewAn.TextLabel.Text = Msg
     NewAn.Transparency = Settings.Announcement.AnnouncementTransparency
     NewAn.Parent = An
 
+    -- Sets the lifetime of the announcement
     local MaxDur = Settings.CommandBar.Response.SecondsPerLetter * #Msg
     if MaxDur > Settings.CommandBar.Response.MaxDuration then
         MaxDur = Settings.CommandBar.Response.MaxDuration

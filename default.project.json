@@ -9,17 +9,14 @@
 		},
 		"ServerScriptService": {
 			"$className": "ServerScriptService",
-			"$ignoreUnknownInstances": true,
 			"$path": "src/Server"
 		},
 		"StarterPlayer": {
 			"$className": "StarterPlayer",
 			"StarterPlayerScripts": {
 				"$className": "StarterPlayerScripts",
-				"$ignoreUnknownInstances": true,
 				"$path": "src/Client"
-			},
-			"$ignoreUnknownInstances": true
+			}
 		}
 	}
 }

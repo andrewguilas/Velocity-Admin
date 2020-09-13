@@ -4,16 +4,15 @@ local Module = {}
 
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
-
 local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local Handler = require(script.Parent.Handler)
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
 local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
-local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
+local p = game.Players.LocalPlayer
+local CommandBar = p.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
 local AutoComplete = CommandBar.AutoComplete
-
 local Info = CommandBar.Info
 local Hint = Info.Hint
 
@@ -76,7 +75,7 @@ function Module.UpdateResponse(Success, Status)
 end
 
 function Module.UpdateSelectedField(Step)
-    for FrameIndex,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
+    for FrameIndex, Frame in pairs(Core.Get(AutoComplete, "Frame")) do
         for _,Field in pairs(Core.Get(Frame, "TextButton")) do
             if Field.IsSelected.Value then
 
@@ -118,9 +117,10 @@ end
 
 function Module.UpdateHint()
     local Args = string.split(TextBox.Text, Settings.CommandBar.AutoComplete.ArgSplit)  
-    for Type,Commands in pairs(Handler.Commands) do
+    for Type, Commands in pairs(Handler.Commands) do
         for Command, Info in pairs(Commands) do
             if Command:lower() == Args[1]:lower() then
+
                 -- Gets the argument info
                 local ArgumentInfo
                 if Info.Arguments[#Info.Arguments] then
@@ -159,7 +159,8 @@ function Module.CreateFields(PossibleFields)
             -- Creates the Heading
             local NewHeading = AutoComplete.ListLayout.Heading:Clone() do
                 NewHeading.LayoutOrder = HeadingNum * 10
-                NewHeading.Name, NewHeading.TextLabel.Text = Heading .. "-Heading", Heading
+                NewHeading.Name = Heading .. "-Heading"
+                NewHeading.TextLabel.Text = Heading:gsub("_", ": ")
                 NewHeading.Parent = AutoComplete
             end
 
@@ -170,6 +171,11 @@ function Module.CreateFields(PossibleFields)
                 NewFieldFrame.Parent = AutoComplete
             end
 
+            -- Event for heading clicked
+            NewHeading.MouseButton1Click:Connect(function()
+                NewFieldFrame.Visible = not NewFieldFrame.Visible
+            end)
+
             -- Creates the fields
             local FieldNum = 0
             for Cmd, Info in pairs(Cmds) do
@@ -177,7 +183,7 @@ function Module.CreateFields(PossibleFields)
                 -- Creates the field
                 FieldNum = FieldNum + 1
                 local NewField = NewFieldFrame.ListLayout.Field:Clone() do
-                    NewField.LayoutOrder = FieldNum
+                    NewField.LayoutOrder = FieldNum                 
                     NewField.Title.Text = Info.Title
                     NewField.Description.Text = Info.Description
                     NewField.Name = Cmd
@@ -208,11 +214,10 @@ function Module.CreateFields(PossibleFields)
 
             end
 
+            -- Sets the final size of the new field frame
             NewFieldFrame.Size = UDim2.new(1, 0, 0, NewFieldFrame.ListLayout.AbsoluteContentSize.Y)
         end
     end
-
-    AutoComplete.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.FieldSizeX, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
 end
 
 function Module.CheckDifference(Heading, Title, Description, LastArg, Table, GetAll)
@@ -242,10 +247,12 @@ end
 function Module.GetFields(Text)
     local PossibleFields = {}
     local Args = Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
+    local GetAll = Text:sub(#Text) == "" or Text:sub(#Text) == " " 
     Text = Text:lower()
 
     if #Args == 1 then
-        local GetAll = string.sub(Text, #Text) == "" or string.sub(Text, #Text) == " " 
+        -- Gets possible commands
+        
         for Heading, Cmds in pairs(Handler.Commands) do
             PossibleFields[Heading] = {}
             for Title, Info in pairs(Cmds) do
@@ -253,7 +260,7 @@ function Module.GetFields(Text)
             end
         end
     elseif #Args > 1 then
-
+        -- Gets possible arguments
         for Heading, Cmds in pairs(Handler.Commands) do
             local Command = Cmds[Args[1]:lower()]
             if Command then
@@ -269,15 +276,22 @@ function Module.GetFields(Text)
     
                     local Choices           
                     if typeof(Argument.Choices) == "function" then
-                        Choices = Argument.Choices()
+                        Choices = Argument.Choices(p)
                     elseif typeof(Argument.Choices) == "table" then
                         Choices = Argument.Choices
                     end
     
-                    local GetAll = Text:sub(#Text) == "" or Text:sub(#Text) == " "
-                    for _,Title in pairs(Choices or {}) do
-                        Module.CheckDifference(Heading, Title, Command.Description, Args[#Args], PossibleFields[Heading], GetAll)
-                        --Module.CheckDifference(Title, "", Args[#Args], PossibleFields, GetAll)
+                    for Sect1, Sect2 in pairs(Choices or {}) do
+                        local Title, Description
+                        if typeof(Sect1) == "number" then
+                            Title = Sect2
+                            Description = Command.Description
+                        elseif typeof(Sect1) == "string" then
+                            Title = Sect1
+                            Description = Sect2
+                        end
+
+                        Module.CheckDifference(Heading, Title, Description, Args[#Args], PossibleFields[Heading], GetAll)
                     end
                 end
             end  
@@ -306,8 +320,8 @@ function Module.TextChanged()
     end
     
     -- Set size of auto complete
-    AutoComplete.Size = UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
-    AutoComplete.CanvasSize = UDim2.new(0, AutoComplete.ListLayout.AbsoluteContentSize.X, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
+    AutoComplete.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.FieldSizeX, 0, AutoComplete.Parent.Parent.AbsoluteSize.Y/2)
+    AutoComplete.CanvasSize = UDim2.new(0, 0, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
 end
 
 return Module

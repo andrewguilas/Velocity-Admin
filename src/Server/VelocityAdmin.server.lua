@@ -3,6 +3,8 @@
 local DataStoreService = game:GetService("DataStoreService")
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
+
+local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
 local Commands = game.ReplicatedStorage.VelocityAdmin.Modules.Commands
 local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 
@@ -18,19 +20,39 @@ game.Players.PlayerAdded:Connect(function(p)
     end
 
     -- Checks if tempbanned
-    Reason = Helper.Data.TempBanned[p.UserId]
-    if Reason then
-        p:Kick("TEMP BANNED: " .. Reason)
+    local BanInfo = Helper.Data.TempBanned[p.UserId]
+    if BanInfo then      
+        print(os.time() - BanInfo.StartTime .. " seconds has passed sinced banned. " .. p.Name .. " was banned for " .. BanInfo.PublishedLength .. " (" .. BanInfo.RealLength .. ")")
+        if os.time() - BanInfo.StartTime < BanInfo.RealLength then
+            p:Kick("TEMP BANNED (duration: " .. BanInfo.PublishedLength .. "): " .. BanInfo.Reason)
+        else
+            Helper.Data.TempBanned[p.UserId] = nil
+            print(p.Name .. "'s ban was lifted")
+        end
     end
 
-    -- Checks if pBanned
-    local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
-    pcall(function()
-        local Data = BanStore:GetAsync(p.UserId)
-        if Data then
-            p:Kick("BANNED: " .. Data)
+    -- Checks if permanently banned
+    --local success, msg = pcall(function()
+        BanInfo = BanStore:GetAsync(p.UserId)
+        if BanInfo then      
+            print(os.time() - BanInfo.StartTime .. " seconds has passed sinced banned. " .. p.Name .. " was banned for " .. BanInfo.PublishedLength .. " (" .. BanInfo.RealLength .. ")")
+            if os.time() - BanInfo.StartTime < BanInfo.RealLength then
+                p:Kick("PERMANENTLY BANNED (duration: " .. BanInfo.PublishedLength .. "): " .. BanInfo.Reason)
+            else
+                BanStore:SetAsync(p.UserId, false)
+                print(p.Name .. "'s ban was lifted")
+            end
         end
-    end)
+    --end)
+
+--[[
+
+    if not success then
+        warn("Could not check data stores to see if " .. p.Name .. " (" .. p.UserId .. ") was banned.")
+        warn(msg)
+    end
+
+]]
 
 end)
 

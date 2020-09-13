@@ -1,6 +1,7 @@
 local Cmd = {}
-local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 local Chat = game:GetService("Chat")
+local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
+local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 
 ----------------------------------------------------------------------
 
@@ -9,7 +10,7 @@ Cmd.Description = "Displays the status to the entire server. Won't be removed un
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "text",
-        ["Description"] = "The status",
+        ["Description"] = "The status that will be displayed indefinitely.",
         ["Choices"] = true,
         ["NoWordLimit"] = true,
     }

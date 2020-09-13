@@ -4,12 +4,12 @@ local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Locks the server preventing incoming people from joining."
+Cmd.Description = "Locks the server preventing incoming people from joining with a reason."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "reason",
-        ["Description"] = "Why the server is locked. (optional)",
+        ["Description"] = "Why the server is locked (optional)",
         ["Choices"] = true,
         ["NoWordLimit"] = true,
     }

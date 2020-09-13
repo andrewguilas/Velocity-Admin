@@ -1,15 +1,14 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Unocks the server incoming people to join."
+Cmd.Description = "Unlocks the server so incoming people can join."
 
 Cmd.Arguments = {}
 
 Cmd.Run = function()
-    Velocity.TempData.ServerLocked = nil
+    Helper.Data.ServerLocked = nil
     return true, "Server unlocked"
 end
 

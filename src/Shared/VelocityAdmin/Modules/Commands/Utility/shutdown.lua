@@ -9,7 +9,7 @@ Cmd.Description = "Shuts down the server in a duration."
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "delay",
-        ["Description"] = "How long until the server is shut down.",
+        ["Description"] = "How long until the server is shut down (optional).",
         ["Choices"] = true,
     }
 }
@@ -17,8 +17,13 @@ Cmd.Arguments = {
 Cmd.Run = function(CurrentPlayer, Delay)
 
     -- Checks parameters
+
     if Delay and not tonumber(Delay) then
         return false, "Delay must be a number"
+    end
+
+    if not Delay then
+        Delay = 0
     end
 
     -- Run Command

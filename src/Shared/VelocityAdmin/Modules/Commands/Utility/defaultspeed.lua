@@ -1,6 +1,5 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
@@ -9,7 +8,7 @@ Cmd.Description = "Changes the default walk speed."
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "number",
-        ["Description"] = "The default walk speed of the game.",
+        ["Description"] = "The default walkspeed of the game.",
         ["Choices"] = true
     },
 }

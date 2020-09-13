@@ -45,7 +45,7 @@ function Module.ClearText()
     TextBox:CaptureFocus()
     RunService.RenderStepped:Wait()
     TextBox.Text = ""
-    Handler.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunUI)
+    Handler.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunInput)
 end
 
 function Module.CloseUI()
@@ -64,12 +64,14 @@ function Module.Returned()
             end
         end
     end
+    
     if AutoCompleteModule.ExecuteCommand() then
         Module.CloseUI()
     end
 end
 
-function Module.RunUI(Input)
+function Module.RunInput(Input)
+    -- Checks if the an input is connected to a function
     local PossibleFunction = Module.InputFunctions[Input.KeyCode]
     if PossibleFunction then
         PossibleFunction()

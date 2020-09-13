@@ -1,10 +1,8 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
-
 ----------------------------------------------------------------------
 
-Cmd.Description = "If true, player's won't be able to use emotes."
+Cmd.Description = "If true, players won't be able to use emotes."
 
 Cmd.Arguments = {
     [1] = {
@@ -18,7 +16,7 @@ Cmd.Run = function(CurrentPlayer, useemotes)
 
     -- Check if necessary arguments are there
     if not useemotes then
-        return false, "useemotes Argument Missing"
+        useemotes = "true"
     end
 
     -- Run Command

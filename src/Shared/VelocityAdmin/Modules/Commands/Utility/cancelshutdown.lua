@@ -1,16 +1,17 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
+local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Removes the current status."
+Cmd.Description = "Cancels the current shut down."
 
 Cmd.Arguments = {}
 
-Cmd.Run = function()
-    Remotes.Announcement:FireAllClients("Status")
-    return true, "Status was removed"
+Cmd.Run = function(CurrentPlayer)
+    -- Run Command
+    Remotes.Announcement:FireAllClients("Shutdown", "Cancel")
+    return true, "Canceling server shutdown"
 end
 
 ----------------------------------------------------------------------

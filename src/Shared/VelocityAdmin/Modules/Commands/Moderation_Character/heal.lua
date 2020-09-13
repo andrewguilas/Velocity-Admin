@@ -1,6 +1,5 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
@@ -9,18 +8,12 @@ Cmd.Description = "Heals a player."
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player you want to heal.",
-        ["Choices"] = function()
-            local Players = {}
-            for _,p in pairs(game.Players:GetPlayers()) do
-                table.insert(Players, p.Name)
-            end
-            return Players
-        end
+        ["Description"] = "The player you want to heal (username/user ID).",
+        ["Choices"] = Helper.GetPlayers
     },
     [2] = {
         ["Title"] = "amount",
-        ["Description"] = "The amount of health that will be given to the player..",
+        ["Description"] = "The amount of health that will be given to the player.",
         ["Choices"] = {}
     },
 }
@@ -34,19 +27,32 @@ Cmd.Run = function(CurrentPlayer, Player, Amount)
         return false, "Amount Argument Missing"
     end
 
+    if not tonumber(Amount) then
+        return false, Amount .. " is not a number"
+    end
+
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
             local Char = p.Character
             if Char then
                 local Hum = Char:WaitForChild("Humanoid")
                 Hum.Health = Hum.Health + Amount
-                return true, Player .. " was healed by " .. Amount .. " HP's."
+
+                table.insert(Info, {
+                    Success = true,
+                    Status = Player .. " was healed by " .. Amount .. " HP."
+                })
             else
-                return false, Player .. "'s character does not exist."
+                table.insert(Info, {
+                    Success = false,
+                    Status = Player .. "'s character does not exist."
+                })
             end 
-        end              
+        end     
+        return Info         
     else
         return false, Player .. " is not a valid player."
     end

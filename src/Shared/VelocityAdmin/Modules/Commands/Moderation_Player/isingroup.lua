@@ -1,22 +1,15 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Returns if the player is in a specific group."
+Cmd.Description = "Checks if the player is in the group."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player you want to check the ID of.",
-        ["Choices"] = function()
-            local Players = {}
-            for _,p in pairs(game.Players:GetPlayers()) do
-                table.insert(Players, p.Name)
-            end
-            return Players
-        end
+        ["Description"] = "The player you want to check if they are in the ground. ",
+        ["Choices"] = Helper.GetPlayers
     },
     [2] = {
         ["Title"] = "groupid",
@@ -35,9 +28,8 @@ Cmd.Run = function(CurrentPlayer, Player, ID)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
-    local GroupService = game:GetService("GroupService")
-    local GroupName = GroupService:GetGroupInfoAsync(ID).Name
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
+    local GroupName = game:GetService("GroupService"):GetGroupInfoAsync(ID).Name
     if Players then
         local Info = {}
         for _,p in pairs(Players) do

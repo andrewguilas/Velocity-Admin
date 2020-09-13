@@ -1,10 +1,9 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Changes the default respawn time for all Players."
+Cmd.Description = "Changes the default respawn time for all players."
 
 Cmd.Arguments = {
     [1] = {

@@ -1,24 +1,25 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 local Chat = game:GetService("Chat")
+local DataStoreService = game:GetService("DataStoreService")
+local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Bans a player from the game."
+Cmd.Description = "Bans a player from all places for a duration."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
-        ["Description"] = "The player you want to ban.",
-        ["Choices"] = function()
-            local Players = {}
-            for _,p in pairs(game.Players:GetPlayers()) do
-                table.insert(Players, p.Name)
-            end
-            return Players
-        end
+        ["Description"] = "The player you want to ban (username/userID)",
+        ["Choices"] = Helper.GetPlayers
     },
     [2] = {
+        ["Title"] = "length",
+        ["Description"] = "How long the place will be banned for (prefixes: s, m, h, d, w, m, y, forever)",
+        ["Choices"] = true,
+    },
+    [3] = {
         ["Title"] = "reason",
         ["Description"] = "Why you want to ban the player.",
         ["Choices"] = true,
@@ -26,11 +27,18 @@ Cmd.Arguments = {
     }
 }
 
-Cmd.Run = function(CurrentPlayer, Player, Reason)
+Cmd.Run = function(CurrentPlayer, Player, Length, Reason)
 
     -- Check if necessary arguments are there
     if not Player then
         return false, "Player Argument Missing"
+    elseif not Length then
+        Length = "forever"
+    end
+
+    local SecondsBanned = Helper.GetLength(Length)
+    if not SecondsBanned then
+        return false, Length .. " is not a valid length"
     end
 
     local Success = pcall(function()
@@ -42,8 +50,9 @@ Cmd.Run = function(CurrentPlayer, Player, Reason)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
+        local Info = {}
         for _,p in pairs(Players) do
 
             local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
@@ -52,31 +61,30 @@ Cmd.Run = function(CurrentPlayer, Player, Reason)
             end
 
             Success = pcall(function()
-                if BanStore:GetAsync(p.UserId) then
-                    return false, p.Name .. " is already banned."
-                end
+                BanStore:SetAsync(p.UserId, {
+                    Reason = Reason or true,
+                    PublishedLength = Length,
+                    RealLength = SecondsBanned,
+                    StartTime = os.time()
+                })
             end)
 
-            if not Success then
-                return false, "Error checking if player is banned."
-            end
-
-            Success = pcall(function()
-                BanStore:SetAsync(p.UserId, Reason or true)
-            end)
-
-            if Success then
-                if Reason then
-                    p:Kick("BANNED: " .. Reason)
-                    return true, Player .. " was banned for " .. Reason
-                else
-                    p:Kick("BANNED: " .. Reason)
-                    return true, Player .. " was banned."
-                end   
+            -- Kicks player with message
+            if Reason then
+				table.insert(Info, {
+					Success = true,
+					Status = p.Name .. " was banned from all servers (duration: " .. Length .. ") for " .. Reason
+                })
+                p:Kick("TEMP BANNED (duration: " .. Length .. "): " .. Reason)
             else
-                return false, "Error banning " .. Player.Name
-            end
-        end              
+                table.insert(Info, {
+                    Success = true,
+                    Status = p.Name .. " was banned from all servers (duration: " .. Length .. ")"
+				})
+				p:Kick("TEMP BANNED: " .. Reason)
+            end  
+        end   
+        return Info           
     else
         return false, Player .. " is not a valid player."
     end

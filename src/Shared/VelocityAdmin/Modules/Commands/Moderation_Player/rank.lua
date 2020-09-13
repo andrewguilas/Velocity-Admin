@@ -1,22 +1,15 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-local Chat = game:GetService("Chat")
 
 ----------------------------------------------------------------------
 
-Cmd.Description = "Returns the player's rank & role in a group.."
+Cmd.Description = "Returns the player's rank & role in a group."
 
 Cmd.Arguments = {
     [1] = {
         ["Title"] = "player",
         ["Description"] = "The player you want to check the rank of.",
-        ["Choices"] = function()
-            local Players = {}
-            for _,p in pairs(game.Players:GetPlayers()) do
-                table.insert(Players, p.Name)
-            end
-            return Players
-        end
+        ["Choices"] = Helper.GetPlayers
     },
     [2] = {
         ["Title"] = "groupid",
@@ -37,8 +30,18 @@ Cmd.Run = function(CurrentPlayer, Player, ID)
     end
 
     -- Run Command
-    local Players = Velocity.Helper.FindPlayer(Player, CurrentPlayer)
-    local GroupName = game:GetService("GroupService"):GetGroupInfoAsync(ID).Name
+    local Players = Helper.FindPlayer(Player, CurrentPlayer)
+
+    local GroupName
+    local success = pcall(function()
+        local GroupInfo = game:GetService("GroupService"):GetGroupInfoAsync(ID)
+        GroupName = GroupInfo.Name
+    end)
+
+    if not success or not GroupName then
+        return false, "Error retrieving group info"
+    end
+
     if Players then
         local Info = {}
         for _,p in pairs(Players) do
