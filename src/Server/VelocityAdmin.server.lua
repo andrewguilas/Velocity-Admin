@@ -20,8 +20,13 @@ game.Players.PlayerAdded:Connect(function(p)
     -- Checks if tempbanned
     local BanInfo = Helper.Data.TempBanned[p.UserId]
     if BanInfo then      
-        print(os.time() - BanInfo.StartTime .. " seconds has passed sinced banned. " .. p.Name .. " was banned for " .. BanInfo.PublishedLength .. "(" .. BanInfo.RealLength .. ")")
-        p:Kick("TEMP BANNED (duration: " .. BanInfo.PublishedLength .. "): " .. BanInfo.Reason)
+        print(os.time() - BanInfo.StartTime .. " seconds has passed sinced banned. " .. p.Name .. " was banned for " .. BanInfo.PublishedLength .. " (" .. BanInfo.RealLength .. ")")
+        if os.time() - BanInfo.StartTime < BanInfo.RealLength then
+            p:Kick("TEMP BANNED (duration: " .. BanInfo.PublishedLength .. "): " .. BanInfo.Reason)
+        else
+            Helper.Data.TempBanned[p.UserId] = nil
+            print(p.Name .. "'s ban was lifted")
+        end
     end
 
     -- Checks if pBanned

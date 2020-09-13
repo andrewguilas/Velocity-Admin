@@ -61,7 +61,7 @@ Cmd.Run = function(CurrentPlayer, Player, Length, Reason)
 
             -- Checks if banned
             if Helper.Data.TempBanned[p.UserId] then
-                Info:insert({
+                table.insert(Info, {
                     Success = true,
                     Status = p.Name .. " is already banned."
                 })
@@ -76,14 +76,14 @@ Cmd.Run = function(CurrentPlayer, Player, Length, Reason)
             }
 
             -- Kicks player with message
-			if Reason then
-				Info:insert({
+            if Reason then
+				table.insert(Info, {
 					Success = true,
 					Status = p.Name .. " was banned (duration: " .. Length .. ") for " .. Reason
-				})
-                p:Kick("TEMP BANNED: " .. Reason)
+                })
+                p:Kick("TEMP BANNED (duration: " .. Length .. "): " .. Reason)
             else
-                Info:insert({
+                table.insert(Info, {
                     Success = true,
                     Status = p.Name .. " was banned (duration: " .. Length .. ")"
 				})
