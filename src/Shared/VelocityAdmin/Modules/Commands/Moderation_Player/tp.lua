@@ -1,3 +1,5 @@
+local TP_OFFSET = CFrame.new(0, 0, 5)
+
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 local Chat = game:GetService("Chat")
@@ -20,9 +22,6 @@ Cmd.Arguments = {
 }
 
 Cmd.Run = function(CurrentPlayer, player1, player2)
-
-    -- Settings
-    local TP_OFFSET = CFrame.new(0, 0, 5)
 
     -- Check if necessary arguments are there
     if not player1 then

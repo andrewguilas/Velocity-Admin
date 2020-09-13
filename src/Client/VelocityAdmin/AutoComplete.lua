@@ -20,6 +20,7 @@ local Hint = Info.Hint
 
 function Module.ExecuteCommand()
     Handler.Data.Arguments = TextBox.Text:split(Settings.CommandBar.AutoComplete.ArgSplit)
+    print(Handler.Data.CommandInfo.Arguments)
     if Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments] and Handler.Data.CommandInfo.Arguments[#Handler.Data.CommandInfo.Arguments].NoWordLimit then
         local LastArg = table.concat(Handler.Data.Arguments, Settings.CommandBar.AutoComplete.ArgSplit, #Handler.Data.CommandInfo.Arguments + 1)      
         for i = #Handler.Data.CommandInfo.Arguments + 1, #Handler.Data.Arguments do
