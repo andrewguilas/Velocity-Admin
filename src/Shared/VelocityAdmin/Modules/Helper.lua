@@ -85,28 +85,19 @@ function Helper.FindPlayer(Key, p)
             local picked = Players[value]
         end
     elseif Key:find("team:") then
-        Key = Key:sub(5,#Key):lower():gsub("%s+", "")
-
-        for _,v in pairs(game:GetService("Teams")) do
-            if v.Name:lower():gsub("%s+", "") == Key then
-                for _,player in pairs(game.Players:GetPlayers()) do
-                    if player.Team.Name == Key then
-                        table.insert(Players,player)
-                    end
-                end
+        for _,Team in pairs(game:GetService("Teams"):GetChildren()) do
+            if Team.Name:lower():gsub("%s+", "") == Key:sub(6, #Key):lower():gsub("%s+", "") then
+                Players = Team:GetPlayers()
             end
         end
     elseif Key:find(",") then
-        Key = Key:sub(1,#Key)
-        local function getPlrsFromNameString(stringWithNames)
-            for i, s in pairs(stringWithNames:split(",")) do
-                local name = s:match("%S")
-                local plr = Players:FindFirstChild(name)
-                if plr then
-                    Players[#Players+1] = plr
+        for _,pName in pairs(Key:split(",")) do
+            for __,plr in pairs(game.Players:GetPlayers()) do
+                if plr.Name:lower() == pName then
+                    table.insert(Players, plr)
                 end
             end
-    end
+        end
     else
         for _,p in pairs(game.Players:GetPlayers()) do
             if p.Name:lower() == Key:lower() then
