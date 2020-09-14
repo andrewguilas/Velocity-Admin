@@ -17,10 +17,6 @@ function Module.CheckSize()
     end
 end
 
-function Module.GetLogs()
-    return Module.Logs
-end
-
 function Module.GetDate()
     local Date = os.date("*t", os.time())
     return (Date.month .. "/" .. Date.day .. "/" .. Date.year .. "    " .. Date.hour .. ":" .. Date.min .. ":" .. Date.sec)
