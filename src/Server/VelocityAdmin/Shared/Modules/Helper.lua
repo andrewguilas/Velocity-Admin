@@ -59,9 +59,10 @@ function Helper.GetPlayers(CurrentPlayer)
 
     -- Creates team
     for _,Team in pairs(Teams:GetChildren()) do
-        Players["team:" .. Team.Name] = ""
+        local TeamName = Team.Name:lower():gsub("%s+", "")
+        Players["team:" .. TeamName] = ""
         for __,TeamMember in pairs(Team:GetPlayers()) do
-            Players["team:" .. Team.Name] = Players["team:" .. Team.Name] .. TeamMember.Name .. " (" .. TeamMember.UserId .. "), "
+            Players["team:" .. TeamName] = Players["team:" .. TeamName] .. TeamMember.Name .. " (" .. TeamMember.UserId .. "), "
         end
     end
 
