@@ -1,4 +1,5 @@
 local Cmd = {}
+local DataStoreService = game:GetService("DataStoreService")
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
@@ -47,12 +48,6 @@ Cmd.Run = function(CurrentPlayer, User)
         return false, "User is not a valid argument type."      
     end
 
-    -- Gets data stores
-    local DataStore2 = require(game.ServerScriptService.VelocityAdmin.DataStore2)
-    if not DataStore2 then
-        return false, "Could not retrieve data stores"
-    end
-
     -- Run Command
 
         -- Checks if tempbvanned
@@ -62,14 +57,14 @@ Cmd.Run = function(CurrentPlayer, User)
     end
 
         -- Gets data store
-    local BanStore = DataStore2("pBans")
+    local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
     if not BanStore then
         return false, "Error calling data stores"
     end
 
         -- Checks if not banned
     local Success = pcall(function()
-        if not BanStore:Get({}) then
+        if not BanStore:GetAsync(UserId) then
             return true, UserName .. " (".. UserId .. ") is not banned."
         end
     end)
@@ -80,7 +75,7 @@ Cmd.Run = function(CurrentPlayer, User)
 
         -- Unbans player
     Success = pcall(function()
-        BanStore:Set(false)
+        BanStore:SetAsync(UserId, false)
     end)
 
     if Success then

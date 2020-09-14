@@ -4,7 +4,7 @@
 		"$className": "DataModel",
 		"ServerScriptService": {
 			"$className": "ServerScriptService",
-			"$ignoreUnknownInstances": false,
+			"$ignoreUnknownInstances": true,
 			"$path": "src/Server"
 		}
 	}

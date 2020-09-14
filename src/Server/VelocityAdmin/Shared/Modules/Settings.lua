@@ -28,6 +28,7 @@ local Settings = {
         }
     },
     Basic = {
+        BanScope = "BanStore",
         Assets = {
             ["Classic Sword"] = 47433,
             ["F3x"] = 142785488,
