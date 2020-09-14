@@ -1,24 +1,11 @@
--- // Defaults \\ --
-
-do
-    local Shared = script.Shared 
-    Shared.Name = "VelocityAdmin"
-    Shared.Parent = game.ReplicatedStorage
-
-    local Client = script.Client
-    Client.Name = "VelocityAdmin"
-    Client.Parent = game.StarterPlayer.StarterPlayerScripts
-
-    local UI = script.UI
-    UI.Name = "VelocityAdmin"
-    UI.Parent = game.StarterGui
-end
-
 -- // Variables \\ --
+
+local ServerHelper = require(script.Helper)
+ServerHelper.SendScripts()
 
 local DataStoreService = game:GetService("DataStoreService")
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
-local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
+local SharedHelper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 
 local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
 local Commands = game.ReplicatedStorage.VelocityAdmin.Modules.Commands
@@ -27,22 +14,22 @@ local Remotes = game.ReplicatedStorage.VelocityAdmin.Remotes
 -- // Events \\ --
 
 game.Players.PlayerAdded:Connect(function(p)
-    Helper.Data[p.Name] = {}
+    SharedHelper.Data[p.Name] = {}
 
     -- Checks if slocked
-    local Reason = Helper.Data.ServerLocked
+    local Reason = SharedHelper.Data.ServerLocked
     if Reason then
         p:Kick("Server is locked: " .. Reason)
     end
 
     -- Checks if tempbanned
-    local BanInfo = Helper.Data.TempBanned[p.UserId]
+    local BanInfo = SharedHelper.Data.TempBanned[p.UserId]
     if BanInfo then      
         print(os.time() - BanInfo.StartTime .. " seconds has passed sinced banned. " .. p.Name .. " was banned for " .. BanInfo.PublishedLength .. " (" .. BanInfo.RealLength .. ")")
         if os.time() - BanInfo.StartTime < BanInfo.RealLength then
             p:Kick("TEMP BANNED (duration: " .. BanInfo.PublishedLength .. "): " .. BanInfo.Reason)
         else
-            Helper.Data.TempBanned[p.UserId] = nil
+            SharedHelper.Data.TempBanned[p.UserId] = nil
             print(p.Name .. "'s ban was lifted")
         end
     end
@@ -73,7 +60,7 @@ game.Players.PlayerAdded:Connect(function(p)
 end)
 
 game.Players.PlayerRemoving:Connect(function(p)
-    Helper.Data[p.Name] = nil
+    SharedHelper.Data[p.Name] = nil
 end)
 
 Remotes.FireCommand.OnServerInvoke = function(p, Data)
