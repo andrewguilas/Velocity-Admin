@@ -1,7 +1,6 @@
 local Cmd = {}
 local Helper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
 local Chat = game:GetService("Chat")
-local DataStoreService = game:GetService("DataStoreService")
 local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
 
 ----------------------------------------------------------------------
@@ -49,19 +48,25 @@ Cmd.Run = function(CurrentPlayer, Player, Length, Reason)
         return false, "Could not filter Reason" 
     end
 
+    -- Gets data stores
+    local DataStore2 = require(game.ServerScriptService.VelocityAdmin.DataStore2)
+    if not DataStore2 then
+        return false, "Could not retrieve data stores"
+    end
+
     -- Run Command
     local Players = Helper.FindPlayer(Player, CurrentPlayer)
     if Players then
         local Info = {}
         for _,p in pairs(Players) do
 
-            local BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
+            local BanStore = DataStore2("pBans", p)
             if not BanStore then
                 return false, "Error calling data stores"
             end
 
             Success = pcall(function()
-                BanStore:SetAsync(p.UserId, {
+                BanStore:Set({
                     Reason = Reason or true,
                     PublishedLength = Length,
                     RealLength = SecondsBanned,

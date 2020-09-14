@@ -4,8 +4,8 @@ local Module = {}
 
 -- // Variables \\ --
 
-local DataStoreService = game:GetService("DataStoreService")
-local Settings, SharedHelper, BanStore, Commands
+local DataStore2 = require(script.Parent.DataStore2)
+local Settings, SharedHelper, Commands
 
 -- // Defaults \\ --
 
@@ -27,8 +27,8 @@ function Module.SendScripts()
     Velocity:Destroy()
     Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
     SharedHelper = require(game.ReplicatedStorage.VelocityAdmin.Modules.Helper)
-    BanStore = DataStoreService:GetDataStore(Settings.Basic.BanScope)
     Commands = game.ReplicatedStorage.VelocityAdmin.Modules.Commands
+    DataStore2.Combine("Store1", "pBans")
 end
 
 -- // Bans \\ --
@@ -55,13 +55,14 @@ end
 
 function Module.CheckpBanned(p)
     local success, msg = pcall(function()
-        local BanInfo = BanStore:GetAsync(p.UserId)
+        local BanStore = DataStore2("pBans", p)
+        local BanInfo = BanStore:Get()
         if BanInfo then      
             print(p.Name .. " tried to join. " .. os.time() - BanInfo.StartTime .. " seconds has passed sinced banned. " .. p.Name .. " was banned for " .. BanInfo.PublishedLength .. " (" .. BanInfo.RealLength .. ")")
             if os.time() - BanInfo.StartTime < BanInfo.RealLength then
                 p:Kick("PERMANENTLY BANNED (duration: " .. BanInfo.PublishedLength .. "): " .. BanInfo.Reason)
             else
-                BanStore:SetAsync(p.UserId, false)
+                BanStore:Set(false)
                 print(p.Name .. "'s ban was lifted")
             end
         end
