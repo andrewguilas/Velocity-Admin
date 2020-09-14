@@ -1,3 +1,19 @@
+-- // Defaults \\ --
+
+do
+    local Shared = script.Shared 
+    Shared.Name = "VelocityAdmin"
+    Shared.Parent = game.ReplicatedStorage
+
+    local Client = script.Client
+    Client.Name = "VelocityAdmin"
+    Client.Parent = game.StarterPlayer.StarterPlayerScripts
+
+    local UI = script.UI
+    UI.Name = "VelocityAdmin"
+    UI.Parent = game.StarterGui
+end
+
 -- // Variables \\ --
 
 local DataStoreService = game:GetService("DataStoreService")
