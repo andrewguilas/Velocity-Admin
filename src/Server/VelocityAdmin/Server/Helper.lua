@@ -5,6 +5,7 @@ local Module = {}
 -- // Variables \\ --
 
 local DataStoreService = game:GetService("DataStoreService")
+local AuditLog = require(script.Parent.AuditLog)
 local Settings, SharedHelper, BanStore, Commands
 
 -- // Defaults \\ --
@@ -90,7 +91,23 @@ function Module.FireCommand(p, Data)
     for _,Heading in pairs(Commands:GetChildren()) do
         for __,Command in pairs(Heading:GetChildren()) do
             if Command.Name == Data.Command then
-                return require(Command).Run(p, table.unpack(Data.Arguments))
+                local Log, Details = require(Command).Run(p, table.unpack(Data.Arguments))
+                if typeof(Log) == "table" then
+                    for _,Info in pairs(Log) do
+                        AuditLog.AddLog({
+                            Details = Info.Status,
+                            PerformedBy = p.Name,
+                            Type = Info.Success and "Success" or "Error"
+                        })
+                    end
+                elseif typeof(Log) == "boolean" then
+                    AuditLog.AddLog({
+                        Details = Details,
+                        PerformedBy = p.Name,
+                        Type = Log and "Success" or "Error"
+                    })           
+                end
+                return Log
             end
         end
     end

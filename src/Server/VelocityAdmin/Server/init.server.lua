@@ -1,6 +1,7 @@
 -- // Variables \\ --
 
 local ServerHelper = require(script.Helper)
+local AuditLog = require(script.AuditLog)
 
 -- // Defaults \\ --
 
