@@ -83,25 +83,12 @@ function Module.UpdateSelectedField(Step)
             if Field.IsSelected.Value then
 
                 -- Finds the next possible selected field
-                local NewSelectedField
-                if Step == 1 then
-                    NewSelectedField = Frame:FindFirstChild(Field.Name + Step)
-                    if not NewSelectedField then
-                        for _, NextFrame in pairs(Core.Get(AutoComplete, "Frame")) do
-                            if NextFrame.LayoutOrder == Frame.LayoutOrder + 10 then
-                                NewSelectedField = Core.Get(NextFrame, "TextButton")[1]
-                                break
-                            end
-                        end
-                    end
-                elseif Step == -1 then
-                    NewSelectedField = Frame:FindFirstChild(Field.Name + Step)
-                    if not NewSelectedField then
-                        for _, NextFrame in pairs(Core.Get(AutoComplete, "Frame")) do
-                            if NextFrame.LayoutOrder == Frame.LayoutOrder - 10 then
-                                NewSelectedField = Core.Get(NextFrame, "TextButton")[#Core.Get(NextFrame, "TextButton")]
-                                break
-                            end
+                local NewSelectedField = Frame:FindFirstChild(Field.Name + Step)
+                if not NewSelectedField then
+                    for _, NextFrame in pairs(Core.Get(AutoComplete, "Frame")) do
+                        if NextFrame.LayoutOrder == (Step == 1 and Frame.LayoutOrder + 10) or (Step == -1 and Frame.LayoutOrder - 10) then
+                            NewSelectedField = (Step == 1 and Core.Get(NextFrame, "TextButton")[1]) or (Step == -1 and Core.Get(NextFrame, "TextButton")[#Core.Get(NextFrame, "TextButton")])
+                            break
                         end
                     end
                 end
@@ -255,7 +242,7 @@ function Module.GetFields(Text)
 
     if #Args == 1 then
         -- Gets possible commands
-        
+        Handler.Data.Command, Handler.Data.CommandInfo = nil
         for Heading, Cmds in pairs(Handler.Commands) do
             PossibleFields[Heading] = {}
             for Title, Info in pairs(Cmds) do
@@ -268,32 +255,17 @@ function Module.GetFields(Text)
             local Command = Cmds[Args[1]:lower()]
             if Command then
                 PossibleFields[Heading] = {}
-
                 Handler.Data.Command = Args[1]:lower()
                 Handler.Data.CommandInfo = Command
                 Handler.Data.Arguments = {}
-    
+
                 local Argument = Command.Arguments[#Args-1]
                 if Argument then
                     Handler.Data.Argument = Argument
-    
-                    local Choices           
-                    if typeof(Argument.Choices) == "function" then
-                        Choices = Argument.Choices(p)
-                    elseif typeof(Argument.Choices) == "table" then
-                        Choices = Argument.Choices
-                    end
-    
+                    Choices = typeof(Argument.Choices) == "function" and Argument.Choices(p) or typeof(Argument.Choices) == "table" and Choices = Argument.Choices
                     for Sect1, Sect2 in pairs(Choices or {}) do
-                        local Title, Description
-                        if typeof(Sect1) == "number" then
-                            Title = Sect2
-                            Description = Command.Description
-                        elseif typeof(Sect1) == "string" then
-                            Title = Sect1
-                            Description = Sect2
-                        end
-
+                        local Title = typeof(Sect1) == "number" and Sect2 or typeof(Sect1) == "string" and Sect1
+                        local Description = typeof(Sect1) == "number" and Command.Description or typeof(Sect1) == "string" and Sect2
                         Module.CheckDifference(Heading, Title, Description, Args[#Args], PossibleFields[Heading], GetAll)
                     end
                 end

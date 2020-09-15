@@ -45,7 +45,7 @@ function Module.Init()
     CommandBar.Visible = false
 
     -- Fires functions when player starts input or types
-    UserInputService.InputBegan:Connect(InputModule.RunInput)
+    UserInputService.InputBegan:Connect(InputModule.InputChanged)
     CommandBar.TextBox:GetPropertyChangedSignal("Text"):Connect(AutoCompleteModule.TextChanged)
     AuditLog.Heading.Close.MouseButton1Click:Connect(AuditLogModule.CloseUI)
 

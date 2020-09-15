@@ -38,12 +38,23 @@ Module.InputFunctions = {
         Module.CloseUI() 
     end,
 
-    [Settings.CommandBar.AutoComplete.UseKey1]= function()
-        Module.Returned() 
+    [Settings.CommandBar.AutoComplete.TabKey]= function()
+        -- Executes auto completion
+        for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
+            for __,Field in pairs(Core.Get(Frame, "TextButton")) do
+                if Field.IsSelected.Value then
+                    AutoCompleteModule.ExecuteAutoComplete(Field)
+                    return
+                end
+            end
+        end
     end,
 
-    [Settings.CommandBar.AutoComplete.UseKey2] = function()
-        Module.Returned() 
+    [Settings.CommandBar.AutoComplete.ReturnKey] = function()
+        -- Executes command
+        if AutoCompleteModule.ExecuteCommand() then
+            Module.CloseUI()
+        end
     end
 }
 
@@ -51,37 +62,13 @@ function Module.ClearText()
     TextBox:CaptureFocus()
     RunService.RenderStepped:Wait()
     TextBox.Text = ""
-    Handler.Cons.CloseUI = TextBox.InputBegan:Connect(Module.RunInput)
+    Handler.Cons.CloseUI = TextBox.InputBegan:Connect(Module.InputChanged)
 end
 
 function Module.CloseUI()
     CommandBar.Visible = false
     TextBox:ReleaseFocus()
     Handler.DisconnectCon("CloseUI")
-end
-
-function Module.Returned()
-    local SelectedField
-    for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
-        for __,Field in pairs(Core.Get(Frame, "TextButton")) do
-            if Field.IsSelected.Value then
-                AutoCompleteModule.ExecuteAutoComplete(Field)
-                return
-            end
-        end
-    end
-    
-    if AutoCompleteModule.ExecuteCommand() then
-        Module.CloseUI()
-    end
-end
-
-function Module.RunInput(Input)
-    -- Checks if the an input is connected to a function
-    local PossibleFunction = Module.InputFunctions[Input.KeyCode]
-    if PossibleFunction then
-        PossibleFunction()
-    end
 end
 
 -------------------------------
