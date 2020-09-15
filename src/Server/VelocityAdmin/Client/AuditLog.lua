@@ -8,14 +8,16 @@ local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local LogUI = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").AuditLog
 
 function Module.OpenUI(Logs)
-    LogUI.Visible = true
 
-    local MaxSizes = {
+    local MaxSizesX = {
         Date = 0,
-        Type = 0,
+        Details = 0,
         PerformedBy = 0,
-        Details = 0
+        Type = 0
     }
+
+    -- Makes the UI visible
+    LogUI.Visible = true
 
     -- Clears all frames
     for _,Frame in pairs(Core.Get(LogUI.Body, "Frame")) do
@@ -25,25 +27,39 @@ function Module.OpenUI(Logs)
     -- Creates frames
     for i, Log in pairs(Logs) do
         local NewFrame = LogUI.Body.ListLayout.Template:Clone() do
-            for Title, Description in pairs(Log) do
-                NewFrame[Title].Text = Description
+            NewFrame.LayoutOrder = i
+            NewFrame.Parent = LogUI.Body 
 
-                if NewFrame[Title].TextBounds.X > MaxSizes[Title] then
-                    MaxSizes[Title] = NewFrame[Title].TextBounds.X
-                end
+            if i % 2 == 0 then
+                NewFrame.BackgroundTransparency = 0.9
+            else
+                NewFrame.BackgroundTransparency = 0.8
             end
 
-            NewFrame.LayoutOrder = i
-            NewFrame.Parent = LogUI.Body
+            for Title, Description in pairs(Log) do
+                NewFrame.Frame[Title].Text = Description
+                
+                if Description == "Error" then
+                    NewFrame.Frame[Title].TextColor3 = Color3.fromRGB(255, 0, 0)
+                elseif Description == "Success" then
+                    NewFrame.Frame[Title].TextColor3 = Color3.fromRGB(0, 255, 0)
+                end
+
+                if NewFrame.Frame[Title].TextBounds.X > MaxSizesX[Title] then
+                    MaxSizesX[Title] = NewFrame.Frame[Title].TextBounds.X
+                end
+            end      
         end
     end
 
-    for _, Frame in pairs(Core.Get(LogUI.Body, "Frame")) do
-        for Type, Size in pairs(MaxSizes) do
-            Frame[Type].Size.X.Offset = Size
+    for Name, Size in pairs(MaxSizesX) do
+        for _,Frame in pairs(Core.Get(LogUI.Body, "Frame")) do
+            Frame.Frame[Name].Size = UDim2.new(0, MaxSizesX[Name] + 40, 1, 0)
         end
+        LogUI.Heading.Frame[Name].Size = UDim2.new(0, MaxSizesX[Name] + 40, 1, 0)
     end
 
+    LogUI.Body.CanvasSize = UDim2.new(0, 0, 0, LogUI.Body.ListLayout.AbsoluteContentSize.Y)
 end
 
 ---------------------------------
