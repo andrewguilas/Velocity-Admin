@@ -1,13 +1,13 @@
-local Module = {}
+-- // Variables \\ --
 
-----------------------------------
-
-Module = {
+local Module = {
     Logs = {},
     Settings = {
         MaxLogs = 100
     }
 }
+
+-- // Functions \\ --
 
 function Module.CheckSize()
     if #Module.Logs >= Module.Settings.MaxLogs then

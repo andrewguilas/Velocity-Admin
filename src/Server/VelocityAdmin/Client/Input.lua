@@ -1,5 +1,9 @@
 local Module = {}
 
+-------------------------------
+
+-- // Variables \\ --
+
 local RunService = game:GetService("RunService")
 local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local Handler = require(script.Parent.Handler)
@@ -9,6 +13,8 @@ local AutoCompleteModule = require(script.Parent.AutoComplete)
 local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
 local TextBox = CommandBar.TextBox
 local AutoComplete = CommandBar.AutoComplete
+
+-- // Functions \\ --
 
 Module.InputFunctions = {
 
@@ -77,5 +83,7 @@ function Module.RunInput(Input)
         PossibleFunction()
     end
 end
+
+-------------------------------
 
 return Module

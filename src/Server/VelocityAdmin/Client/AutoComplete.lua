@@ -1,6 +1,9 @@
--- // Variables \\ --
 
 local Module = {}
+
+-------------------------------
+
+-- // Variables \\ --
 
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
@@ -323,5 +326,7 @@ function Module.TextChanged()
     AutoComplete.Size = UDim2.new(0, Settings.CommandBar.AutoComplete.FieldSizeX, 0, AutoComplete.Parent.Parent.AbsoluteSize.Y/2)
     AutoComplete.CanvasSize = UDim2.new(0, 0, 0, AutoComplete.ListLayout.AbsoluteContentSize.Y)
 end
+
+-------------------------------
 
 return Module

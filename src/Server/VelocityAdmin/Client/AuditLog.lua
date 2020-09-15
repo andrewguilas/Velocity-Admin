@@ -7,17 +7,19 @@ local Module = {}
 local Core = require(game.ReplicatedStorage.VelocityAdmin.Modules.Core)
 local LogUI = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").AuditLog
 
-function Module.OpenUI(Logs)
+-- // Functions \\ --
 
+function Module.CloseUI()
+    LogUI.Visible = false
+end
+
+function Module.CreateFields(Logs)
     local MaxSizesX = {
         Date = 0,
         Details = 0,
         PerformedBy = 0,
         Type = 0
     }
-
-    -- Makes the UI visible
-    LogUI.Visible = true
 
     -- Clears all frames
     for _,Frame in pairs(Core.Get(LogUI.Body, "Frame")) do
@@ -60,6 +62,11 @@ function Module.OpenUI(Logs)
     end
 
     LogUI.Body.CanvasSize = UDim2.new(0, 0, 0, LogUI.Body.ListLayout.AbsoluteContentSize.Y)
+end
+
+function Module.OpenUI(Logs)
+    LogUI.Visible = true
+    Module.CreateFields(Logs)
 end
 
 ---------------------------------
