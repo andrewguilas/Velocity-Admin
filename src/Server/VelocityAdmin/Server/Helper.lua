@@ -32,8 +32,7 @@ function Module.SendScripts()
     Commands = game.ReplicatedStorage.VelocityAdmin.Modules.Commands
 end
 
--- // Bans \\ --
-
+-- Bans
 function Module.CheckSlocked(p)
     local Reason = SharedHelper.Data.ServerLocked
     if Reason then
@@ -74,8 +73,7 @@ function Module.CheckpBanned(p)
     end
 end
 
--- // Handlers \\ --
-
+-- Handlers
 function Module.PlayerAdded(p)
     SharedHelper.Data[p.Name] = {}
     Module.CheckSlocked(p)

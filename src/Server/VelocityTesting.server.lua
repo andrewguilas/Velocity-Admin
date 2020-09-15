@@ -20,7 +20,7 @@ local Teams = game:GetService("Teams")
 -- // Run \\ --
 
 -- Creates teams
-for i,TeamColor in pairs(TEAM_COLORS) do
+for i, TeamColor in pairs(TEAM_COLORS) do
 
     -- Creates team
     local NewTeam = Instance.new("Team") do

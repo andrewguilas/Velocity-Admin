@@ -23,10 +23,14 @@ function Module.Init()
     -- Variables
     local UserInputService = game:GetService("UserInputService")
     local InputModule = require(script.Parent.Input)
+    local AuditLogModule = require(script.Parent.AuditLog)
     local AutoCompleteModule = require(script.Parent.AutoComplete)
     local Settings = require(game.ReplicatedStorage.VelocityAdmin.Modules.Settings)
+
     local Commands = game.ReplicatedStorage.VelocityAdmin.Modules.Commands
-    local CommandBar = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin").CommandBar
+    local UI = game.Players.LocalPlayer.PlayerGui:WaitForChild("VelocityAdmin")
+    local CommandBar = UI.CommandBar
+    local AuditLog = UI.AuditLog
 
     -- Requires all commands and places them into a dictionary
     for _,Heading in pairs(Commands:GetChildren()) do
@@ -43,6 +47,10 @@ function Module.Init()
     -- Fires functions when player starts input or types
     UserInputService.InputBegan:Connect(InputModule.RunInput)
     CommandBar.TextBox:GetPropertyChangedSignal("Text"):Connect(AutoCompleteModule.TextChanged)
+    AuditLog.Heading.Close.MouseButton1Click:Connect(AuditLogModule.CloseUI)
+
 end
+
+-------------------------------
 
 return Module
