@@ -6,7 +6,9 @@ local Module = {
         Command = nil,
         CommandInfo = {},
         Argument = nil,
-        Arguments = {}
+        Arguments = {},
+        Fields = {},
+        SelectedField = nil,
     },
     Cons = {},
 }

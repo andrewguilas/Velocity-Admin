@@ -78,28 +78,26 @@ function Module.UpdateResponse(Success, Status)
 end
 
 function Module.UpdateSelectedField(Step)
-    for FrameIndex, Frame in pairs(Core.Get(AutoComplete, "Frame")) do
-        for _,Field in pairs(Core.Get(Frame, "TextButton")) do
-            if Field.IsSelected.Value then
+    local CurrentSelectedField = Handler.Data.SelectedField
+    if CurrentSelectedField then
+        local NewSelectedField = Handler.Data.Fields[table.find(Handler.Data.Fields, CurrentSelectedField) + Step] or Step == -1 and Handler.Data.Fields[#Handler.Data.Fields] or Step == 1 and Handler.Data.Fields[1]
+        if NewSelectedField then
+            CurrentSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
+            NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+            CurrentSelectedField.IsSelected.Value, NewSelectedField.IsSelected.Value = false, true
+            Handler.Data.SelectedField = NewSelectedField
+        end
+    end
+end
 
-                -- Finds the next possible selected field
-                local NewSelectedField = Frame:FindFirstChild(Field.Name + Step)
-                if not NewSelectedField then
-                    for _, NextFrame in pairs(Core.Get(AutoComplete, "Frame")) do
-                        if NextFrame.LayoutOrder == (Step == 1 and Frame.LayoutOrder + 10) or (Step == -1 and Frame.LayoutOrder - 10) then
-                            NewSelectedField = (Step == 1 and Core.Get(NextFrame, "TextButton")[1]) or (Step == -1 and Core.Get(NextFrame, "TextButton")[#Core.Get(NextFrame, "TextButton")])
-                            break
-                        end
-                    end
-                end
-
-                -- Sets a new selection
-                if NewSelectedField then
-                    Field.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
-                    NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-                    NewSelectedField.IsSelected.Value, Field.IsSelected.Value = true, false
-                end
-                return
+function Module.UpdateFieldTable()
+    Handler.Data.Fields = {}
+    for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
+        for __,Field in pairs(Core.Get(Frame, "TextButton")) do
+            if Frame.Visible then
+                table.insert(Handler.Data.Fields, Field)
+            else
+                Core.TableRemove(Handler.Data.Fields, Field)
             end
         end
     end
@@ -141,6 +139,7 @@ function Module.CreateFields(PossibleFields)
     local HeadingNum = 0
 
     -- Creates the auto completion section
+    Handler.Data.Fields = {}
     for Heading, Cmds in pairs(PossibleFields) do
         HeadingNum = HeadingNum + 1
 
@@ -164,59 +163,44 @@ function Module.CreateFields(PossibleFields)
             -- Event for heading clicked
             NewHeading.MouseButton1Click:Connect(function()
                 NewFieldFrame.Visible = not NewFieldFrame.Visible
+                Module.UpdateFieldTable()
 
-                -- If a field is selected in the frame that is being collapsed, then it will switch the selection to the next possible field
                 if NewFieldFrame.Visible then
-                    
-                    local aFieldIsSelected
-                    for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
-                        for __,Field in pairs(Core.Get(Frame, "TextButton")) do
-                            if Field.IsSelected.Value then
-                                aFieldIsSelected = true
-                            end
-                        end
-                    end
-
-                    if not aFieldIsSelected then
-                        local Field = NewFieldFrame[1]
-                        Field.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-                        Field.IsSelected.Value = true  
-                        print(Field:GetFullName() .. " was selected")
+                    if not Handler.Data.SelectedField then
+                        local NewSelectedField = NewFieldFrame["1"]
+                        NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                        NewSelectedField.IsSelected.Value = true
+                        Handler.Data.SelectedField = NewSelectedField
                     end
                 else
-                    for _,Field in pairs(Core.Get(NewFieldFrame, "TextButton")) do
-                        if Field.IsSelected.Value then
-                            
-                            -- Gets the next possible field to be selected
-                            local NewSelectedField
+                    local CurrentSelectedField = Handler.Data.SelectedField.Parent == NewFieldFrame and Handler.Data.SelectedField
+                    if CurrentSelectedField then
 
-                            for __,FieldFrame in pairs(Core.Get(AutoComplete, "Frame")) do
-                                if FieldFrame.LayoutOrder == NewFieldFrame.LayoutOrder + 10 and FieldFrame.Visible then
-                                    NewSelectedField = FieldFrame["1"]
+                        local SelectionChanged
+                        for i = 1, #Handler.Data.Fields do
+                            local NewSelectedField
+                            if NewSelectedField and NewSelectedField.Parent.Visible then
+                                NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                                NewSelectedField.IsSelected.Value = true
+                                Handler.Data.SelectedField = NewSelectedField
+                                SelectionChanged = true
+                                break
+                            else 
+                                if NewSelectedField and NewSelectedField.Parent.Visible then
+                                    NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                                    NewSelectedField.IsSelected.Value = true
+                                    Handler.Data.SelectedField = NewSelectedField
+                                    SelectionChanged = true
                                     break
                                 end
                             end
+                        end
 
-                            if not NewSelectedField then
-                                for __,FieldFrame in pairs(Core.Get(AutoComplete, "Frame")) do
-                                    if FieldFrame.LayoutOrder == NewFieldFrame.LayoutOrder - 10 and FieldFrame.Visible then
-                                        NewSelectedField = FieldFrame[#Core.Get(FieldFrame, "TextButton")]
-                                        break
-                                    end
-                                end
-                            end
+                        CurrentSelectedField.IsSelected.Value = false
+                        CurrentSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
 
-                            -- Selects the next possible field
-                            if NewSelectedField then
-                                NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-                                NewSelectedField.IsSelected.Value = true  
-                                print(NewSelectedField:GetFullName() .. " was selected")
-                            end
-
-                            Field.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
-                            Field.IsSelected.Value = false
-                            print(Field:GetFullName() .. " was unselected")
-                            break
+                        if not SelectionChanged then
+                            Handler.Data.SelectedField = nil
                         end
                     end
                 end
@@ -236,19 +220,10 @@ function Module.CreateFields(PossibleFields)
                 end
                 
                 -- Sets the selection
-                local aFieldIsSelected
-                for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
-                    for __,Field in pairs(Core.Get(Frame, "TextButton")) do
-                        if Field.IsSelected.Value then
-                            aFieldIsSelected = true
-                        end
-                    end
-                end
-
-                if not aFieldIsSelected and HeadingNum == 1 and FieldNum == 1 then
+                if not Handler.Data.SelectedField and HeadingNum == 1 and FieldNum == 1 then
                     NewField.IsSelected.Value = true
                     NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-                    print(NewField:GetFullName() .. " was selected")
+                    Handler.Data.SelectedField = NewField
                 end
 
                 -- Other properties
@@ -274,6 +249,7 @@ function Module.CreateFields(PossibleFields)
             NewFieldFrame.Size = UDim2.new(1, 0, 0, NewFieldFrame.ListLayout.AbsoluteContentSize.Y)
         end
     end
+    Module.UpdateFieldTable()
 end
 
 function Module.CheckDifference(Heading, Title, Description, LastArg, Table, GetAll)
