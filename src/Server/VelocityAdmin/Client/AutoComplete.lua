@@ -164,6 +164,62 @@ function Module.CreateFields(PossibleFields)
             -- Event for heading clicked
             NewHeading.MouseButton1Click:Connect(function()
                 NewFieldFrame.Visible = not NewFieldFrame.Visible
+
+                -- If a field is selected in the frame that is being collapsed, then it will switch the selection to the next possible field
+                if NewFieldFrame.Visible then
+                    
+                    local aFieldIsSelected
+                    for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
+                        for __,Field in pairs(Core.Get(Frame, "TextButton")) do
+                            if Field.IsSelected.Value then
+                                aFieldIsSelected = true
+                            end
+                        end
+                    end
+
+                    if not aFieldIsSelected then
+                        local Field = NewFieldFrame[1]
+                        Field.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                        Field.IsSelected.Value = true  
+                        print(Field:GetFullName() .. " was selected")
+                    end
+                else
+                    for _,Field in pairs(Core.Get(NewFieldFrame, "TextButton")) do
+                        if Field.IsSelected.Value then
+                            
+                            -- Gets the next possible field to be selected
+                            local NewSelectedField
+
+                            for __,FieldFrame in pairs(Core.Get(AutoComplete, "Frame")) do
+                                if FieldFrame.LayoutOrder == NewFieldFrame.LayoutOrder + 10 and FieldFrame.Visible then
+                                    NewSelectedField = FieldFrame["1"]
+                                    break
+                                end
+                            end
+
+                            if not NewSelectedField then
+                                for __,FieldFrame in pairs(Core.Get(AutoComplete, "Frame")) do
+                                    if FieldFrame.LayoutOrder == NewFieldFrame.LayoutOrder - 10 and FieldFrame.Visible then
+                                        NewSelectedField = FieldFrame[#Core.Get(FieldFrame, "TextButton")]
+                                        break
+                                    end
+                                end
+                            end
+
+                            -- Selects the next possible field
+                            if NewSelectedField then
+                                NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                                NewSelectedField.IsSelected.Value = true  
+                                print(NewSelectedField:GetFullName() .. " was selected")
+                            end
+
+                            Field.BackgroundColor3 = Settings.CommandBar.AutoComplete.UnselectedColor
+                            Field.IsSelected.Value = false
+                            print(Field:GetFullName() .. " was unselected")
+                            break
+                        end
+                    end
+                end
             end)
 
             -- Creates the fields
@@ -180,9 +236,19 @@ function Module.CreateFields(PossibleFields)
                 end
                 
                 -- Sets the selection
-                if HeadingNum == 1 and FieldNum == 1 then
+                local aFieldIsSelected
+                for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
+                    for __,Field in pairs(Core.Get(Frame, "TextButton")) do
+                        if Field.IsSelected.Value then
+                            aFieldIsSelected = true
+                        end
+                    end
+                end
+
+                if not aFieldIsSelected and HeadingNum == 1 and FieldNum == 1 then
                     NewField.IsSelected.Value = true
                     NewField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                    print(NewField:GetFullName() .. " was selected")
                 end
 
                 -- Other properties
@@ -262,7 +328,7 @@ function Module.GetFields(Text)
                 local Argument = Command.Arguments[#Args-1]
                 if Argument then
                     Handler.Data.Argument = Argument
-                    Choices = typeof(Argument.Choices) == "function" and Argument.Choices(p) or typeof(Argument.Choices) == "table" and Choices = Argument.Choices
+                    local Choices = typeof(Argument.Choices) == "function" and Argument.Choices(p) or typeof(Argument.Choices) == "table" and Argument.Choices
                     for Sect1, Sect2 in pairs(Choices or {}) do
                         local Title = typeof(Sect1) == "number" and Sect2 or typeof(Sect1) == "string" and Sect1
                         local Description = typeof(Sect1) == "number" and Command.Description or typeof(Sect1) == "string" and Sect2

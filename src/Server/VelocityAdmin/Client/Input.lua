@@ -71,6 +71,14 @@ function Module.CloseUI()
     Handler.DisconnectCon("CloseUI")
 end
 
+function Module.InputChanged(Input)
+    -- Checks if the an input is connected to a function
+    local PossibleFunction = Module.InputFunctions[Input.KeyCode]
+    if PossibleFunction then
+        PossibleFunction()
+    end
+end
+
 -------------------------------
 
 return Module
