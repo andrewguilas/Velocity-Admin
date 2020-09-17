@@ -17,7 +17,9 @@ local Settings = {
             SelectedColor = Color3.fromRGB(100, 100, 100),
             UnselectedColor = Color3.fromRGB(0, 0, 0),
             FieldSizeX = 450,
-            TitleToDescriptionSpacing = 10
+            TitleToDescriptionSpacing = 10,
+            InitialHoldDelay = 0.9,
+            HoldDelay = 0.05,
         },
         Response = {
             DefaultSize = UDim2.new(0, 20, 0, 30),

@@ -18,7 +18,11 @@ local AutoComplete = CommandBar.AutoComplete
 
 Module.InputFunctions = {
 
-    [Settings.CommandBar.OpenKey] = function()
+    [Settings.CommandBar.OpenKey] = function(Input, Started)
+        if not Started then
+            return
+        end
+
         CommandBar.Visible = not CommandBar.Visible
         Handler.DisconnectCon("CloseUI")
         if CommandBar.Visible then
@@ -26,19 +30,37 @@ Module.InputFunctions = {
         end
     end,
 
-    [Settings.CommandBar.AutoComplete.UpKey] = function()
-        AutoCompleteModule.UpdateSelectedField(-1)
+    [Settings.CommandBar.AutoComplete.UpKey] = function(Input, Started)
+        if Started then
+            Handler.Keys.Up = Settings.CommandBar.AutoComplete.HoldDelay
+            AutoCompleteModule.UpdateSelectedField(-1)
+        else
+            Handler.Keys.Up = false
+        end
     end,
     
-    [Settings.CommandBar.AutoComplete.DownKey] = function()
-        AutoCompleteModule.UpdateSelectedField(1)
+    [Settings.CommandBar.AutoComplete.DownKey] = function(Input, Started)
+        if Started then
+            Handler.Keys.Down = Settings.CommandBar.AutoComplete.HoldDelay
+            AutoCompleteModule.UpdateSelectedField(1)
+        else
+            Handler.Keys.Down = false
+        end
     end,
         
-    [Settings.CommandBar.ExitKey] = function()
+    [Settings.CommandBar.ExitKey] = function(Input, Started)
+        if not Started then
+            return
+        end
+
         Module.CloseUI() 
     end,
 
-    [Settings.CommandBar.AutoComplete.TabKey]= function()
+    [Settings.CommandBar.AutoComplete.TabKey] = function(Input, Started)
+        if not Started then
+            return
+        end
+
         -- Executes auto completion
         for _,Frame in pairs(Core.Get(AutoComplete, "Frame")) do
             for __,Field in pairs(Core.Get(Frame, "TextButton")) do
@@ -50,7 +72,11 @@ Module.InputFunctions = {
         end
     end,
 
-    [Settings.CommandBar.AutoComplete.ReturnKey] = function()
+    [Settings.CommandBar.AutoComplete.ReturnKey] = function(Input, Started)
+        if not Started then
+            return
+        end
+
         -- Executes command
         if AutoCompleteModule.ExecuteCommand() then
             Module.CloseUI()
@@ -71,11 +97,36 @@ function Module.CloseUI()
     Handler.DisconnectCon("CloseUI")
 end
 
-function Module.InputChanged(Input)
+function Module.InputChanged(Input, Started)
     -- Checks if the an input is connected to a function
     local PossibleFunction = Module.InputFunctions[Input.KeyCode]
     if PossibleFunction then
-        PossibleFunction()
+        PossibleFunction(Input, Started)
+    end
+end
+
+function Module.Init()
+    local HoldDelay = Settings.CommandBar.AutoComplete.HoldDelay
+    while true do
+
+        local Cancel
+        if Handler.Keys.Up == HoldDelay or Handler.Keys.Down == HoldDelay then
+            wait(Settings.CommandBar.AutoComplete.InitialHoldDelay)
+            Cancel = Handler.Keys.Up == HoldDelay and not Handler.Keys.Up or Handler.Keys.Down == HoldDelay and not Handler.Keys.Down
+        end
+
+        if not Cancel then
+            if Handler.Keys.Up then
+                Handler.Keys.Up = Handler.Keys.Up + 1
+                AutoCompleteModule.UpdateSelectedField(-1)
+            elseif Handler.Keys.Down then
+                Handler.Keys.Down = Handler.Keys.Down + 1
+                AutoCompleteModule.UpdateSelectedField(1)
+            end
+            wait(HoldDelay)
+        else
+            wait(1)
+        end
     end
 end
 

@@ -10,6 +10,10 @@ local Module = {
         Fields = {},
         SelectedField = nil,
     },
+    Keys = {
+        Down = false,
+        Up = false,
+    },
     Cons = {},
 }
 
@@ -47,10 +51,18 @@ function Module.Init()
     CommandBar.Visible = false
 
     -- Fires functions when player starts input or types
-    UserInputService.InputBegan:Connect(InputModule.InputChanged)
+    UserInputService.InputBegan:Connect(function(Input)
+        InputModule.InputChanged(Input, true)
+    end)
+
+    UserInputService.InputEnded:Connect(function(Input)
+        InputModule.InputChanged(Input)
+    end)
+
     CommandBar.TextBox:GetPropertyChangedSignal("Text"):Connect(AutoCompleteModule.TextChanged)
     AuditLog.Heading.Close.MouseButton1Click:Connect(AuditLogModule.CloseUI)
 
+    InputModule.Init()
 end
 
 -------------------------------
