@@ -162,12 +162,31 @@ function Module.CreateFields(PossibleFields)
 
             -- Event for heading clicked
             NewHeading.MouseButton1Click:Connect(function()
+                -- Hides the frame
                 NewFieldFrame.Visible = not NewFieldFrame.Visible
+
+                -- Gets the closest possible selected field
+                local NewSelectedField
+                for x = 1, #Handler.Data.Fields do
+                    local PossibleSelectedField = Handler.Data.Fields[table.find(Handler.Data.Fields, Handler.Data.SelectedField) - x]
+                    if PossibleSelectedField and PossibleSelectedField.Parent.Visible then
+                        NewSelectedField = PossibleSelectedField
+                        break
+                    else
+                        PossibleSelectedField = Handler.Data.Fields[table.find(Handler.Data.Fields, Handler.Data.SelectedField) + x]
+                        if PossibleSelectedField and PossibleSelectedField.Parent.Visible then
+                            NewSelectedField = PossibleSelectedField
+                            break
+                        end
+                    end
+                end
+
+                -- Updates the fields table
                 Module.UpdateFieldTable()
 
+                -- Selects the new field
                 if NewFieldFrame.Visible then
                     if not Handler.Data.SelectedField then
-                        local NewSelectedField = NewFieldFrame["1"]
                         NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
                         NewSelectedField.IsSelected.Value = true
                         Handler.Data.SelectedField = NewSelectedField
@@ -175,25 +194,12 @@ function Module.CreateFields(PossibleFields)
                 else
                     local CurrentSelectedField = Handler.Data.SelectedField.Parent == NewFieldFrame and Handler.Data.SelectedField
                     if CurrentSelectedField then
-
                         local SelectionChanged
-                        for i = 1, #Handler.Data.Fields do
-                            local NewSelectedField
-                            if NewSelectedField and NewSelectedField.Parent.Visible then
-                                NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-                                NewSelectedField.IsSelected.Value = true
-                                Handler.Data.SelectedField = NewSelectedField
-                                SelectionChanged = true
-                                break
-                            else 
-                                if NewSelectedField and NewSelectedField.Parent.Visible then
-                                    NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
-                                    NewSelectedField.IsSelected.Value = true
-                                    Handler.Data.SelectedField = NewSelectedField
-                                    SelectionChanged = true
-                                    break
-                                end
-                            end
+                        if NewSelectedField then
+                            NewSelectedField.BackgroundColor3 = Settings.CommandBar.AutoComplete.SelectedColor
+                            NewSelectedField.IsSelected.Value = true
+                            Handler.Data.SelectedField = NewSelectedField
+                            SelectionChanged = true
                         end
 
                         CurrentSelectedField.IsSelected.Value = false
